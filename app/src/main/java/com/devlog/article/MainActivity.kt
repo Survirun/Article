@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.MenuItem
 import androidx.fragment.app.Fragment
 import com.devlog.article.databinding.ActivityMainBinding
+import com.devlog.article.presentation.article.ArticleListFragment
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding :ActivityMainBinding
@@ -13,12 +14,12 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        supportFragmentManager.beginTransaction().add(R.id.containers, HomeFragment()).commit()
+        supportFragmentManager.beginTransaction().add(R.id.containers, ArticleListFragment()).commit()
 
         binding.bottomNavigationview.setOnNavigationItemSelectedListener { item ->
             when(item.itemId) {
                 R.id.home -> {
-                    replaceFragment(HomeFragment())
+                    replaceFragment(ArticleListFragment())
                     true
                 }
                 R.id.bookmark -> {
