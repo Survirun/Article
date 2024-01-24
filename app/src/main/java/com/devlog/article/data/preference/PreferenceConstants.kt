@@ -1,4 +1,4 @@
-package com.devlog.article.preference
+package com.devlog.article.data.preference
 
 object PreferenceConstants {
     val USERP_PREFETANCE = "userPreference"

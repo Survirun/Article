@@ -14,7 +14,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.devlog.article.R
 import com.devlog.article.databinding.ViewholderArticleItemBinding
-import com.devlog.article.entity.ArticleEntity
+import com.devlog.article.data.entity.ArticleEntity
 import com.devlog.article.presentation.article.deetail.DetailActivity
 
 class ArticleAdapter() : RecyclerView.Adapter<ArticleAdapter.ArticleViewHolder>() {

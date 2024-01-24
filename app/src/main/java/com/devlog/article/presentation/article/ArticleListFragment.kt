@@ -11,7 +11,7 @@ import androidx.core.content.ContextCompat
 import androidx.viewpager2.widget.ViewPager2
 import com.devlog.article.R
 import com.devlog.article.databinding.FragmentArticleBinding
-import com.devlog.article.entity.ArticleEntity
+import com.devlog.article.data.entity.ArticleEntity
 import com.devlog.article.presentation.article.adapter.ArticleAdapter
 import com.devlog.article.presentation.article.deetail.DetailActivity
 import kotlin.math.abs

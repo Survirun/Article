@@ -1,4 +1,4 @@
-package com.devlog.article.preference
+package com.devlog.article.data.preference
 
 import android.annotation.SuppressLint
 import android.content.Context

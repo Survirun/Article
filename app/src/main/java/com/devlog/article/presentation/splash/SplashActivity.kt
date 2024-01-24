@@ -14,7 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.devlog.article.MainActivity
-import com.devlog.article.preference.UserPreference
+import com.devlog.article.data.preference.UserPreference
 import com.devlog.article.presentation.sign_in.SignInActivity
 import com.devlog.article.presentation.ui.theme.ArticleTheme
 
@@ -23,7 +23,7 @@ class SplashActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            userPreference=UserPreference.getInstance(this)
+            userPreference= UserPreference.getInstance(this)
             Handler(Looper.getMainLooper()).postDelayed({
                 if ( userPreference.userSignInCheck){
                     startActivity(Intent(this,MainActivity::class.java))

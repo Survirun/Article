@@ -9,7 +9,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import com.devlog.article.MainActivity
 import com.devlog.article.R
 import com.devlog.article.databinding.ActivitySignInBinding
-import com.devlog.article.preference.UserPreference
+import com.devlog.article.data.preference.UserPreference
 import com.google.android.gms.auth.api.identity.BeginSignInRequest
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
@@ -26,7 +26,7 @@ import com.google.firebase.ktx.Firebase
 class SignInActivity : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
     lateinit var googleSignInClient: GoogleSignInClient
-    lateinit var userPreference :UserPreference
+    lateinit var userPreference : UserPreference
     var activityResultLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
@@ -51,7 +51,7 @@ class SignInActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         bindind=ActivitySignInBinding.inflate(layoutInflater)
         setContentView(bindind.root)
-        userPreference=UserPreference.getInstance(this)
+        userPreference= UserPreference.getInstance(this)
         bindind.googleSignInButton.setOnClickListener{
             signIn()
         }
