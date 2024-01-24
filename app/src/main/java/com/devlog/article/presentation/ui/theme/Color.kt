@@ -1,4 +1,4 @@
-package com.devlog.article.presentation.splash.ui.theme
+package com.devlog.article.presentation.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

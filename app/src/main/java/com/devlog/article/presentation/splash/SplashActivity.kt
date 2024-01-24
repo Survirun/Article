@@ -16,7 +16,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.devlog.article.MainActivity
 import com.devlog.article.preference.UserPreference
 import com.devlog.article.presentation.sign_in.SignInActivity
-import com.devlog.article.presentation.splash.ui.theme.ArticleTheme
+import com.devlog.article.presentation.ui.theme.ArticleTheme
 
 class SplashActivity : ComponentActivity() {
     lateinit var userPreference : UserPreference

@@ -1,4 +1,4 @@
-package com.devlog.article.presentation.splash.ui.theme
+package com.devlog.article.presentation.ui.theme
 
 import android.app.Activity
 import android.os.Build
