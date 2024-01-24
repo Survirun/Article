@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import com.devlog.article.MainActivity
 import com.devlog.article.R
+import com.devlog.article.databinding.ActivitySignInBinding
 import com.devlog.article.preference.UserPreference
 import com.google.android.gms.auth.api.identity.BeginSignInRequest
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -44,10 +45,16 @@ class SignInActivity : AppCompatActivity() {
 
 
         }
+
+    lateinit var bindind:ActivitySignInBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_sign_in)
+        bindind=ActivitySignInBinding.inflate(layoutInflater)
+        setContentView(bindind.root)
         userPreference=UserPreference.getInstance(this)
+        bindind.googleSignInButton.setOnClickListener{
+            signIn()
+        }
         val googleSignInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken(getString(R.string.default_web_client_id))
             .requestEmail()
@@ -59,8 +66,6 @@ class SignInActivity : AppCompatActivity() {
     }
     private fun signIn() {
         val signInIntent: Intent = googleSignInClient.signInIntent //구글로그인 페이지로 가는 인텐트 객체
-
-
         activityResultLauncher.launch(signInIntent)
 
     }
