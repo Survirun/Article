@@ -1,0 +1,62 @@
+package com.devlog.article.presentation.splash
+
+import android.content.Intent
+import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
+import com.devlog.article.MainActivity
+import com.devlog.article.preference.UserPreference
+import com.devlog.article.presentation.sign_in.SignInActivity
+import com.devlog.article.presentation.splash.ui.theme.ArticleTheme
+
+class SplashActivity : ComponentActivity() {
+    lateinit var userPreference : UserPreference
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContent {
+            userPreference=UserPreference.getInstance(this)
+            Handler(Looper.getMainLooper()).postDelayed({
+                if ( userPreference.userSignInCheck){
+                    startActivity(Intent(this,MainActivity::class.java))
+                }else{
+                    startActivity(Intent(this,SignInActivity::class.java))
+                }
+
+            }, 3000)
+            ArticleTheme {
+                // A surface container using the 'background' color from the theme
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colorScheme.background
+                ) {
+                    Greeting("Android")
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun Greeting(name: String, modifier: Modifier = Modifier) {
+    Text(
+        text = "Hello $name!",
+        modifier = modifier
+    )
+}
+
+@Preview(showBackground = true)
+@Composable
+fun GreetingPreview() {
+    ArticleTheme {
+        Greeting("Android")
+    }
+}
