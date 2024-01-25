@@ -31,7 +31,7 @@ class SplashActivity : ComponentActivity() {
                     startActivity(Intent(this,SignInActivity::class.java))
                 }
 
-            }, 3000)
+            }, 1500)
             ArticleTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(
