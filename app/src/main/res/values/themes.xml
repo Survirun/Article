@@ -7,6 +7,8 @@
         <!--        <item name="android:windowSplashScreenBackground">#FFFFFF</item>-->
         <!--        <item name="android:windowSplashScreenAnimatedIcon">@drawable/test</item>-->
         <!--        <item name="android:windowSplashScreenAnimationDuration">1000</item>-->
+
+        <item name="android:windowIsTranslucent">true</item>
     </style>
 
     <style name="Theme.Article" parent="Base.Theme.Article" />
