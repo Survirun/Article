@@ -26,5 +26,11 @@ class UserPreference(context: Context) {
             userPreferenceEditor.putBoolean(PreferenceConstants.USER_SIGN_IN_CHECK, v)
             userPreferenceEditor.apply()
         }
+    var userUid:String
+        get() = userPreference.getString(PreferenceConstants.USER_UID, "").toString()
+        set(v) {
+            userPreferenceEditor.putString(PreferenceConstants.USER_UID, v)
+            userPreferenceEditor.apply()
+        }
 
 }

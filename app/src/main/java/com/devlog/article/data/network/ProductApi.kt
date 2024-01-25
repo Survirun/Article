@@ -1,12 +1,18 @@
 package com.devlog.article.data.network
 
+import android.app.Application
+import com.devlog.article.data.preference.UserPreference
+import com.devlog.article.presentation.ArticleApplication
 import com.google.firebase.BuildConfig
 import com.google.gson.FieldNamingPolicy
 import com.google.gson.GsonBuilder
+import okhttp3.Interceptor
 import okhttp3.OkHttpClient
+import okhttp3.Response
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.util.Locale
 import java.util.concurrent.TimeUnit
 
 internal fun ApiService(retrofit: Retrofit): ApiService {
@@ -34,7 +40,8 @@ internal fun provideGsonConverterFactory(): GsonConverterFactory {
             .create()
     )
 }
-internal fun buildOkHttpClient(): OkHttpClient {
+
+internal fun LoginBuildOkHttpClient(): OkHttpClient {
     val interceptor= HttpLoggingInterceptor()
     if(BuildConfig.DEBUG){
         interceptor.level= HttpLoggingInterceptor.Level.BODY
@@ -47,3 +54,19 @@ internal fun buildOkHttpClient(): OkHttpClient {
         .addInterceptor(interceptor)
         .build()
 }
+
+internal fun buildOkHttpClient(): OkHttpClient {
+    val interceptor= HttpLoggingInterceptor()
+    if(BuildConfig.DEBUG){
+        interceptor.level= HttpLoggingInterceptor.Level.BODY
+
+    }else{
+        interceptor.level= HttpLoggingInterceptor.Level.NONE
+    }
+    return OkHttpClient.Builder()
+        .addInterceptor(HttpInterceptor())
+        .connectTimeout(5, TimeUnit.SECONDS)
+        .addInterceptor(interceptor)
+        .build()
+}
+
