@@ -4,12 +4,21 @@ import android.app.Activity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import com.devlog.article.MainActivity
 import com.devlog.article.R
+import com.devlog.article.data.entity.LoginEntity
+import com.devlog.article.data.network.ApiService
+import com.devlog.article.data.network.LoginBuildOkHttpClient
+import com.devlog.article.data.network.buildOkHttpClient
+import com.devlog.article.data.network.provideGsonConverterFactory
+import com.devlog.article.data.network.provideProductRetrofit
 import com.devlog.article.databinding.ActivitySignInBinding
 import com.devlog.article.data.preference.UserPreference
+import com.devlog.article.data.repository.DefaultRepository
+import com.devlog.article.data.repository.Repository
 import com.google.android.gms.auth.api.identity.BeginSignInRequest
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
@@ -22,11 +31,14 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 class SignInActivity : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
     lateinit var googleSignInClient: GoogleSignInClient
     lateinit var userPreference : UserPreference
+    lateinit var loginViewModel:LoginViewModel
     var activityResultLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
@@ -51,6 +63,7 @@ class SignInActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         bindind=ActivitySignInBinding.inflate(layoutInflater)
         setContentView(bindind.root)
+        loginViewModel=LoginViewModel()
         userPreference= UserPreference.getInstance(this)
         bindind.googleSignInButton.setOnClickListener{
             signIn()
@@ -63,7 +76,17 @@ class SignInActivity : AppCompatActivity() {
         googleSignInClient = GoogleSignIn.getClient(this, googleSignInOptions)
         auth = Firebase.auth
 
+        loginViewModel.loginSucceed = {
+            Log.e("dfsafdsfa","adafd")
+
+            userPreference.userSignInCheck = true
+            startActivity(Intent(this, MainActivity::class.java))
+        }
+        loginViewModel.loginFailed ={
+            Toast.makeText(this,"로그인 실패",Toast.LENGTH_SHORT).show()
+        }
     }
+
     private fun signIn() {
         val signInIntent: Intent = googleSignInClient.signInIntent //구글로그인 페이지로 가는 인텐트 객체
         activityResultLauncher.launch(signInIntent)
@@ -82,9 +105,13 @@ class SignInActivity : AppCompatActivity() {
             .addOnCompleteListener(this,
                 OnCompleteListener<AuthResult?> { task ->
                     if (task.isSuccessful) {
-                        userPreference.userSignInCheck = true
+
+                        userPreference.userUid=task.result.user!!.uid
                         // 로그인 성공
-                        startActivity(Intent(this, MainActivity::class.java))
+
+                        loginViewModel.login( userPreference.userUid,task.result.user!!.email.toString(),task.result.user!!.displayName.toString())
+
+
 
                     } else {
 

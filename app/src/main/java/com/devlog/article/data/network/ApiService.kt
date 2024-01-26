@@ -12,16 +12,16 @@ import retrofit2.http.POST
 
 interface ApiService {
     //로그인
-    @POST("/user/auth")
-    fun postLogin(@Body loginEntity: LoginEntity):Response<LoginResponse>
+    @POST("user/auth")
+    suspend fun postLogin(@Body loginEntity: LoginEntity):Response<LoginResponse>
     //내 키워드 관심사 수정
-    @PATCH("/user/my/keywords")
+    @PATCH("user/my/keywords")
     fun pathMyKeywords(@Body keywords:Array<String>):Response<LoginResponse>
 
     //유저 정보 가져오기
-    @GET("/user/my")
+    @GET("user/my")
     fun getUserInfo():Response<UserInfoEntity>
 
-    @GET("/article")
+    @GET("article")
     fun getArticle():Response<ArticleResponse>
 }

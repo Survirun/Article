@@ -40,7 +40,7 @@ internal fun provideGsonConverterFactory(): GsonConverterFactory {
             .create()
     )
 }
-
+//로그인 할 때 만 사용
 internal fun LoginBuildOkHttpClient(): OkHttpClient {
     val interceptor= HttpLoggingInterceptor()
     if(BuildConfig.DEBUG){

@@ -1,11 +1,15 @@
 package com.devlog.article.data.repository
 
+import android.annotation.SuppressLint
 import com.devlog.article.data.entity.LoginEntity
+import com.devlog.article.data.network.ApiService
 import com.devlog.article.data.response.ArticleResponse
 import com.devlog.article.data.response.UserInfoEntity
+import kotlinx.coroutines.CoroutineDispatcher
 
 
 interface Repository {
+
     suspend fun postLogin(loginEntity: LoginEntity):Int
 
     suspend fun pathMyKeywords(keywords: Array<String>): Boolean

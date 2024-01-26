@@ -5,7 +5,7 @@ import android.content.Context
 import android.content.SharedPreferences
 
 
-class UserPreference(context: Context) {
+class UserPreference private constructor(context: Context) {
     companion object {
 
         // Instance 생성
