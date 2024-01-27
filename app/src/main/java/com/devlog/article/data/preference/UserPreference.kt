@@ -26,11 +26,20 @@ class UserPreference private constructor(context: Context) {
             userPreferenceEditor.putBoolean(PreferenceConstants.USER_SIGN_IN_CHECK, v)
             userPreferenceEditor.apply()
         }
+
+    var userKeywordCheck :Boolean
+        get() = userPreference.getBoolean(PreferenceConstants.USER_KEYWORD_CHECK, false)
+        set(v) {
+            userPreferenceEditor.putBoolean(PreferenceConstants.USER_KEYWORD_CHECK, v)
+            userPreferenceEditor.apply()
+        }
     var userUid:String
         get() = userPreference.getString(PreferenceConstants.USER_UID, "").toString()
         set(v) {
             userPreferenceEditor.putString(PreferenceConstants.USER_UID, v)
             userPreferenceEditor.apply()
         }
+
+
 
 }

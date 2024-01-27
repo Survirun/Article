@@ -20,3 +20,7 @@ var Gray50 = Color(0xFF989898)
 var Gray30 = Color(0xFF5D5D5D)
 var Gray20 = Color(0xFF3B3B3B)
 var Gray10 = Color(0xFF1D1D1D)
+
+
+var roundColorSelect= Color(0xFF18171D)
+var roundColor= Color(0xFFEEEEF0)

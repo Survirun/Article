@@ -10,16 +10,11 @@ import androidx.activity.result.contract.ActivityResultContracts
 import com.devlog.article.MainActivity
 import com.devlog.article.R
 import com.devlog.article.data.entity.LoginEntity
-import com.devlog.article.data.network.ApiService
-import com.devlog.article.data.network.LoginBuildOkHttpClient
-import com.devlog.article.data.network.buildOkHttpClient
-import com.devlog.article.data.network.provideGsonConverterFactory
-import com.devlog.article.data.network.provideProductRetrofit
 import com.devlog.article.databinding.ActivitySignInBinding
 import com.devlog.article.data.preference.UserPreference
 import com.devlog.article.data.repository.DefaultRepository
 import com.devlog.article.data.repository.Repository
-import com.google.android.gms.auth.api.identity.BeginSignInRequest
+import com.devlog.article.presentation.my_keywords_select.MyKeywordSelectActivity
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -80,7 +75,7 @@ class SignInActivity : AppCompatActivity() {
             Log.e("dfsafdsfa","adafd")
 
             userPreference.userSignInCheck = true
-            startActivity(Intent(this, MainActivity::class.java))
+            startActivity(Intent(this, MyKeywordSelectActivity::class.java))
         }
         loginViewModel.loginFailed ={
             Toast.makeText(this,"로그인 실패",Toast.LENGTH_SHORT).show()

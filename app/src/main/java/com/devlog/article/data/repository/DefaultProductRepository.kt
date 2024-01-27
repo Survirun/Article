@@ -6,6 +6,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
 import com.devlog.article.data.entity.LoginEntity
+import com.devlog.article.data.entity.MyKeyword
 import com.devlog.article.data.network.ApiService
 import com.devlog.article.data.preference.UserPreference
 import com.devlog.article.data.response.ArticleResponse
@@ -13,6 +14,7 @@ import com.devlog.article.data.response.UserInfoEntity
 
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
+import java.util.ArrayList
 
 class DefaultRepository private constructor(
     private val api: ApiService,
@@ -39,7 +41,7 @@ class DefaultRepository private constructor(
     }
 
     override suspend fun pathMyKeywords(keywords: Array<String>): Boolean = withContext(ioDispatcher){
-        val response=api.pathMyKeywords(keywords)
+        val response=api.pathMyKeywords(MyKeyword(keywords))
         return@withContext response.isSuccessful
     }
 

@@ -6,6 +6,7 @@ import com.devlog.article.data.network.ApiService
 import com.devlog.article.data.response.ArticleResponse
 import com.devlog.article.data.response.UserInfoEntity
 import kotlinx.coroutines.CoroutineDispatcher
+import java.util.ArrayList
 
 
 interface Repository {
