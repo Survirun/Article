@@ -40,7 +40,7 @@ class DefaultRepository private constructor(
         }
     }
 
-    override suspend fun pathMyKeywords(keywords: Array<String>): Boolean = withContext(ioDispatcher){
+    override suspend fun pathMyKeywords(keywords: Array<Int>): Boolean = withContext(ioDispatcher){
         val response=api.pathMyKeywords(MyKeyword(keywords))
         return@withContext response.isSuccessful
     }

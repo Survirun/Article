@@ -61,15 +61,15 @@ class MyKeywordSelectActivity : ComponentActivity() {
                 mutableStateOf(0)
             }
             keywordList = listOf(
-                KeywordSelectData("IT기기 💻", remember { mutableStateOf(false) }),
-                KeywordSelectData("IT 소식 📢", remember { mutableStateOf(false) }),
-                KeywordSelectData("Android 개발 📱", remember { mutableStateOf(false) }),
-                KeywordSelectData("iOS 개발 🍎", remember { mutableStateOf(false) }),
-                KeywordSelectData("Web 개발 🌐", remember { mutableStateOf(false) }),
-                KeywordSelectData("서버 개발 🎒", remember { mutableStateOf(false) }),
-                KeywordSelectData("AI 개발 🤖", remember { mutableStateOf(false) }),
-                KeywordSelectData("UIUX 디자인 🎨", remember { mutableStateOf(false) }),
-                KeywordSelectData("기획 📃", remember { mutableStateOf(false) }),
+                KeywordSelectData("IT기기 💻", remember { mutableStateOf(false) },ITEquipment),
+                KeywordSelectData("IT 소식 📢", remember { mutableStateOf(false) },10),
+                KeywordSelectData("Android 개발 📱", remember { mutableStateOf(false) },androidDevelopment),
+                KeywordSelectData("iOS 개발 🍎", remember { mutableStateOf(false) },10),
+                KeywordSelectData("Web 개발 🌐", remember { mutableStateOf(false) },WebDevelopment),
+                KeywordSelectData("서버 개발 🎒", remember { mutableStateOf(false) },serverDevelopment),
+                KeywordSelectData("AI 개발 🤖", remember { mutableStateOf(false) },AIDevelopment),
+                KeywordSelectData("UIUX 디자인 🎨", remember { mutableStateOf(false) },UIUXDesign),
+                KeywordSelectData("기획 📃", remember { mutableStateOf(false) },PM),
             )
 
             ArticleTheme {
@@ -93,10 +93,10 @@ class MyKeywordSelectActivity : ComponentActivity() {
 //                                    }
 //                                }.toString()
 //                            }
-                            var list = arrayListOf<String>()
+                            var list = arrayListOf<Int>()
                             keywordList.forEach {
                                 if (it.selectData.value){
-                                    list.add(it.name.substring(0, it.name.length - 2))
+                                    list.add(it.code)
                                 }
                             }
 
@@ -119,15 +119,15 @@ class MyKeywordSelectActivity : ComponentActivity() {
             mutableStateOf(0)
         }
         keywordList = listOf(
-            KeywordSelectData("IT기기 💻", remember { mutableStateOf(false) }),
-            KeywordSelectData("IT 소식 📢", remember { mutableStateOf(false) }),
-            KeywordSelectData("Android 개발 📱", remember { mutableStateOf(false) }),
-            KeywordSelectData("iOS 개발 🍎", remember { mutableStateOf(false) }),
-            KeywordSelectData("Web 개발 🌐", remember { mutableStateOf(false) }),
-            KeywordSelectData("서버 개발 🎒", remember { mutableStateOf(false) }),
-            KeywordSelectData("AI 개발 🤖", remember { mutableStateOf(false) }),
-            KeywordSelectData("UIUX 디자인 🎨", remember { mutableStateOf(false) }),
-            KeywordSelectData("기획 📃", remember { mutableStateOf(false) }),
+            KeywordSelectData("IT기기 💻", remember { mutableStateOf(false) },ITEquipment),
+            KeywordSelectData("IT 소식 📢", remember { mutableStateOf(false) },10),
+            KeywordSelectData("Android 개발 📱", remember { mutableStateOf(false) },androidDevelopment),
+            KeywordSelectData("iOS 개발 🍎", remember { mutableStateOf(false) },10),
+            KeywordSelectData("Web 개발 🌐", remember { mutableStateOf(false) },WebDevelopment),
+            KeywordSelectData("서버 개발 🎒", remember { mutableStateOf(false) },serverDevelopment),
+            KeywordSelectData("AI 개발 🤖", remember { mutableStateOf(false) },AIDevelopment),
+            KeywordSelectData("UIUX 디자인 🎨", remember { mutableStateOf(false) },UIUXDesign),
+            KeywordSelectData("기획 📃", remember { mutableStateOf(false) },PM),
         )
 
         ArticleTheme {

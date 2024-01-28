@@ -20,7 +20,7 @@ class MyKeywordSelectViewModel :ViewModel(){
     lateinit var succeed :()->Unit
     lateinit var failed :()->Unit
 
-    fun pathMyKeywords(keywords: Array<String>):Job =viewModelScope.launch{
+    fun pathMyKeywords(keywords: Array<Int>):Job =viewModelScope.launch{
         val api= ApiService(
             provideProductRetrofit(
                 buildOkHttpClient(),

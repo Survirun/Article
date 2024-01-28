@@ -13,7 +13,7 @@ interface Repository {
 
     suspend fun postLogin(loginEntity: LoginEntity):Int
 
-    suspend fun pathMyKeywords(keywords: Array<String>): Boolean
+    suspend fun pathMyKeywords(keywords: Array<Int>): Boolean
 
     suspend fun getUserInfo():UserInfoEntity?
 
