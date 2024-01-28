@@ -6,9 +6,9 @@ data class ArticleResponse(val status: Boolean, val data: List<Article>) {
 }
 
 data class Article(
-    val snippet: String?,
-    val data: String?,
-    val thumbnail: String?,
+    var snippet: String?,
+    var data: String?,
+    var thumbnail: String?,
     val keywords: ArrayList<String>,
     val displayLink: String,
     val sitename: String,

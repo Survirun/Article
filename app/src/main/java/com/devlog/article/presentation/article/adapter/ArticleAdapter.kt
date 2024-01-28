@@ -12,6 +12,7 @@ import androidx.cardview.widget.CardView
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.devlog.article.R
 import com.devlog.article.databinding.ViewholderArticleItemBinding
 import com.devlog.article.data.entity.ArticleEntity
@@ -32,7 +33,10 @@ class ArticleAdapter() : RecyclerView.Adapter<ArticleAdapter.ArticleViewHolder>(
 
                 title.text = data.title
                 text.text = data.text
-                image.setImageResource(data.image)
+                Glide.with(itemView)
+                    .load(data.image)
+                    .into(binding.image)
+
             }
             binding.card.setOnClickListener {
               //  articleItemClickListener(data)
