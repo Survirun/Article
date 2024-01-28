@@ -21,12 +21,14 @@ class ArticleListFragment : Fragment() {
     lateinit var binding :FragmentArticleBinding
     var articleAdapter =ArticleAdapter()
     val articles = ArrayList<ArticleEntity>()
+    lateinit var viewModel: ArticleListViewModel
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         binding=FragmentArticleBinding.inflate(layoutInflater)
-
+        viewModel=ArticleListViewModel()
+        viewModel.getArticle()
         val pageMargin = resources.getDimensionPixelOffset(R.dimen.pageMargin).toFloat()
         val pageOffset = resources.getDimensionPixelOffset(R.dimen.offset).toFloat()
         dataInit()

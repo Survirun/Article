@@ -1,6 +1,6 @@
 package com.devlog.article.data.response
 
-data class ArticleResponse(val status: Boolean, val data: ArrayList<Article>) {
+data class ArticleResponse(val status: Boolean, val data: List<Article>) {
     fun toEntity(): ArticleResponse = ArticleResponse(status = status, data = data)
 
 }

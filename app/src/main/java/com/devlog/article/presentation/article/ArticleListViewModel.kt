@@ -1,11 +1,9 @@
-package com.devlog.article.presentation.my_keywords_select
+package com.devlog.article.presentation.article
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.devlog.article.data.entity.LoginEntity
 import com.devlog.article.data.network.ApiService
-import com.devlog.article.data.network.LoginBuildOkHttpClient
 import com.devlog.article.data.network.buildOkHttpClient
 import com.devlog.article.data.network.provideGsonConverterFactory
 import com.devlog.article.data.network.provideProductRetrofit
@@ -14,27 +12,29 @@ import com.devlog.article.data.repository.Repository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-import java.util.ArrayList
 
-class MyKeywordSelectViewModel :ViewModel(){
-    lateinit var succeed :()->Unit
-    lateinit var failed :()->Unit
+class ArticleListViewModel : ViewModel() {
+    lateinit var succeed: () -> Unit
+    lateinit var failed: () -> Unit
 
-    fun pathMyKeywords(keywords: Array<String>):Job =viewModelScope.launch{
-        val api= ApiService(
+    fun getArticle(): Job = viewModelScope.launch {
+        val api = ApiService(
             provideProductRetrofit(
                 buildOkHttpClient(),
                 provideGsonConverterFactory()
             )
         )
 
-        val repository: Repository = DefaultRepository.getInstance(api, ioDispatcher = Dispatchers.IO)
-        val serverCode= repository.pathMyKeywords(keywords)
-        if (serverCode){
-            succeed()
-        }else{
-            failed()
-        }
+        val repository: Repository =
+            DefaultRepository.getInstance(api, ioDispatcher = Dispatchers.IO)
+        val serverCode = repository.getArticle()
+        Log.e("afdafsd",serverCode!!.data.toString())
+//        if (serverCode) {
+//            succeed()
+//        } else {
+//            failed()
+//        }
+
 
     }
 }

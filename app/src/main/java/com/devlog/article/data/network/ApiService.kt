@@ -26,8 +26,9 @@ interface ApiService {
 
     //유저 정보 가져오기
     @GET("user/my")
-    fun getUserInfo():Response<UserInfoEntity>
+    suspend fun getUserInfo():Response<UserInfoEntity>
 
+    //유저 기사 가져오기
     @GET("article")
-    fun getArticle():Response<ArticleResponse>
+    suspend fun getArticle():Response<ArticleResponse>
 }

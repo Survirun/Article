@@ -13,9 +13,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        //https://developer.android.com/develop/ui/views/launch/splash-screen?hl=ko
         supportFragmentManager.beginTransaction().add(R.id.containers, ArticleListFragment()).commit()
-
         binding.bottomNavigationview.setOnNavigationItemSelectedListener { item ->
             when(item.itemId) {
                 R.id.home -> {
