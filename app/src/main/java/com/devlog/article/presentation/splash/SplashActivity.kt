@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.devlog.article.MainActivity
 import com.devlog.article.data.preference.UserPreference
+import com.devlog.article.presentation.my_keywords_select.MyKeywordSelectActivity
 import com.devlog.article.presentation.my_keywords_select.MyKeywordSelectViewModel
 import com.devlog.article.presentation.sign_in.SignInActivity
 import com.devlog.article.presentation.ui.theme.ArticleTheme
@@ -28,9 +29,10 @@ class SplashActivity : ComponentActivity() {
             Handler(Looper.getMainLooper()).postDelayed({
                 if ( userPreference.userSignInCheck){
                     if (userPreference.userKeywordCheck){
-                        startActivity(Intent(this,MyKeywordSelectViewModel::class.java))
-                    }else{
                         startActivity(Intent(this,MainActivity::class.java))
+                    }else{
+                        startActivity(Intent(this,MyKeywordSelectActivity::class.java))
+
                     }
 
                 }else{

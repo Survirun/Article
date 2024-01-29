@@ -39,7 +39,7 @@ class ArticleListFragment : Fragment() {
                 if (it.snippet==null){
                     it.snippet=""
                 }
-                articles.add(ArticleEntity(title=it.title,text= it.snippet!!,image= it.thumbnail!!))
+                articles.add(ArticleEntity(title=it.title,text= it.snippet!!,image= it.thumbnail!! , url = it.link ))
 
             }
             Log.e("asdfaadfadfa",articles.size.toString())
