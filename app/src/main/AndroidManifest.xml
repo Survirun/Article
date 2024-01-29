@@ -14,6 +14,12 @@
         android:theme="@style/Theme.Article"
         tools:targetApi="31">
         <activity
+            android:name=".presentation.article_webview.ArticleWebViewActivity"
+            android:exported="false" />
+        <activity
+            android:name=".presentation.article_webview.MainActivity"
+            android:exported="false" />
+        <activity
             android:name=".presentation.my_keywords_select.MyKeywordSelectActivity"
             android:exported="true"
             android:label="@string/title_activity_my_keyword_select"
@@ -37,9 +43,7 @@
             android:exported="false" />
         <activity
             android:name=".MainActivity"
-            android:exported="true">
-
-        </activity>
+            android:exported="true" />
     </application>
 
 </manifest>
