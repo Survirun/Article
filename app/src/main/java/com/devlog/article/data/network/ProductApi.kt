@@ -1,6 +1,7 @@
 package com.devlog.article.data.network
 
 import android.app.Application
+import android.util.Log
 import com.devlog.article.data.preference.UserPreference
 import com.devlog.article.presentation.ArticleApplication
 import com.google.firebase.BuildConfig
@@ -63,10 +64,12 @@ internal fun buildOkHttpClient(): OkHttpClient {
     }else{
         interceptor.level= HttpLoggingInterceptor.Level.NONE
     }
-    return OkHttpClient.Builder()
-        .addInterceptor(HttpInterceptor())
-        .connectTimeout(5, TimeUnit.SECONDS)
-        .addInterceptor(interceptor)
-        .build()
+    return OkHttpClient.Builder().apply {
+        addInterceptor(HttpInterceptor())
+        connectTimeout(10, TimeUnit.SECONDS)
+        addInterceptor(interceptor)
+
+    }.build()
+
 }
 

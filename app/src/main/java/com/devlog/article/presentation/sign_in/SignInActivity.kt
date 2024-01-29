@@ -76,6 +76,7 @@ class SignInActivity : AppCompatActivity() {
 
             userPreference.userSignInCheck = true
             startActivity(Intent(this, MyKeywordSelectActivity::class.java))
+            finish()
         }
         loginViewModel.loginFailed ={
             Toast.makeText(this,"로그인 실패",Toast.LENGTH_SHORT).show()

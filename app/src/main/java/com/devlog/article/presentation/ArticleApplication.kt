@@ -2,6 +2,7 @@ package com.devlog.article.presentation
 
 import android.app.Application
 import android.content.Context
+import android.util.Log
 import com.devlog.article.data.preference.UserPreference
 
 class ArticleApplication : Application() {
@@ -12,15 +13,12 @@ class ArticleApplication : Application() {
         @Volatile
         lateinit var instance: ArticleApplication
 
-        private const val INMOBIACCOUNTID="6133b31b770a4992a0def8d4adef2742"
-        const val IRONSOURCE = "18d128705"
-        private const  val  LIFTOFFAPPID="6508e79860aebaee1ce35046"
-        private const val publisherId= "1100018571"
-
 
     }
     init {
         instance =this
+        Log.e("dfafs","safsfdsfsdfsd")
+
     }
 
 }

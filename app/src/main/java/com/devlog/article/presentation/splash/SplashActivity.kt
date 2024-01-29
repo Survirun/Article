@@ -30,8 +30,10 @@ class SplashActivity : ComponentActivity() {
                 if ( userPreference.userSignInCheck){
                     if (userPreference.userKeywordCheck){
                         startActivity(Intent(this,MainActivity::class.java))
+                        finish()
                     }else{
                         startActivity(Intent(this,MyKeywordSelectActivity::class.java))
+                        finish()
 
                     }
 
