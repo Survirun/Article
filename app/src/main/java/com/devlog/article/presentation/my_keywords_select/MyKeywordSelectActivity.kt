@@ -62,7 +62,7 @@ class MyKeywordSelectActivity : ComponentActivity() {
             }
             keywordList = listOf(
                 KeywordSelectData("IT기기 💻", remember { mutableStateOf(false) },ITEquipment),
-                KeywordSelectData("IT 소식 📢", remember { mutableStateOf(false) },8),
+                KeywordSelectData("IT 소식 📢", remember { mutableStateOf(false) },10),
                 KeywordSelectData("Android 개발 📱", remember { mutableStateOf(false) },androidDevelopment),
                 KeywordSelectData("iOS 개발 🍎", remember { mutableStateOf(false) },9),
                 KeywordSelectData("Web 개발 🌐", remember { mutableStateOf(false) },WebDevelopment),
@@ -122,7 +122,7 @@ class MyKeywordSelectActivity : ComponentActivity() {
             KeywordSelectData("IT기기 💻", remember { mutableStateOf(false) },ITEquipment),
             KeywordSelectData("IT 소식 📢", remember { mutableStateOf(false) },10),
             KeywordSelectData("Android 개발 📱", remember { mutableStateOf(false) },androidDevelopment),
-            KeywordSelectData("iOS 개발 🍎", remember { mutableStateOf(false) },10),
+            KeywordSelectData("iOS 개발 🍎", remember { mutableStateOf(false) },9),
             KeywordSelectData("Web 개발 🌐", remember { mutableStateOf(false) },WebDevelopment),
             KeywordSelectData("서버 개발 🎒", remember { mutableStateOf(false) },serverDevelopment),
             KeywordSelectData("AI 개발 🤖", remember { mutableStateOf(false) },AIDevelopment),
