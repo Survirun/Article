@@ -24,10 +24,10 @@ class ArticleGetbody(var webView: WebView) {
                 webView.loadUrl("javascript:window.Android.getHtml(document.getElementsByClassName(\"sc-brSvTw hRJeFN\")[0].innerText)")
 
             }
-            url.contains(" mk.co.kr")->{
-                webView.loadUrl("javascript:window.Android.getHtml(document.getElementsByClassName(\"sc-brSvTw hRJeFN\")[0].innerText)")
-
-            }
+//            url.contains(" mk.co.kr")->{
+//                webView.loadUrl("javascript:window.Android.getHtml(document.getElementsByClassName(\"sc-brSvTw hRJeFN\")[0].innerText)")
+//
+//            }
             url.contains(" mk.co.kr")->{
                 webView.loadUrl("javascript:window.Android.getHtml(document.getElementsByClassName(\"news_cnt_detail_wrap\")[0].innerText)")
 
