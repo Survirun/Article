@@ -25,8 +25,7 @@ class NaverRepository private constructor(
 
     suspend fun postAiSummary(apiData: ApiData): String = withContext(ioDispatcher) {
         var response = api.postTextSummary(apiData)
-        Log.e("fasddfs",response.code().toString())
-        Log.e("fasddfs",response.body()!!.summary)
+
         if (response.isSuccessful) {
             return@withContext response.body()!!.summary
         } else {

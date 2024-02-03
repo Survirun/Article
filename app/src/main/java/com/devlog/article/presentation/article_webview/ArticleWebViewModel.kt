@@ -17,7 +17,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 class ArticleWebViewModel:ViewModel() {
-    lateinit var succeed: () -> Unit
+    lateinit var succeed: (text:String) -> Unit
     lateinit var failed: () -> Unit
 
     fun textSummary(apiData: ApiData):Job=viewModelScope.launch{
@@ -27,7 +27,10 @@ class ArticleWebViewModel:ViewModel() {
                 provideGsonConverterFactory()
             )
         )
-        NaverRepository.getInstance(api, ioDispatcher = Dispatchers.IO).postAiSummary(apiData)
+        succeed(NaverRepository.getInstance(api, ioDispatcher = Dispatchers.IO).postAiSummary(apiData))
+
 
     }
+
+
 }
