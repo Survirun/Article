@@ -68,5 +68,12 @@ class DefaultRepository private constructor(
         return@withContext response.isSuccessful
     }
 
+    override suspend fun getBookMaker(): ArticleResponse? = withContext(ioDispatcher){
+        val response=api.getBookMaker()
+        Log.e("test",response.code().toString())
+        Log.e("test",response.body()!!.data.toString())
+        return@withContext  response.body()
+    }
+
 
 }

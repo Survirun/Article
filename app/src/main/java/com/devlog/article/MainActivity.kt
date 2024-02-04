@@ -2,10 +2,10 @@ package com.devlog.article
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.MenuItem
 import androidx.fragment.app.Fragment
 import com.devlog.article.databinding.ActivityMainBinding
 import com.devlog.article.presentation.article.ArticleListFragment
+import com.devlog.article.presentation.bookmark.BookmarkFragment
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding :ActivityMainBinding

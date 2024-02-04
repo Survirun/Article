@@ -34,4 +34,7 @@ interface ApiService {
 
     @POST("bookmark/{articleId}")
     suspend fun postBookmark(@Path("articleId")articleId:String):Response<LoginResponse>
+
+    @GET("bookmark")
+    suspend fun getBookMaker():Response<ArticleResponse>
 }

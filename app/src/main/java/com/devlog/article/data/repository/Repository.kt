@@ -20,6 +20,8 @@ interface Repository {
     suspend fun getArticle():ArticleResponse?
 
     suspend fun postBookmark(articleId:String):Boolean
+
+    suspend fun getBookMaker():ArticleResponse?
 //
 //    suspend fun getLocalProductList():List<ProductEntity>
 //
