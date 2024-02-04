@@ -33,7 +33,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.devlog.article.MainActivity
+import com.devlog.article.presentation.main.MainActivity
 import com.devlog.article.data.preference.UserPreference
 import com.devlog.article.presentation.ui.theme.ArticleTheme
 import com.devlog.article.presentation.ui.theme.BaseColumn
@@ -50,7 +50,10 @@ class MyKeywordSelectActivity : ComponentActivity() {
         userPreference=UserPreference.getInstance(this)
         viewModel.succeed={
             userPreference.userKeywordCheck=true
-            startActivity(Intent(this,MainActivity::class.java))
+            val intent =Intent(this, MainActivity::class.java)
+            intent.putExtra("article",viewModel.article)
+            startActivity(intent)
+            finish()
         }
         viewModel.failed ={
             Toast.makeText(this,"잠시후 다시 시도해주세요",Toast.LENGTH_SHORT).show()

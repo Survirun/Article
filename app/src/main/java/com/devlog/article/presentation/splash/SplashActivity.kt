@@ -1,5 +1,6 @@
 package com.devlog.article.presentation.splash
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
@@ -13,35 +14,54 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.devlog.article.MainActivity
+import com.devlog.article.presentation.main.MainActivity
 import com.devlog.article.data.preference.UserPreference
 import com.devlog.article.presentation.my_keywords_select.MyKeywordSelectActivity
-import com.devlog.article.presentation.my_keywords_select.MyKeywordSelectViewModel
 import com.devlog.article.presentation.sign_in.SignInActivity
 import com.devlog.article.presentation.ui.theme.ArticleTheme
 
-class SplashActivity : ComponentActivity() {
+@SuppressLint("CustomSplashScreen")
+class SplashActivity : ComponentActivity()  {
     lateinit var userPreference : UserPreference
+    lateinit var viewModel:SplashViewMode
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
+            viewModel= SplashViewMode()
+            viewModel.succeed={
+
+                val intent =Intent(this, MainActivity::class.java)
+                intent.putExtra("article",viewModel.article)
+                startActivity(intent)
+                finish()
+
+            }
+            viewModel.failed={
+
+            }
             userPreference= UserPreference.getInstance(this)
-            Handler(Looper.getMainLooper()).postDelayed({
-                if ( userPreference.userSignInCheck){
-                    if (userPreference.userKeywordCheck){
-                        startActivity(Intent(this,MainActivity::class.java))
-                        finish()
-                    }else{
+            if ( userPreference.userSignInCheck){
+                if (userPreference.userKeywordCheck){
+
+                   viewModel.getArticle()
+                }else{
+                    Handler(Looper.getMainLooper()).postDelayed({
                         startActivity(Intent(this,MyKeywordSelectActivity::class.java))
                         finish()
 
-                    }
 
-                }else{
-                    startActivity(Intent(this,SignInActivity::class.java))
+                    }, 1500)
+
                 }
 
-            }, 1500)
+            }else{
+                Handler(Looper.getMainLooper()).postDelayed({
+                    startActivity(Intent(this,SignInActivity::class.java))
+
+                }, 1500)
+
+            }
+
             ArticleTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(

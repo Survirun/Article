@@ -1,23 +1,36 @@
-package com.devlog.article
+package com.devlog.article.presentation.main
 
-import androidx.appcompat.app.AppCompatActivity
+import android.app.Person
 import android.os.Bundle
+import android.util.Log
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import com.devlog.article.ProfileFragment
+import com.devlog.article.R
+import com.devlog.article.data.response.ArticleResponse
 import com.devlog.article.databinding.ActivityMainBinding
 import com.devlog.article.presentation.article.ArticleListFragment
 import com.devlog.article.presentation.bookmark.BookmarkFragment
+import com.devlog.article.presentation.splash.SplashViewMode
 
-class MainActivity : AppCompatActivity() {
+
+
+class MainActivity() : AppCompatActivity() {
     private lateinit var binding :ActivityMainBinding
+    var articleListFragment=ArticleListFragment()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        supportFragmentManager.beginTransaction().add(R.id.containers, ArticleListFragment()).commit()
+
+        articleListFragment.articleResponse = intent.getSerializableExtra("article") as ArticleResponse
+
+        supportFragmentManager.beginTransaction().add(R.id.containers, articleListFragment).commit()
         binding.bottomNavigationview.setOnItemSelectedListener { item ->
             when(item.itemId) {
                 R.id.home -> {
-                    replaceFragment(ArticleListFragment())
+                    replaceFragment(articleListFragment)
                     true
                 }
                 R.id.bookmark -> {

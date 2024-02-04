@@ -7,13 +7,9 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
-import com.devlog.article.MainActivity
 import com.devlog.article.R
-import com.devlog.article.data.entity.LoginEntity
 import com.devlog.article.databinding.ActivitySignInBinding
 import com.devlog.article.data.preference.UserPreference
-import com.devlog.article.data.repository.DefaultRepository
-import com.devlog.article.data.repository.Repository
 import com.devlog.article.presentation.my_keywords_select.MyKeywordSelectActivity
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
@@ -26,8 +22,6 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 
 class SignInActivity : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth

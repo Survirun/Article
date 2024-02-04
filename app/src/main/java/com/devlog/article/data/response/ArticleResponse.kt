@@ -1,6 +1,8 @@
 package com.devlog.article.data.response
 
-data class ArticleResponse(val status: Boolean, val data: List<Article>) {
+import java.io.Serializable
+
+data class ArticleResponse(val status: Boolean, val data: List<Article>): Serializable {
     fun toEntity(): ArticleResponse = ArticleResponse(status = status, data = data)
 
 }
@@ -15,6 +17,6 @@ data class Article(
     val link: String,
     val title: String,
     val cx: Int
-) {
+): Serializable  {
 
 }

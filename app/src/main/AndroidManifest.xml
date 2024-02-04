@@ -16,9 +16,7 @@
         <activity
             android:name=".presentation.article_webview.ArticleWebViewActivity"
             android:exported="false" />
-        <activity
-            android:name=".presentation.article_webview.MainActivity"
-            android:exported="false" />
+
         <activity
             android:name=".presentation.my_keywords_select.MyKeywordSelectActivity"
             android:exported="true"
@@ -42,7 +40,7 @@
             android:name=".presentation.article.deetail.DetailActivity"
             android:exported="false" />
         <activity
-            android:name=".MainActivity"
+            android:name=".presentation.main.MainActivity"
             android:exported="true" />
     </application>
 

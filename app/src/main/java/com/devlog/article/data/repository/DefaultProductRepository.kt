@@ -56,7 +56,7 @@ class DefaultRepository private constructor(
     override suspend fun getArticle(): ArticleResponse? = withContext(ioDispatcher) {
         val response=api.getArticle()
         return@withContext if (response.isSuccessful){
-            response.body()?.toEntity()
+            response.body()
         }else{
             null
         }

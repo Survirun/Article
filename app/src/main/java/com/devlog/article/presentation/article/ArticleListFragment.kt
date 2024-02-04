@@ -13,6 +13,8 @@ import androidx.viewpager2.widget.ViewPager2
 import com.devlog.article.R
 import com.devlog.article.databinding.FragmentArticleBinding
 import com.devlog.article.data.entity.ArticleEntity
+import com.devlog.article.data.response.Article
+import com.devlog.article.data.response.ArticleResponse
 import com.devlog.article.presentation.article.adapter.ArticleAdapter
 import com.devlog.article.presentation.article.deetail.DetailActivity
 import com.devlog.article.presentation.article_webview.ArticleWebViewActivity
@@ -21,7 +23,9 @@ import kotlin.math.abs
 
 class ArticleListFragment : Fragment() {
     lateinit var binding :FragmentArticleBinding
+    lateinit var articleResponse: ArticleResponse
     var articleAdapter =ArticleAdapter()
+    var article= listOf<Article>()
     val articles = ArrayList<ArticleEntity>()
     lateinit var viewModel: ArticleListViewModel
     override fun onCreateView(
@@ -30,22 +34,22 @@ class ArticleListFragment : Fragment() {
     ): View {
         binding=FragmentArticleBinding.inflate(layoutInflater)
         viewModel=ArticleListViewModel()
-        viewModel.getArticle()
-        viewModel.succeed={
-            viewModel.article.forEach{
-                if (it.data==null){
-                    it.data=""
 
-                }
-                if (it.snippet==null){
-                    it.snippet=""
-                }
-                articles.add(ArticleEntity(title=it.title,text= it.snippet!!,image= it.thumbnail!!, url = it.link))
+        article=articleResponse.data
+        article.forEach{
+            if (it.data==null){
+                it.data=""
 
             }
-            Log.e("asdfaadfadfa",articles.size.toString())
-            adapterInit()
+            if (it.snippet==null){
+                it.snippet=""
+            }
+            articles.add(ArticleEntity(title=it.title,text= it.snippet!!,image= it.thumbnail!!, url = it.link))
+
         }
+        adapterInit()
+
+
         val pageMargin = resources.getDimensionPixelOffset(R.dimen.pageMargin).toFloat()
         val pageOffset = resources.getDimensionPixelOffset(R.dimen.offset).toFloat()
 
