@@ -14,7 +14,7 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         supportFragmentManager.beginTransaction().add(R.id.containers, ArticleListFragment()).commit()
-        binding.bottomNavigationview.setOnNavigationItemSelectedListener { item ->
+        binding.bottomNavigationview.setOnItemSelectedListener { item ->
             when(item.itemId) {
                 R.id.home -> {
                     replaceFragment(ArticleListFragment())
