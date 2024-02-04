@@ -14,8 +14,14 @@ class BookmarkFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
 
-        viewModel=BookmarkViewModel()
+        viewModel= BookmarkViewModel()
         viewModel.getBookMaker()
+        viewModel.succeed={
+
+        }
+        viewModel.failed={
+
+        }
         return inflater.inflate(R.layout.fragment_bookmark, container, false)
     }
 }
