@@ -84,7 +84,7 @@ class ArticleListFragment : Fragment() {
 
     }
     fun adapterInit(){
-        articleAdapter.context=requireActivity()
+
         articleAdapter.setProductList(articles){
 //            val activityOptions = ActivityOptionsCompat.makeSceneTransitionAnimation(
 //                requireActivity(),
