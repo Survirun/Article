@@ -10,3 +10,5 @@ var WebDevelopment =5
 var AIDevelopment =6
 var UIUXDesign =7
 var PM = 8
+var iOSDevelopment=9
+var ITNews=10
