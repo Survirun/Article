@@ -10,6 +10,7 @@ import com.devlog.article.data.network.provideProductRetrofit
 import com.devlog.article.data.repository.DefaultRepository
 import com.devlog.article.data.repository.Repository
 import com.devlog.article.data.response.Article
+import com.devlog.article.extensions.toMD5
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -29,14 +30,28 @@ class ArticleListViewModel : ViewModel() {
         val repository: Repository =
             DefaultRepository.getInstance(api, ioDispatcher = Dispatchers.IO)
         val serverCode = repository.getArticle()
-        Log.e("asdfaadfadfa",serverCode!!.data[0].toString())
-        article=serverCode.data
         if (serverCode!=null) {
+            article=serverCode.data
             succeed()
+
         } else {
             failed()
         }
 
 
     }
+
+//    fun postBookMaker():Job =viewModelScope.launch{
+//
+//        val api = ApiService(
+//            provideProductRetrofit(
+//                buildOkHttpClient(),
+//                provideGsonConverterFactory()
+//            )
+//        )
+//
+//        val repository: Repository = DefaultRepository.getInstance(api, ioDispatcher = Dispatchers.IO)
+//         repository.postBookmark(article[0].link.toMD5())
+//
+//    }
 }

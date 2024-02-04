@@ -32,7 +32,6 @@ class DefaultRepository private constructor(
     }
     override suspend fun postLogin(loginEntity: LoginEntity):Int = withContext(ioDispatcher) {
         val response=api.postLogin(loginEntity)
-        Log.e("dfsafdsfa",response.code().toString())
         return@withContext if (response.isSuccessful){
             response.code()
         }else{
@@ -42,7 +41,6 @@ class DefaultRepository private constructor(
 
     override suspend fun pathMyKeywords(keywords: Array<Int>): Boolean = withContext(ioDispatcher){
         val response=api.pathMyKeywords(MyKeyword(keywords))
-        Log.e("fdsfasf",response.code().toString())
         return@withContext response.isSuccessful
     }
 
@@ -57,12 +55,18 @@ class DefaultRepository private constructor(
 
     override suspend fun getArticle(): ArticleResponse? = withContext(ioDispatcher) {
         val response=api.getArticle()
-        Log.e("adfasf",response.code().toString())
         return@withContext if (response.isSuccessful){
             response.body()?.toEntity()
         }else{
             null
         }
     }
+
+    override suspend fun postBookmark(articleId:String): Boolean = withContext(ioDispatcher) {
+        val response=api.postBookmark(articleId)
+        Log.e("test",response.code().toString())
+        return@withContext response.isSuccessful
+    }
+
 
 }

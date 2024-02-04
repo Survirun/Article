@@ -31,4 +31,7 @@ interface ApiService {
     //유저 기사 가져오기
     @GET("article")
     suspend fun getArticle():Response<ArticleResponse>
+
+    @POST("bookmark/{articleId}")
+    suspend fun postBookmark(@Path("articleId")articleId:String):Response<LoginResponse>
 }

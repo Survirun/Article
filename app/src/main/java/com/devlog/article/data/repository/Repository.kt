@@ -18,6 +18,8 @@ interface Repository {
     suspend fun getUserInfo():UserInfoEntity?
 
     suspend fun getArticle():ArticleResponse?
+
+    suspend fun postBookmark(articleId:String):Boolean
 //
 //    suspend fun getLocalProductList():List<ProductEntity>
 //

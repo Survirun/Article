@@ -22,7 +22,7 @@ class ArticleAdapter() : RecyclerView.Adapter<ArticleAdapter.ArticleViewHolder>(
     private var articleList:List<ArticleEntity> = listOf()
     private lateinit var articleItemClickListener: (ArticleEntity) -> Unit
     lateinit var articleViewHolder:ArticleViewHolder
-    lateinit var context:Activity
+
     inner class ArticleViewHolder(
          var  binding: ViewholderArticleItemBinding,
         val articleItemClickListener: (ArticleEntity) -> Unit
