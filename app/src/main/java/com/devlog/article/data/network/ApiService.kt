@@ -28,9 +28,10 @@ interface ApiService {
     @GET("article")
     suspend fun getArticle():Response<ArticleResponse>
 
+    //북마크 삭제 또는 추가 서버에서 판단함
     @POST("bookmark/{articleId}")
     suspend fun postBookmark(@Path("articleId")articleId:String):Response<DefaultResponse>
-
+    //북마크 가져오기
     @GET("bookmark")
     suspend fun getBookMaker():Response<ArticleResponse>
 }
