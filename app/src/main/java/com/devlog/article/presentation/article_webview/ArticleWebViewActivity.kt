@@ -26,7 +26,10 @@ class ArticleWebViewActivity : AppCompatActivity() {
         setContentView(binding.root)
         url=intent.getStringExtra("url")!!
         binding.webView.settings.run {
-            javaScriptEnabled = true;
+            if (!url.contains("medium.com")){
+                javaScriptEnabled = true;
+            }
+
             if (url.contains("yozm.wishket")){
                 javaScriptEnabled = false;
             }
@@ -35,7 +38,7 @@ class ArticleWebViewActivity : AppCompatActivity() {
             databaseEnabled = true; // 데이터베이스 접근 허용 여부
         }
         binding.webView.addJavascriptInterface(MyJavascriptInterface(this), "Android")
-        binding.webView.loadUrl(intent.getStringExtra("url")!!)
+        binding.webView.loadUrl(url)
         articleWebViewModel = ArticleWebViewModel()
 
         var articleGetbody = ArticleGetbody(binding.webView)
