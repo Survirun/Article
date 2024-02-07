@@ -32,6 +32,7 @@
         android:textColor="@color/black"
         style="@style/Widget.Material3.Button.OutlinedButton.Icon"
         app:icon="@drawable/google_logo"
+        app:iconTint="@null"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"/>
