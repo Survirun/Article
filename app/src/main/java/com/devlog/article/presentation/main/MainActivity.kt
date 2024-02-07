@@ -4,6 +4,8 @@ import android.app.Person
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.TooltipCompat
+import androidx.core.view.forEach
 import androidx.fragment.app.Fragment
 import com.devlog.article.ProfileFragment
 import com.devlog.article.R
@@ -45,6 +47,8 @@ class MainActivity() : AppCompatActivity() {
             }
 
         }
+
+        binding.bottomNavigationview.menu.forEach { TooltipCompat.setTooltipText(findViewById(it.itemId), null) }
     }
 
     // 화면 전환 구현 메소드
