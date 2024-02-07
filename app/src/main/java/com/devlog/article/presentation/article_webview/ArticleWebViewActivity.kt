@@ -1,6 +1,7 @@
 package com.devlog.article.presentation.article_webview
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -39,6 +40,7 @@ class ArticleWebViewActivity : AppCompatActivity() {
         articleWebViewModel.succeed ={
             binding.textView.text = it
         }
+        //shareLink()
 
 
 
@@ -51,6 +53,17 @@ class ArticleWebViewActivity : AppCompatActivity() {
         } else {
             body
         }
+    }
+
+    private fun shareLink(){
+        val sendIntent: Intent = Intent().apply {
+            action = Intent.ACTION_SEND
+            putExtra(Intent.EXTRA_TEXT, url)
+            type = "text/plain"
+        }
+
+        val shareIntent = Intent.createChooser(sendIntent, null)
+        startActivity(shareIntent)
     }
     private fun initWebView(){
         binding.webView.settings.run {
