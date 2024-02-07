@@ -53,20 +53,20 @@ class ArticleListFragment : Fragment() {
 
         binding.viewPager.run {
             adapter = articleAdapter
-            orientation = ViewPager2.ORIENTATION_HORIZONTAL
+            orientation = ViewPager2.ORIENTATION_VERTICAL
             offscreenPageLimit = 3
 
             setPageTransformer { page, position ->
                 val myOffset = position * -(2 * pageOffset + pageMargin)
                 if (position < -1) {
-                    page.translationX = -myOffset
+                    page.translationY = -myOffset
                 } else if (position <= 1) {
                     val scaleFactor = 0.7f.coerceAtLeast(1 - abs(position - 0.14285715f))
-                    page.translationX = myOffset
-                    page.alpha = scaleFactor
+                    page.translationY = myOffset
+//                    page.alpha = scaleFactor
                 } else {
-                    page.alpha = 0f
-                    page.translationX = myOffset
+//                    page.alpha = 0f
+                    page.translationY = myOffset
                 }
             }
         }
