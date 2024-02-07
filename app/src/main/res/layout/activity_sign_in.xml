@@ -4,11 +4,35 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     tools:context=".presentation.sign_in.SignInActivity">
 
-    <com.google.android.gms.common.SignInButton
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/article_logo"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <Button
         android:id="@+id/googleSignInButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_margin="24dp"
+        android:backgroundTint="@color/white"
+        android:text="구글 계정으로 로그인"
+        android:textSize="16sp"
+        android:fontFamily="@font/font"
+        android:textStyle="bold"
+        app:iconGravity ="textStart"
+        app:strokeColor="#DCDCEA"
+        android:paddingVertical="16dp"
+        android:textColor="@color/black"
+        style="@style/Widget.Material3.Button.OutlinedButton.Icon"
+        app:icon="@drawable/google_logo"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"/>
 </androidx.constraintlayout.widget.ConstraintLayout>
