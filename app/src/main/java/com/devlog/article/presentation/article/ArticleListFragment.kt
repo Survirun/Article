@@ -2,6 +2,7 @@ package com.devlog.article.presentation.article
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -62,7 +63,6 @@ class ArticleListFragment : Fragment() {
                 } else if (position <= 1) {
                     val scaleFactor = 0.7f.coerceAtLeast(1 - abs(position - 0.14285715f))
                     page.translationX = myOffset
-                    page.scaleY = scaleFactor
                     page.alpha = scaleFactor
                 } else {
                     page.alpha = 0f
