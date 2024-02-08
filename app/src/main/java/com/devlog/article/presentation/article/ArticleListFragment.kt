@@ -9,9 +9,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.compose.ui.graphics.BlurEffect
 import androidx.fragment.app.Fragment
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.viewpager2.widget.ViewPager2
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions.bitmapTransform
 import com.devlog.article.R
 import com.devlog.article.data.entity.ArticleEntity
 import com.devlog.article.data.response.Article
@@ -41,7 +44,6 @@ class ArticleListFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
         val pageMargin = resources.getDimensionPixelOffset(R.dimen.pageMargin).toFloat()
         val pageOffset = resources.getDimensionPixelOffset(R.dimen.offset).toFloat()
-
 
         binding.viewPager.run {
             adapter = articleAdapter
