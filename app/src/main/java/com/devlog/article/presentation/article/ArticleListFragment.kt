@@ -37,21 +37,7 @@ class ArticleListFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         binding=FragmentArticleBinding.inflate(layoutInflater)
         viewModel=ArticleListViewModel()
 
-        article=articleResponse.data
-        Log.e("test", article.toString())
-        article.forEach{
-            if (it.data==null){
-                it.data=""
-
-            }
-            if (it.snippet==null){
-                it.snippet=""
-            }
-            articles.add(ArticleEntity(title=it.title,text= it.snippet!!,image= it.thumbnail!!, url = it.link))
-
-        }
-        adapterInit()
-
+        processArticleResponse()
 
         val pageMargin = resources.getDimensionPixelOffset(R.dimen.pageMargin).toFloat()
         val pageOffset = resources.getDimensionPixelOffset(R.dimen.offset).toFloat()
@@ -84,46 +70,31 @@ class ArticleListFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     }
 
     override fun onRefresh() {
-
-        //새로 고침 코드
         updateLayoutView()
-
-        //새로 고침 완
-        binding.swipeLayout.isRefreshing = false
     }
 
     fun updateLayoutView() {
+        articles.clear()
         viewModel.getArticle()
-
         viewModel.succeed ={
             articleResponse = viewModel.article
-            article=articleResponse.data
-            Log.e("test", article.toString())
-            articles.clear()
-            article.forEach{
-                if (it.data==null){
-                    it.data=""
-
-                }
-                if (it.snippet==null){
-                    it.snippet=""
-                }
-                articles.add(ArticleEntity(title=it.title,text= it.snippet!!,image= it.thumbnail!!, url = it.link))
-            }
-            adapterInit()
+            processArticleResponse()
+            binding.swipeLayout.isRefreshing = false
         }
-//        article.forEach{
-//            if (it.data==null){
-//                it.data=""
-//
-//            }
-//            if (it.snippet==null){
-//                it.snippet=""
-//            }
-//            articles.add(ArticleEntity(title=it.title,text= it.snippet!!,image= it.thumbnail!!, url = it.link))
-//
-//        }
-//        adapterInit()
+    }
+
+    private fun processArticleResponse(){
+        article=articleResponse.data
+        article.forEach{
+            if (it.data==null){
+                it.data=""
+            }
+            if (it.snippet==null){
+                it.snippet=""
+            }
+            articles.add(ArticleEntity(title=it.title,text= it.snippet!!,image= it.thumbnail!!, url = it.link))
+        }
+        adapterInit()
     }
     fun adapterInit(){
 
