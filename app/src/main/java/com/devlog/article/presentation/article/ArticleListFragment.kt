@@ -2,23 +2,28 @@ package com.devlog.article.presentation.article
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.fragment.app.Fragment
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.viewpager2.widget.ViewPager2
 import com.devlog.article.R
-import com.devlog.article.databinding.FragmentArticleBinding
 import com.devlog.article.data.entity.ArticleEntity
 import com.devlog.article.data.response.Article
 import com.devlog.article.data.response.ArticleResponse
+import com.devlog.article.databinding.FragmentArticleBinding
 import com.devlog.article.presentation.article.adapter.ArticleAdapter
 import com.devlog.article.presentation.article_webview.ArticleWebViewActivity
+import com.devlog.article.presentation.my_keywords_select.MyKeywordSelectActivity
 import kotlin.math.abs
 
 
-class ArticleListFragment : Fragment() {
+class ArticleListFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     lateinit var binding :FragmentArticleBinding
     lateinit var articleResponse: ArticleResponse
     var articleAdapter =ArticleAdapter()
@@ -33,6 +38,7 @@ class ArticleListFragment : Fragment() {
         viewModel=ArticleListViewModel()
 
         article=articleResponse.data
+        Log.e("test", article.toString())
         article.forEach{
             if (it.data==null){
                 it.data=""
@@ -72,11 +78,53 @@ class ArticleListFragment : Fragment() {
         }
 
 
-
+        binding.swipeLayout.setOnRefreshListener(this)
 
         return binding.root
     }
 
+    override fun onRefresh() {
+
+        //새로 고침 코드
+        updateLayoutView()
+
+        //새로 고침 완
+        binding.swipeLayout.isRefreshing = false
+    }
+
+    fun updateLayoutView() {
+        viewModel.getArticle()
+
+        viewModel.succeed ={
+            articleResponse = viewModel.article
+            article=articleResponse.data
+            Log.e("test", article.toString())
+            articles.clear()
+            article.forEach{
+                if (it.data==null){
+                    it.data=""
+
+                }
+                if (it.snippet==null){
+                    it.snippet=""
+                }
+                articles.add(ArticleEntity(title=it.title,text= it.snippet!!,image= it.thumbnail!!, url = it.link))
+            }
+            adapterInit()
+        }
+//        article.forEach{
+//            if (it.data==null){
+//                it.data=""
+//
+//            }
+//            if (it.snippet==null){
+//                it.snippet=""
+//            }
+//            articles.add(ArticleEntity(title=it.title,text= it.snippet!!,image= it.thumbnail!!, url = it.link))
+//
+//        }
+//        adapterInit()
+    }
     fun adapterInit(){
 
         articleAdapter.setProductList(articles){
