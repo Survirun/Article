@@ -72,16 +72,18 @@ class ArticleListFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     }
 
     override fun onRefresh() {
+        binding.viewPager.isUserInputEnabled = false
         updateLayoutView()
     }
 
     fun updateLayoutView() {
-        articles.clear()
         viewModel.getArticle()
         viewModel.succeed ={
+            articles.clear()
             articleResponse = viewModel.article
             processArticleResponse()
             binding.swipeLayout.isRefreshing = false
+            binding.viewPager.isUserInputEnabled = true
         }
     }
 
