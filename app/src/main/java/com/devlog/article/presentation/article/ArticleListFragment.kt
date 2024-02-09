@@ -14,6 +14,8 @@ import androidx.fragment.app.Fragment
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.viewpager2.widget.ViewPager2
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade
 import com.bumptech.glide.request.RequestOptions.bitmapTransform
 import com.devlog.article.R
 import com.devlog.article.data.entity.ArticleEntity
@@ -50,16 +52,28 @@ class ArticleListFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
             orientation = ViewPager2.ORIENTATION_HORIZONTAL
             offscreenPageLimit = 3
 
+            registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+                override fun onPageSelected(position: Int) {
+                    super.onPageSelected(position)
+                    val image = articleAdapter.getImage(position)
+                    Glide.with(this@ArticleListFragment)
+                        .load(image)
+//                        .transition(withCrossFade())
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .into(binding.backgroundImage)
+                }
+            })
+
             setPageTransformer { page, position ->
                 val myOffset = position * -(2 * pageOffset + pageMargin)
                 if (position < -1) {
                     page.translationX = -myOffset
                 } else if (position <= 1) {
-                    val scaleFactor = 0.7f.coerceAtLeast(1 - abs(position - 0.14285715f))
+//                    val scaleFactor = 0.7f.coerceAtLeast(1 - abs(position - 0.14285715f))
                     page.translationX = myOffset
-                    page.alpha = scaleFactor
+//                    page.alpha = scaleFactor
                 } else {
-                    page.alpha = 0f
+//                    page.alpha = 0f
                     page.translationX = myOffset
                 }
             }

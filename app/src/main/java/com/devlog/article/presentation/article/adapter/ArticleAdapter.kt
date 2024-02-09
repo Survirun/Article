@@ -88,6 +88,9 @@ class ArticleAdapter() : RecyclerView.Adapter<ArticleAdapter.ArticleViewHolder>(
 
     }
 
+    fun getImage(position: Int) : String{
+        return articleList[position].image
+    }
     override fun getItemCount(): Int = articleList.size
 
     fun setProductList(productList: List<ArticleEntity>, productItemClickListener: (ArticleEntity) -> Unit={ }){
