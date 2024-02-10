@@ -14,9 +14,11 @@
         android:theme="@style/Theme.Article"
         tools:targetApi="31">
         <activity
+            android:name=".presentation.gacha.GachaActivity"
+            android:exported="false" />
+        <activity
             android:name=".presentation.article_webview.ArticleWebViewActivity"
             android:exported="false" />
-
         <activity
             android:name=".presentation.my_keywords_select.MyKeywordSelectActivity"
             android:exported="true"
