@@ -41,5 +41,18 @@ class UserPreference private constructor(context: Context) {
         }
 
 
+    var coin :Int
+        get() = userPreference.getInt("coin", 0)
+        set(v) {
+            userPreferenceEditor.putInt("coin", v)
+            userPreferenceEditor.apply()
+        }
+
+    var userInventory :String
+        get() = userPreference.getString("userInventory", "").toString()
+        set(v) {
+            userPreferenceEditor.putString("userInventory", v)
+            userPreferenceEditor.apply()
+        }
 
 }
