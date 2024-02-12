@@ -58,7 +58,7 @@ class WorkFaceFragment : Fragment() {
         binding= FragmentWorkFaceBinding.inflate(layoutInflater)
         userPreference=UserPreference.getInstance(requireContext())
         userPreference.userInventory.map {
-            userInventoryList.add(Integer.getInteger(it.toString())!!)
+            userInventoryList.add(Integer.parseInt(it.toString()))
 
         }
         initUserProfile()
@@ -67,8 +67,8 @@ class WorkFaceFragment : Fragment() {
             binding.composeView.isVisible=true
             binding.composeView.setContent {
                 LazyColumn(modifier = Modifier.fillMaxSize(1f).background(Color.White)){
-                    items(itemList.size){ i->
-                        item(itemList[i])
+                    items(userInventoryList.size){ i->
+                        item(itemList[userInventoryList[i]])
                     }
 
                 }
@@ -122,7 +122,7 @@ class WorkFaceFragment : Fragment() {
     @Composable
     fun preView(){
         LazyColumn(modifier = Modifier.fillMaxSize(1f).background(Color.White)){
-            items(itemList.size){ i->
+            items(userInventoryList.size){ i->
                 item(itemList[i])
             }
 

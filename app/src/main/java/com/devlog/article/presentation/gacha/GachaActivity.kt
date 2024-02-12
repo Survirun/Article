@@ -41,21 +41,19 @@ class GachaActivity : AppCompatActivity() {
     lateinit var userPreference: UserPreference
     lateinit var  item :Item
     lateinit var  popUpOpen : MutableState<Boolean>
-    var coin: Int =0
-    var userInventory :String = ""
+
     var  userInventoryList = arrayListOf<String>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_gacha)
         userPreference = UserPreference.getInstance(this)
-        userInventory = userPreference.userInventory
-        userInventory.map {
+        userPreference.userInventory.map {
             userInventoryList.add(it.toString())
         }
         if ( userPreference.userDesk!=-1){
 
         }
-        coin = userPreference.coin
+
         setContent {
             GachaView()
         }
@@ -82,12 +80,13 @@ class GachaActivity : AppCompatActivity() {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Button(onClick = {
-                    if (coin>5){
+                    if ( userPreference.coin>=5){
                         val  r= random()
-                        coin -=5
+                        userPreference.coin = userPreference.coin-5
                         popUpOpen.value=true
                         item = itemList[r]
                         if (!userInventoryList.contains(r.toString())){
+                            userPreference.userInventory+=r.toString()
                            userInventoryList.add(r.toString())
                         }
                         Log.e("아이템",userInventoryList.toString())
@@ -102,7 +101,7 @@ class GachaActivity : AppCompatActivity() {
 
             }
             Column(modifier = Modifier.fillMaxWidth(1f), horizontalAlignment = Alignment.End) {
-                Text(modifier = Modifier.background(Color.White), text = coin.toString())
+                Text(modifier = Modifier.background(Color.White), text = userPreference.coin.toString())
             }
             if (popUpOpen.value){
                 popUp(item)
@@ -114,8 +113,8 @@ class GachaActivity : AppCompatActivity() {
     @Preview(showBackground = true)
     @Composable
     fun preView() {
-        coin =100
-        userInventory.map {
+
+        userPreference.userInventory.map {
             userInventoryList.add(it.toString())
         }
         GachaView()
