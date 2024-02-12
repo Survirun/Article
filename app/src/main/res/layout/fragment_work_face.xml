@@ -6,7 +6,6 @@
     android:layout_height="match_parent"
     android:background="@drawable/tile"
     tools:context=".presentation.work_face.WorkFaceFragment">
-
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -80,6 +79,11 @@
 
     <androidx.compose.ui.platform.ComposeView
         android:id="@+id/composeView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <androidx.compose.ui.platform.ComposeView
+        android:id="@+id/composeViewFriend"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

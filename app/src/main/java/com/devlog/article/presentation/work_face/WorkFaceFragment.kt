@@ -122,7 +122,7 @@ class WorkFaceFragment : Fragment() {
     @Composable
     fun preView(){
         LazyColumn(modifier = Modifier.fillMaxSize(1f).background(Color.White)){
-            items(userInventoryList.size){ i->
+            items(itemList.size){ i->
                 item(itemList[i])
             }
 
