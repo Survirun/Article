@@ -23,8 +23,21 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:background="@drawable/desk_1" />
 
+
+
     <ImageView
-        android:id="@+id/chair"
+        android:id="@+id/computerImageView"
+        android:layout_width="105dp"
+        android:layout_height="80dp"
+        android:layout_marginBottom="30dp"
+        app:layout_constraintBottom_toBottomOf="@+id/deskImageView"
+        app:layout_constraintEnd_toEndOf="@+id/deskImageView"
+        app:layout_constraintStart_toStartOf="@+id/deskImageView"
+        app:layout_constraintTop_toTopOf="@+id/deskImageView"
+        tools:src="@drawable/computer_1" />
+
+    <ImageView
+        android:id="@+id/chairImageView"
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:layout_marginTop="-30dp"
@@ -35,20 +48,12 @@
         tools:src="@drawable/chair_1" />
 
     <ImageView
-        android:layout_width="105dp"
-        android:layout_height="105dp"
-        app:layout_constraintBottom_toBottomOf="@+id/deskImageView"
-        app:layout_constraintEnd_toEndOf="@+id/deskImageView"
-        app:layout_constraintStart_toStartOf="@+id/deskImageView"
-        app:layout_constraintTop_toTopOf="@+id/deskImageView"
-        tools:src="@drawable/computer_1" />
-
-    <ImageView
-        android:layout_width="45dp"
-        android:layout_height="45dp"
-        app:layout_constraintBottom_toBottomOf="@+id/chair"
-        app:layout_constraintEnd_toStartOf="@+id/chair"
-        app:layout_constraintTop_toTopOf="@+id/chair"
+        android:id="@+id/subItemImageView"
+        android:layout_width="60dp"
+        android:layout_height="100dp"
+        app:layout_constraintBottom_toBottomOf="@+id/chairImageView"
+        app:layout_constraintEnd_toStartOf="@+id/chairImageView"
+        app:layout_constraintTop_toTopOf="@+id/chairImageView"
         tools:src="@drawable/sub_item_1" />
 
     <ImageView

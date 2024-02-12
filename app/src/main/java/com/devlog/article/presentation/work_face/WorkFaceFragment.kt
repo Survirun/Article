@@ -2,12 +2,14 @@ package com.devlog.article.presentation.work_face
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -25,12 +27,18 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.view.isVisible
+import com.bumptech.glide.Glide
 import com.devlog.article.R
 import com.devlog.article.data.preference.UserPreference
 import com.devlog.article.databinding.FragmentWorkFaceBinding
 import com.devlog.article.presentation.gacha.GachaActivity
 import com.devlog.article.presentation.gacha.Item
+import com.devlog.article.presentation.gacha.chair
+import com.devlog.article.presentation.gacha.computer
+import com.devlog.article.presentation.gacha.desk
+import com.devlog.article.presentation.gacha.itemCategory
 import com.devlog.article.presentation.gacha.itemList
+import com.devlog.article.presentation.gacha.sub_item
 
 // TODO: Rename parameter arguments, choose names that match
 
@@ -53,6 +61,8 @@ class WorkFaceFragment : Fragment() {
             userInventoryList.add(Integer.getInteger(it.toString())!!)
 
         }
+        initUserProfile()
+
         binding.userInventoryButton.setOnClickListener {
             binding.composeView.isVisible=true
             binding.composeView.setContent {
@@ -75,6 +85,37 @@ class WorkFaceFragment : Fragment() {
 
 
         return binding.root
+    }
+
+    fun initUserProfile(){
+        userPreference.run {
+            Log.e("asfasf",userChair.toString())
+            if (userChair!=-1){
+                Glide.with(this@WorkFaceFragment)
+                    .load(itemList[userChair].image)
+                    .into(binding.chairImageView)
+
+            }
+            if (userComputer!=-1){
+                Glide.with(this@WorkFaceFragment)
+                    .load(itemList[userComputer].image)
+                    .into(binding.computerImageView)
+
+            }
+            if (userDesk!=-1){
+                Glide.with(this@WorkFaceFragment)
+                    .load(itemList[userDesk].image)
+                    .into(binding.deskImageView)
+
+            }
+            if (userSubItem!=-1){
+                Glide.with(this@WorkFaceFragment)
+                    .load(itemList[userSubItem].image)
+                    .into(binding.subItemImageView)
+            }
+
+        }
+
     }
 
     @Preview(showBackground = true)
@@ -100,7 +141,41 @@ class WorkFaceFragment : Fragment() {
         Row(verticalAlignment = Alignment.CenterVertically , modifier = Modifier
             .fillMaxWidth(1f)
             .padding(horizontal = 10.dp)
-            .background(Color.White)) {
+            .background(Color.White)
+            .clickable {
+                when(itemCategory(item.id)){
+                    chair->{
+                        userPreference.userChair=item.id
+                        Glide.with(this@WorkFaceFragment)
+                            .load(item.image)
+                            .into(binding.chairImageView)
+
+
+                    }
+                    desk ->{
+                        userPreference.userDesk=item.id
+                        Glide.with(this@WorkFaceFragment)
+                            .load(item.image)
+                            .into(binding.deskImageView)
+
+                    }
+                    computer->{
+                        userPreference.userComputer=item.id
+                        Glide.with(this@WorkFaceFragment)
+                            .load(item.image)
+                            .into(binding.computerImageView)
+                    }
+                    sub_item->{
+                        userPreference.userSubItem=item.id
+                        Glide.with(this@WorkFaceFragment)
+                            .load(item.image)
+                            .into(binding.subItemImageView)
+                    }
+
+                }
+                binding.composeView.isVisible=false
+            }
+        ) {
             Column {
                 Image(painter = painterResource(id = item.image), contentDescription = null)
 

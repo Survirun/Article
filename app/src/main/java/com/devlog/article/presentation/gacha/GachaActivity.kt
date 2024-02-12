@@ -52,6 +52,9 @@ class GachaActivity : AppCompatActivity() {
         userInventory.map {
             userInventoryList.add(it.toString())
         }
+        if ( userPreference.userDesk!=-1){
+
+        }
         coin = userPreference.coin
         setContent {
             GachaView()
@@ -126,7 +129,8 @@ class GachaActivity : AppCompatActivity() {
         var  item=Item(
         "사과 노트북 듀얼 모니터 세트",
         "이 애플 노트북 듀얼 모니터 세트는 스타일과 성능을 결합한 완벽한 작업 환경을 제공하는 특별한 아이템입니다. 애플 노트북과 더블 모니터를 조합하여 사용자가 생산성을 극대화하고 창의성을 높일 수 있도록 돕습니다.",
-        R.drawable.computer_2)
+        R.drawable.computer_2
+        ,0)
         popUp(item)
     }
 
