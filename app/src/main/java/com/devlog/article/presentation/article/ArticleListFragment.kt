@@ -3,24 +3,16 @@ package com.devlog.article.presentation.article
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.PorterDuff
-import android.graphics.RenderEffect.createBlurEffect
-import android.graphics.Shader
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
-import androidx.compose.ui.graphics.BlurEffect
 import androidx.fragment.app.Fragment
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.viewpager2.widget.ViewPager2
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade
-import com.bumptech.glide.request.RequestOptions.bitmapTransform
+import com.bumptech.glide.request.RequestOptions
 import com.devlog.article.R
 import com.devlog.article.data.entity.ArticleEntity
 import com.devlog.article.data.response.Article
@@ -28,8 +20,7 @@ import com.devlog.article.data.response.ArticleResponse
 import com.devlog.article.databinding.FragmentArticleBinding
 import com.devlog.article.presentation.article.adapter.ArticleAdapter
 import com.devlog.article.presentation.article_webview.ArticleWebViewActivity
-import com.devlog.article.presentation.my_keywords_select.MyKeywordSelectActivity
-import kotlin.math.abs
+import jp.wasabeef.glide.transformations.BlurTransformation
 
 
 class ArticleListFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
@@ -52,8 +43,6 @@ class ArticleListFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         val pageOffset = resources.getDimensionPixelOffset(R.dimen.offset).toFloat()
 
         binding.backgroundImage.setColorFilter(Color.parseColor("#BDBDBD"), PorterDuff.Mode.MULTIPLY)
-//        val blurEffect = createBlurEffect(25f, 25f, Shader.TileMode.MIRROR)
-//        binding.backgroundImage.setRenderEffect(blurEffect)
 
         binding.viewPager.run {
             adapter = articleAdapter
@@ -64,10 +53,13 @@ class ArticleListFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
                 override fun onPageSelected(position: Int) {
                     super.onPageSelected(position)
                     val image = articleAdapter.getImage(position)
+
                     Glide.with(this@ArticleListFragment)
+                        .asBitmap()
                         .load(image)
 //                        .transition(withCrossFade())
                         .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .apply(RequestOptions.bitmapTransform(BlurTransformation(25, 3)))
                         .into(binding.backgroundImage)
                 }
             })
