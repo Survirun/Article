@@ -1,5 +1,6 @@
 package com.devlog.article.presentation.work_face
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -27,6 +28,7 @@ import androidx.core.view.isVisible
 import com.devlog.article.R
 import com.devlog.article.data.preference.UserPreference
 import com.devlog.article.databinding.FragmentWorkFaceBinding
+import com.devlog.article.presentation.gacha.GachaActivity
 import com.devlog.article.presentation.gacha.Item
 import com.devlog.article.presentation.gacha.itemList
 
@@ -46,12 +48,29 @@ class WorkFaceFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding= FragmentWorkFaceBinding.inflate(layoutInflater)
+        userPreference=UserPreference.getInstance(requireContext())
         userPreference.userInventory.map {
             userInventoryList.add(Integer.getInteger(it.toString())!!)
 
         }
         binding.userInventoryButton.setOnClickListener {
             binding.composeView.isVisible=true
+            binding.composeView.setContent {
+                LazyColumn(modifier = Modifier.fillMaxSize(1f).background(Color.White)){
+                    items(itemList.size){ i->
+                        item(itemList[i])
+                    }
+
+                }
+                Column(modifier = Modifier.fillMaxSize(1f), horizontalAlignment = Alignment.CenterHorizontally,verticalArrangement = Arrangement.Bottom) {
+                    Button(onClick = { binding.composeView.isVisible=false }) {
+                        Text(text = "닫기")
+                    }
+                }
+            }
+        }
+        binding.gachaButton.setOnClickListener {
+            startActivity(Intent(requireContext(),GachaActivity::class.java))
         }
 
 
@@ -61,8 +80,7 @@ class WorkFaceFragment : Fragment() {
     @Preview(showBackground = true)
     @Composable
     fun preView(){
-
-        LazyColumn(){
+        LazyColumn(modifier = Modifier.fillMaxSize(1f).background(Color.White)){
             items(itemList.size){ i->
                 item(itemList[i])
             }

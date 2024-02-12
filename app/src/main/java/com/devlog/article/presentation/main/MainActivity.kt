@@ -14,7 +14,7 @@ import com.devlog.article.databinding.ActivityMainBinding
 import com.devlog.article.presentation.article.ArticleListFragment
 import com.devlog.article.presentation.bookmark.BookmarkFragment
 import com.devlog.article.presentation.splash.SplashViewMode
-
+import com.devlog.article.presentation.work_face.WorkFaceFragment
 
 
 class MainActivity() : AppCompatActivity() {
@@ -40,7 +40,7 @@ class MainActivity() : AppCompatActivity() {
                     true
                 }
                 R.id.profile -> {
-                    replaceFragment(ProfileFragment())
+                    replaceFragment(WorkFaceFragment())
                     true
                 }
                 else -> false

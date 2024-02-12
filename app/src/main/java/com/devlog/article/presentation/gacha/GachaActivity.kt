@@ -90,7 +90,7 @@ class GachaActivity : AppCompatActivity() {
                         Log.e("아이템",userInventoryList.toString())
 
                     }else{
-                        Toast.makeText(this@GachaActivity,"코인이 무족해요",Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@GachaActivity,"코인이 부족해요",Toast.LENGTH_SHORT).show()
                     }
 
                 }, modifier = Modifier.fillMaxWidth(1f)) {
