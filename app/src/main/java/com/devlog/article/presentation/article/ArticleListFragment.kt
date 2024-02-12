@@ -1,6 +1,10 @@
 package com.devlog.article.presentation.article
 
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.PorterDuff
+import android.graphics.RenderEffect.createBlurEffect
+import android.graphics.Shader
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -46,6 +50,10 @@ class ArticleListFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
         val pageMargin = resources.getDimensionPixelOffset(R.dimen.pageMargin).toFloat()
         val pageOffset = resources.getDimensionPixelOffset(R.dimen.offset).toFloat()
+
+        binding.backgroundImage.setColorFilter(Color.parseColor("#BDBDBD"), PorterDuff.Mode.MULTIPLY)
+//        val blurEffect = createBlurEffect(25f, 25f, Shader.TileMode.MIRROR)
+//        binding.backgroundImage.setRenderEffect(blurEffect)
 
         binding.viewPager.run {
             adapter = articleAdapter
@@ -98,6 +106,7 @@ class ArticleListFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
             processArticleResponse()
             binding.swipeLayout.isRefreshing = false
             binding.viewPager.isUserInputEnabled = true
+            binding.viewPager.setCurrentItem(0, false)
         }
     }
 
