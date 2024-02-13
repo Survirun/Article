@@ -16,7 +16,9 @@ data class Article(
     val sitename: String,
     val link: String,
     val title: String,
-    val cx: Int
+    val cx: Int,
+    val _id : String,
+    var weight : Int?
 ): Serializable  {
 
 }
