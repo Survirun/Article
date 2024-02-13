@@ -33,6 +33,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.devlog.article.R
 import com.devlog.article.presentation.main.MainActivity
 import com.devlog.article.data.preference.UserPreference
 import com.devlog.article.presentation.ui.theme.ArticleTheme
@@ -86,9 +87,7 @@ class MyKeywordSelectActivity : ComponentActivity() {
                         KeywordSelectList(keywordList)
 
                     }
-                    if (count.value>=3){
                         KeywordSelectButton(){
-
 //                            var list:Array<String> = Array(10) {
 //                                keywordList.forEach{
 //                                    if (it.selectData.value){
@@ -96,17 +95,18 @@ class MyKeywordSelectActivity : ComponentActivity() {
 //                                    }
 //                                }.toString()
 //                            }
-                            var list = arrayListOf<Int>()
-                            keywordList.forEach {
-                                if (it.selectData.value){
-                                    list.add(it.code)
+                            if(count.value >= 3){
+                                var list = arrayListOf<Int>()
+                                keywordList.forEach {
+                                    if (it.selectData.value){
+                                        list.add(it.code)
+                                    }
                                 }
+
+
+                                viewModel.pathMyKeywords(list.toTypedArray())
                             }
-
-
-                            viewModel.pathMyKeywords(list.toTypedArray())
                         }
-                    }
                 }
             }
         }
@@ -141,11 +141,9 @@ class MyKeywordSelectActivity : ComponentActivity() {
                 KeywordSelectList(keywordList)
 
             }
-            if (count.value>=3){
                 KeywordSelectButton(){
 
                 }
-            }
 
         }
 
@@ -223,6 +221,11 @@ class MyKeywordSelectActivity : ComponentActivity() {
     }
     @Composable
     fun KeywordSelectButton(click :()->Unit){
+        val backgroundColor : Any
+        backgroundColor = if(count.value>=3) 0xFF000000
+        else 0xFFA0A0AB
+        val infoText : String = if(count.value>=3) "총 ${count.value}개 선택"
+        else "3가지 이상의 주제를 선택해주세요."
         Column(
             modifier = Modifier
                 .fillMaxSize(1f),
@@ -232,14 +235,14 @@ class MyKeywordSelectActivity : ComponentActivity() {
                 modifier = Modifier
                     .fillMaxWidth(1f)
                     .height(60.dp)
-                    .background(Color(0xFF18171D))
-                    .clickable {click() },
+                    .background(Color(backgroundColor))
+                    .clickable(enabled = (count.value>=3)) {click() },
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
 
                 Text(
-                    text = "총 ${count.value}개 선택",
+                    text = infoText,
                     color = Color.White,
                     textAlign = TextAlign.Center
                 )
