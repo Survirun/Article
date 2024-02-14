@@ -41,5 +41,43 @@ class UserPreference private constructor(context: Context) {
         }
 
 
+    var coin :Int
+        get() = userPreference.getInt("coin", 0)
+        set(v) {
+            userPreferenceEditor.putInt("coin", v)
+            userPreferenceEditor.apply()
+        }
 
+    var userInventory :String
+        get() = userPreference.getString("userInventory", "").toString()
+        set(v) {
+            userPreferenceEditor.putString("userInventory", v)
+            userPreferenceEditor.apply()
+        }
+
+    var userChair:Int
+        get() = userPreference.getInt("userChair", -1)
+        set(v) {
+            userPreferenceEditor.putInt("userChair", v)
+            userPreferenceEditor.apply()
+        }
+
+    var userDesk:Int
+        get() = userPreference.getInt("userDesk", -1)
+        set(v) {
+            userPreferenceEditor.putInt("userDesk", v)
+            userPreferenceEditor.apply()
+        }
+    var userComputer:Int
+        get() = userPreference.getInt("userComputer", -1)
+        set(v) {
+            userPreferenceEditor.putInt("userComputer", v)
+            userPreferenceEditor.apply()
+        }
+    var userSubItem:Int
+        get() = userPreference.getInt("userSubItem", -1)
+        set(v) {
+            userPreferenceEditor.putInt("userSubItem", v)
+            userPreferenceEditor.apply()
+        }
 }

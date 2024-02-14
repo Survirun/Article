@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/tile"
+    tools:context=".presentation.work_face.WorkFaceFragment">
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:src="@drawable/wall_tile_1"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/deskImageView"
+        android:layout_width="150dp"
+        android:layout_height="90dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:background="@drawable/desk_1" />
+
+
+
+    <ImageView
+        android:id="@+id/computerImageView"
+        android:layout_width="105dp"
+        android:layout_height="80dp"
+        android:layout_marginBottom="30dp"
+        app:layout_constraintBottom_toBottomOf="@+id/deskImageView"
+        app:layout_constraintEnd_toEndOf="@+id/deskImageView"
+        app:layout_constraintStart_toStartOf="@+id/deskImageView"
+        app:layout_constraintTop_toTopOf="@+id/deskImageView"
+        tools:src="@drawable/computer_1" />
+
+    <ImageView
+        android:id="@+id/chairImageView"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginTop="-30dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/deskImageView"
+        tools:src="@drawable/chair_1" />
+
+    <ImageView
+        android:id="@+id/subItemImageView"
+        android:layout_width="60dp"
+        android:layout_height="100dp"
+        app:layout_constraintBottom_toBottomOf="@+id/chairImageView"
+        app:layout_constraintEnd_toStartOf="@+id/chairImageView"
+        app:layout_constraintTop_toTopOf="@+id/chairImageView"
+        tools:src="@drawable/sub_item_1" />
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:background="@drawable/wall_tile_2" />
+
+    <Button
+        android:id="@+id/userInventoryButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="인벤토리"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+    <Button
+        android:id="@+id/gachaButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="뽑기"
+        app:layout_constraintBottom_toTopOf="@id/userInventoryButton"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <androidx.compose.ui.platform.ComposeView
+        android:id="@+id/composeView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <androidx.compose.ui.platform.ComposeView
+        android:id="@+id/composeViewFriend"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+</androidx.constraintlayout.widget.ConstraintLayout>

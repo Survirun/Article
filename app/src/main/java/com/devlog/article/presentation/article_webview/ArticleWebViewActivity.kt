@@ -13,7 +13,9 @@ import android.webkit.WebViewClient
 import com.devlog.article.data.entity.naver.ApiData
 import com.devlog.article.data.entity.naver.Document
 import com.devlog.article.data.entity.naver.OptionObject
+import com.devlog.article.data.preference.UserPreference
 import com.devlog.article.databinding.ActivityArticleWebViewBinding
+import com.google.android.material.snackbar.Snackbar
 
 class ArticleWebViewActivity : AppCompatActivity() {
     lateinit var binding: ActivityArticleWebViewBinding
@@ -22,16 +24,18 @@ class ArticleWebViewActivity : AppCompatActivity() {
     lateinit var postTextSummary :()->Unit
     var url =""
     lateinit var articleGetbody:ArticleGetbody
+    lateinit var userPreference: UserPreference
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityArticleWebViewBinding.inflate(layoutInflater)
         setContentView(binding.root)
         url=intent.getStringExtra("url")!!
         initWebView()
+        userPreference=UserPreference.getInstance(this)
         articleWebViewModel = ArticleWebViewModel()
         articleGetbody = ArticleGetbody(binding.webView)
-
-
+        userPreference.coin+=1
+        Snackbar.make(binding.root, "기사를 읽어 1 코인을 얻었어요!", Snackbar.LENGTH_SHORT).show()
         postTextSummary={
             cutString()
             articleWebViewModel.textSummary(ApiData(Document(title = "", content = body)))
