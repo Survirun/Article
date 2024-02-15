@@ -28,6 +28,7 @@ class ArticleWebViewActivity : AppCompatActivity() {
         setContentView(binding.root)
         url=intent.getStringExtra("url")!!
         initWebView()
+        initToolBar()
         articleWebViewModel = ArticleWebViewModel()
         articleGetbody = ArticleGetbody(binding.webView)
 
@@ -89,6 +90,19 @@ class ArticleWebViewActivity : AppCompatActivity() {
                 articleGetbody.getBody(binding.webView.url!!)
 
             }
+        }
+    }
+
+    private fun initToolBar(){
+        binding.backButton.setOnClickListener {
+            finish()
+        }
+
+        binding.webView.setOnScrollChangeListener { v, scrollX, scrollY, oldScrollX, oldScrollY ->
+            val contentHeight = binding.webView.contentHeight * binding.webView.scale
+            val webViewHeight = binding.webView.height.toFloat()
+            val scrollPercentage = ((scrollY / (contentHeight - webViewHeight)) * 100).toInt() + 1
+            binding.progressBar.progress = scrollPercentage
         }
     }
 

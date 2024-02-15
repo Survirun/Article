@@ -20,4 +20,61 @@
         app:layout_constraintTop_toTopOf="parent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingVertical="12dp"
+        android:paddingHorizontal="20dp"
+        android:elevation="4dp"
+        android:outlineSpotShadowColor="#33181724"
+        android:layout_marginBottom="12dp"
+        android:layout_marginHorizontal="24dp"
+        android:background="@drawable/webview_tool_bar"
+        app:layout_constraintBottom_toBottomOf="parent">
+        <ImageButton
+            android:id="@+id/backButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_back_arrow"
+            android:background="@color/transparent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+        <com.google.android.material.progressindicator.LinearProgressIndicator
+            android:id="@+id/progressBar"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:max="100"
+            android:progress="0"
+            app:trackColor="#DCDCEA"
+            app:trackCornerRadius="30dp"
+            app:indicatorColor="@color/black"
+            android:layout_marginHorizontal="24dp"
+            app:layout_constraintEnd_toStartOf="@id/shareButton"
+            app:layout_constraintStart_toEndOf="@id/backButton"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+        <ImageButton
+            android:id="@+id/shareButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_ios_share"
+            android:background="@color/transparent"
+            android:layout_marginEnd="12dp"
+            app:layout_constraintEnd_toStartOf="@id/bookmarkButton"
+            app:layout_constraintStart_toEndOf="@id/progressBar"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+        <ImageButton
+            android:id="@+id/bookmarkButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_bookmark_add"
+            android:background="@color/transparent"
+            app:layout_constraintStart_toEndOf="@id/shareButton"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
