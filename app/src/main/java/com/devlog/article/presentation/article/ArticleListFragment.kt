@@ -4,6 +4,7 @@ import android.content.Intent
 import android.graphics.Color
 import android.graphics.PorterDuff
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,6 +17,7 @@ import com.bumptech.glide.request.RequestOptions
 import com.devlog.article.R
 import com.devlog.article.data.entity.ArticleEntity
 import com.devlog.article.data.response.Article
+import com.devlog.article.data.response.ArticleLogResponse
 import com.devlog.article.data.response.ArticleResponse
 import com.devlog.article.databinding.FragmentArticleBinding
 import com.devlog.article.presentation.article.adapter.ArticleAdapter
@@ -38,6 +40,7 @@ class ArticleListFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         viewModel=ArticleListViewModel()
 
         processArticleResponse()
+        //viewModel.postArticleLog(arrayListOf<ArticleLogResponse>( ArticleLogResponse(articleResponse.data[0]._id,"click"),ArticleLogResponse(articleResponse.data[1]._id,"click")))
 
         val pageMargin = resources.getDimensionPixelOffset(R.dimen.pageMargin).toFloat()
         val pageOffset = resources.getDimensionPixelOffset(R.dimen.offset).toFloat()

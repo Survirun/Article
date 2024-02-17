@@ -10,6 +10,7 @@ import com.devlog.article.data.network.provideProductRetrofit
 import com.devlog.article.data.repository.DefaultRepository
 import com.devlog.article.data.repository.Repository
 import com.devlog.article.data.response.Article
+import com.devlog.article.data.response.ArticleLogResponse
 import com.devlog.article.data.response.ArticleResponse
 import com.devlog.article.extensions.toMD5
 import kotlinx.coroutines.Dispatchers
@@ -39,6 +40,24 @@ class ArticleListViewModel : ViewModel() {
             failed()
         }
 
+
+    }
+    fun postArticleLog(postArticleLogResponse: ArrayList<ArticleLogResponse>):Job=viewModelScope.launch{
+        val api = ApiService(
+            provideProductRetrofit(
+                buildOkHttpClient(),
+                provideGsonConverterFactory()
+            )
+        )
+
+        val repository: Repository =
+            DefaultRepository.getInstance(api, ioDispatcher = Dispatchers.IO)
+        val serverCode = repository.postArticleLog(postArticleLogResponse)
+        if (serverCode!=null) {
+
+        } else {
+
+        }
 
     }
 }

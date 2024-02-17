@@ -3,6 +3,7 @@ package com.devlog.article.data.repository
 import android.annotation.SuppressLint
 import com.devlog.article.data.entity.LoginEntity
 import com.devlog.article.data.network.ApiService
+import com.devlog.article.data.response.ArticleLogResponse
 import com.devlog.article.data.response.ArticleResponse
 import com.devlog.article.data.response.UserInfoEntity
 import kotlinx.coroutines.CoroutineDispatcher
@@ -22,6 +23,8 @@ interface Repository {
     suspend fun postBookmark(articleId:String):Boolean
 
     suspend fun getBookMaker():ArticleResponse?
+
+    suspend fun postArticleLog(articleLogResponse: ArrayList<ArticleLogResponse>):Boolean
 //
 //    suspend fun getLocalProductList():List<ProductEntity>
 //

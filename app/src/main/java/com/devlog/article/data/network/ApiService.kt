@@ -2,6 +2,7 @@ package com.devlog.article.data.network
 
 import com.devlog.article.data.entity.LoginEntity
 import com.devlog.article.data.entity.MyKeyword
+import com.devlog.article.data.response.ArticleLogResponse
 import com.devlog.article.data.response.ArticleResponse
 import com.devlog.article.data.response.DefaultResponse
 import com.devlog.article.data.response.UserInfoEntity
@@ -34,4 +35,7 @@ interface ApiService {
     //북마크 가져오기
     @GET("bookmark")
     suspend fun getBookMaker():Response<ArticleResponse>
+
+    @POST("log/multi")
+    suspend fun postArticleLog(@Body logs:List<ArticleLogResponse>) : Response<DefaultResponse>
 }

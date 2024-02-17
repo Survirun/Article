@@ -9,6 +9,7 @@ import com.devlog.article.data.entity.LoginEntity
 import com.devlog.article.data.entity.MyKeyword
 import com.devlog.article.data.network.ApiService
 import com.devlog.article.data.preference.UserPreference
+import com.devlog.article.data.response.ArticleLogResponse
 import com.devlog.article.data.response.ArticleResponse
 import com.devlog.article.data.response.UserInfoEntity
 
@@ -75,5 +76,11 @@ class DefaultRepository private constructor(
         return@withContext  response.body()
     }
 
+    override suspend fun postArticleLog(articleLogResponse: ArrayList<ArticleLogResponse>): Boolean= withContext(ioDispatcher) {
+        val response=api.postArticleLog(articleLogResponse)
+        Log.e("polaris",response.message().toString())
+        Log.e("polaris",response.body().toString())
+        return@withContext response.isSuccessful
+    }
 
 }
