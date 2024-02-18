@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import androidx.viewpager.widget.ViewPager
 import androidx.viewpager2.widget.ViewPager2
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
@@ -30,9 +31,15 @@ class ArticleListFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     lateinit var binding: FragmentArticleBinding
     lateinit var articleResponse: ArticleResponse
     var articleAdapter = ArticleAdapter()
-    var article = listOf<Article>()
     val articles = ArrayList<ArticleEntity>()
     lateinit var viewModel: ArticleListViewModel
+
+    val pageMargin by lazy {
+        resources.getDimensionPixelOffset(R.dimen.pageMargin).toFloat()
+    }
+    val pageOffset by lazy {
+        resources.getDimensionPixelOffset(R.dimen.offset).toFloat()
+    }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -42,15 +49,25 @@ class ArticleListFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
         processArticleResponse()
         //viewModel.postArticleLog(arrayListOf<ArticleLogResponse>( ArticleLogResponse(articleResponse.data[0]._id,"click"),ArticleLogResponse(articleResponse.data[1]._id,"click")))
+        viewPagerInit()
+        setBackgroundImage()
 
-        val pageMargin = resources.getDimensionPixelOffset(R.dimen.pageMargin).toFloat()
-        val pageOffset = resources.getDimensionPixelOffset(R.dimen.offset).toFloat()
 
+        return binding.root
+    }
+
+    override fun onRefresh() {
+        binding.viewPager.isUserInputEnabled = false
+        updateLayoutView()
+    }
+    fun setBackgroundImage(){
         binding.backgroundImage.setColorFilter(
             Color.parseColor("#BDBDBD"),
             PorterDuff.Mode.MULTIPLY
         )
 
+    }
+    fun viewPagerInit(){
         binding.viewPager.run {
             adapter = articleAdapter
             orientation = ViewPager2.ORIENTATION_HORIZONTAL
@@ -85,16 +102,6 @@ class ArticleListFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
                 }
             }
         }
-
-
-        binding.swipeLayout.setOnRefreshListener(this)
-
-        return binding.root
-    }
-
-    override fun onRefresh() {
-        binding.viewPager.isUserInputEnabled = false
-        updateLayoutView()
     }
 
     fun updateLayoutView() {
@@ -103,15 +110,13 @@ class ArticleListFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
             articles.clear()
             articleResponse = viewModel.article
             processArticleResponse()
-            binding.swipeLayout.isRefreshing = false
             binding.viewPager.isUserInputEnabled = true
             binding.viewPager.setCurrentItem(0, false)
         }
     }
 
     private fun processArticleResponse() {
-        article = articleResponse.data
-        article.forEach {
+         articleResponse.data.forEach {
             if (it.data == null) {
                 it.data = ""
             }
