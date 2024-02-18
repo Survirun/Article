@@ -22,6 +22,7 @@ import com.devlog.article.data.response.ArticleResponse
 import com.devlog.article.databinding.FragmentArticleBinding
 import com.devlog.article.presentation.article.adapter.ArticleAdapter
 import com.devlog.article.presentation.article_webview.ArticleWebViewActivity
+import com.devlog.article.utility.shareLink
 import jp.wasabeef.glide.transformations.BlurTransformation
 
 
@@ -120,34 +121,13 @@ class ArticleListFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     }
     fun adapterInit(){
 
-        articleAdapter.setProductList(articles){
-//            val activityOptions = ActivityOptionsCompat.makeSceneTransitionAnimation(
-//                requireActivity(),
-//                androidx.core.util.Pair<View, String>(
-//                    articleAdapter.articleViewHolder.binding.image,
-//                    "tran_image"
-//                ),
-//                androidx.core.util.Pair<View, String>(
-//                    articleAdapter.articleViewHolder.binding.title,
-//                    "tran_title"
-//                ),
-//                androidx.core.util.Pair<View, String>(
-//                    articleAdapter.articleViewHolder.binding.text,
-//                    "tran_text"
-//                )
-//            )
-//
-//            val intent = Intent(requireContext(), DetailActivity::class.java)
-//            intent.putExtra("title", it.title)
-//            intent.putExtra("text", it.text)
-//            intent.putExtra("image", it.image)
-//            ContextCompat.startActivity(requireContext(), intent, activityOptions.toBundle())
-
+        articleAdapter.setProductList(articles,{
             val intent = Intent(requireContext(), ArticleWebViewActivity::class.java)
-            intent.putExtra("url", it.url)
+            intent.putExtra("url", it)
             startActivity(intent)
-
-        }
+        },{
+            requireActivity().shareLink(it)
+        })
     }
 
 

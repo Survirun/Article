@@ -20,12 +20,12 @@ import com.devlog.article.presentation.article.deetail.DetailActivity
 
 class ArticleAdapter() : RecyclerView.Adapter<ArticleAdapter.ArticleViewHolder>() {
     private var articleList:List<ArticleEntity> = listOf()
-    private lateinit var articleItemClickListener: (ArticleEntity) -> Unit
+    private lateinit var articleItemClickListener: (link:String) -> Unit
+    private lateinit var  articleShareClickListener: (link:String) -> Unit
     lateinit var articleViewHolder:ArticleViewHolder
 
     inner class ArticleViewHolder(
          var  binding: ViewholderArticleItemBinding,
-        val articleItemClickListener: (ArticleEntity) -> Unit
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bindViews(data: ArticleEntity) {
@@ -37,6 +37,9 @@ class ArticleAdapter() : RecyclerView.Adapter<ArticleAdapter.ArticleViewHolder>(
                     .load(data.image)
                     .into(binding.image)
 
+            }
+            binding.shareButton.setOnClickListener {
+                articleShareClickListener(data.url)
             }
             binding.card.setOnClickListener {
               //  articleItemClickListener(data)
@@ -54,14 +57,14 @@ class ArticleAdapter() : RecyclerView.Adapter<ArticleAdapter.ArticleViewHolder>(
 
 
 
-        return ArticleViewHolder(view,articleItemClickListener)
+        return ArticleViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: ArticleViewHolder, position: Int) {
         holder.bindViews(articleList[position])
         holder.binding.card.setOnClickListener {
             articleViewHolder=holder
-            articleItemClickListener(articleList[position])
+            articleItemClickListener(articleList[position].url)
 //            val activityOptions = ActivityOptionsCompat.makeSceneTransitionAnimation(
 //                context,
 //                androidx.core.util.Pair<View, String>(
@@ -93,9 +96,10 @@ class ArticleAdapter() : RecyclerView.Adapter<ArticleAdapter.ArticleViewHolder>(
     }
     override fun getItemCount(): Int = articleList.size
 
-    fun setProductList(productList: List<ArticleEntity>, productItemClickListener: (ArticleEntity) -> Unit={ }){
+    fun setProductList(productList: List<ArticleEntity>, productItemClickListener: (link:String) -> Unit={ } ,articleShareClickListener:(link:String)->Unit ={} ){
         this.articleList=productList
         this.articleItemClickListener=productItemClickListener
+        this.articleShareClickListener = articleShareClickListener
         notifyDataSetChanged()
     }
 
