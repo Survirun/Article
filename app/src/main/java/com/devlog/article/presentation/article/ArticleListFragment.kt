@@ -27,18 +27,18 @@ import jp.wasabeef.glide.transformations.BlurTransformation
 
 
 class ArticleListFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
-    lateinit var binding :FragmentArticleBinding
+    lateinit var binding: FragmentArticleBinding
     lateinit var articleResponse: ArticleResponse
-    var articleAdapter =ArticleAdapter()
-    var article= listOf<Article>()
+    var articleAdapter = ArticleAdapter()
+    var article = listOf<Article>()
     val articles = ArrayList<ArticleEntity>()
     lateinit var viewModel: ArticleListViewModel
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding=FragmentArticleBinding.inflate(layoutInflater)
-        viewModel=ArticleListViewModel()
+        binding = FragmentArticleBinding.inflate(layoutInflater)
+        viewModel = ArticleListViewModel()
 
         processArticleResponse()
         //viewModel.postArticleLog(arrayListOf<ArticleLogResponse>( ArticleLogResponse(articleResponse.data[0]._id,"click"),ArticleLogResponse(articleResponse.data[1]._id,"click")))
@@ -46,7 +46,10 @@ class ArticleListFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         val pageMargin = resources.getDimensionPixelOffset(R.dimen.pageMargin).toFloat()
         val pageOffset = resources.getDimensionPixelOffset(R.dimen.offset).toFloat()
 
-        binding.backgroundImage.setColorFilter(Color.parseColor("#BDBDBD"), PorterDuff.Mode.MULTIPLY)
+        binding.backgroundImage.setColorFilter(
+            Color.parseColor("#BDBDBD"),
+            PorterDuff.Mode.MULTIPLY
+        )
 
         binding.viewPager.run {
             adapter = articleAdapter
@@ -96,7 +99,7 @@ class ArticleListFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
     fun updateLayoutView() {
         viewModel.getArticle()
-        viewModel.succeed ={
+        viewModel.succeed = {
             articles.clear()
             articleResponse = viewModel.article
             processArticleResponse()
@@ -106,26 +109,34 @@ class ArticleListFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         }
     }
 
-    private fun processArticleResponse(){
-        article=articleResponse.data
-        article.forEach{
-            if (it.data==null){
-                it.data=""
+    private fun processArticleResponse() {
+        article = articleResponse.data
+        article.forEach {
+            if (it.data == null) {
+                it.data = ""
             }
-            if (it.snippet==null){
-                it.snippet=""
+            if (it.snippet == null) {
+                it.snippet = ""
             }
-            articles.add(ArticleEntity(title=it.title,text= it.snippet!!,image= it.thumbnail!!, url = it.link))
+            articles.add(
+                ArticleEntity(
+                    title = it.title,
+                    text = it.snippet!!,
+                    image = it.thumbnail!!,
+                    url = it.link
+                )
+            )
         }
         adapterInit()
     }
-    fun adapterInit(){
 
-        articleAdapter.setProductList(articles,{
+    fun adapterInit() {
+
+        articleAdapter.setProductList(articles, {
             val intent = Intent(requireContext(), ArticleWebViewActivity::class.java)
             intent.putExtra("url", it)
             startActivity(intent)
-        },{
+        }, {
             requireActivity().shareLink(it)
         })
     }
