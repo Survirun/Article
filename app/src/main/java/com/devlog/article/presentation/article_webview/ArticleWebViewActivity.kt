@@ -14,6 +14,7 @@ import com.devlog.article.data.entity.naver.ApiData
 import com.devlog.article.data.entity.naver.Document
 import com.devlog.article.data.entity.naver.OptionObject
 import com.devlog.article.databinding.ActivityArticleWebViewBinding
+import com.devlog.article.utility.shareLink
 
 class ArticleWebViewActivity : AppCompatActivity() {
     lateinit var binding: ActivityArticleWebViewBinding
@@ -41,7 +42,9 @@ class ArticleWebViewActivity : AppCompatActivity() {
         articleWebViewModel.succeed ={
             binding.textView.text = it
         }
-        //shareLink()
+        binding.shareButton.setOnClickListener {
+            shareLink(url)
+        }
 
 
 
@@ -56,16 +59,7 @@ class ArticleWebViewActivity : AppCompatActivity() {
         }
     }
 
-    private fun shareLink(){
-        val sendIntent: Intent = Intent().apply {
-            action = Intent.ACTION_SEND
-            putExtra(Intent.EXTRA_TEXT, url)
-            type = "text/plain"
-        }
 
-        val shareIntent = Intent.createChooser(sendIntent, null)
-        startActivity(shareIntent)
-    }
     private fun initWebView(){
         binding.webView.settings.run {
             if (!url.contains("medium.com")){
