@@ -1,12 +1,16 @@
 package com.devlog.article.presentation.article
 
+import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.PorterDuff
 import android.os.Bundle
+import android.util.AttributeSet
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
+import android.view.ViewConfiguration
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -25,6 +29,7 @@ import com.devlog.article.presentation.article.adapter.ArticleAdapter
 import com.devlog.article.presentation.article_webview.ArticleWebViewActivity
 import com.devlog.article.utility.shareLink
 import jp.wasabeef.glide.transformations.BlurTransformation
+import kotlin.math.abs
 
 
 class ArticleListFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
@@ -52,6 +57,8 @@ class ArticleListFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         viewPagerInit()
         setBackgroundImage()
 
+
+        binding.swipeLayout.setOnRefreshListener(this)
 
         return binding.root
     }
@@ -86,6 +93,13 @@ class ArticleListFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
                         .apply(RequestOptions.bitmapTransform(BlurTransformation(25, 3)))
                         .into(binding.backgroundImage)
                 }
+
+                override fun onPageScrollStateChanged(state: Int) {
+                    super.onPageScrollStateChanged(state)
+                    if (!binding.swipeLayout.isRefreshing) {
+                        binding.swipeLayout.isEnabled = state == ViewPager.SCROLL_STATE_IDLE
+                    }
+                }
             })
 
             setPageTransformer { page, position ->
@@ -111,6 +125,7 @@ class ArticleListFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
             articleResponse = viewModel.article
             processArticleResponse()
             binding.viewPager.isUserInputEnabled = true
+            binding.swipeLayout.isRefreshing = false
             binding.viewPager.setCurrentItem(0, false)
         }
     }
