@@ -1,35 +1,26 @@
 package com.devlog.article.presentation.article
 
-import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.PorterDuff
 import android.os.Bundle
-import android.util.AttributeSet
-import android.util.Log
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
-import android.view.ViewConfiguration
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import androidx.viewpager.widget.ViewPager
 import androidx.viewpager2.widget.ViewPager2
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.devlog.article.R
 import com.devlog.article.data.entity.ArticleEntity
-import com.devlog.article.data.response.Article
-import com.devlog.article.data.response.ArticleLogResponse
 import com.devlog.article.data.response.ArticleResponse
 import com.devlog.article.databinding.FragmentArticleBinding
 import com.devlog.article.presentation.article.adapter.ArticleAdapter
 import com.devlog.article.presentation.article_webview.ArticleWebViewActivity
 import com.devlog.article.utility.shareLink
 import jp.wasabeef.glide.transformations.BlurTransformation
-import kotlin.math.abs
 
 
 class ArticleListFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
@@ -45,6 +36,7 @@ class ArticleListFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     val pageOffset by lazy {
         resources.getDimensionPixelOffset(R.dimen.offset).toFloat()
     }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -67,14 +59,16 @@ class ArticleListFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         binding.viewPager.isUserInputEnabled = false
         updateLayoutView()
     }
-    fun setBackgroundImage(){
+
+    fun setBackgroundImage() {
         binding.backgroundImage.setColorFilter(
             Color.parseColor("#BDBDBD"),
             PorterDuff.Mode.MULTIPLY
         )
 
     }
-    fun viewPagerInit(){
+
+    fun viewPagerInit() {
         binding.viewPager.run {
             adapter = articleAdapter
             orientation = ViewPager2.ORIENTATION_HORIZONTAL
@@ -92,13 +86,6 @@ class ArticleListFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
                         .diskCacheStrategy(DiskCacheStrategy.ALL)
                         .apply(RequestOptions.bitmapTransform(BlurTransformation(25, 3)))
                         .into(binding.backgroundImage)
-                }
-
-                override fun onPageScrollStateChanged(state: Int) {
-                    super.onPageScrollStateChanged(state)
-                    if (!binding.swipeLayout.isRefreshing) {
-                        binding.swipeLayout.isEnabled = state == ViewPager.SCROLL_STATE_IDLE
-                    }
                 }
             })
 
@@ -131,7 +118,7 @@ class ArticleListFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     }
 
     private fun processArticleResponse() {
-         articleResponse.data.forEach {
+        articleResponse.data.forEach {
             if (it.data == null) {
                 it.data = ""
             }
