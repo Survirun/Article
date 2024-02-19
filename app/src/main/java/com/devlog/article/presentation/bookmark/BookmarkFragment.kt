@@ -1,6 +1,7 @@
 package com.devlog.article.presentation.bookmark
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -17,7 +18,7 @@ class BookmarkFragment : Fragment() {
         viewModel= BookmarkViewModel()
         viewModel.getBookMaker()
         viewModel.succeed={
-
+            Log.d("test", viewModel.article.toString())
         }
         viewModel.failed={
 

@@ -22,6 +22,7 @@ class ArticleAdapter() : RecyclerView.Adapter<ArticleAdapter.ArticleViewHolder>(
     private var articleList:List<ArticleEntity> = listOf()
     private lateinit var articleItemClickListener: (link:String) -> Unit
     private lateinit var  articleShareClickListener: (link:String) -> Unit
+    private lateinit var articleBookmarkClickListener : (articleId:String) -> Unit
     lateinit var articleViewHolder:ArticleViewHolder
 
     inner class ArticleViewHolder(
@@ -87,6 +88,10 @@ class ArticleAdapter() : RecyclerView.Adapter<ArticleAdapter.ArticleViewHolder>(
 //            intent.putExtra("image", articleList[position].image)
 //            ContextCompat.startActivity(context, intent, activityOptions.toBundle())
         }
+        holder.binding.bookmarkButton.setOnClickListener {
+            articleViewHolder=holder
+            articleBookmarkClickListener(articleList[position].articleId)
+        }
 
 
     }
@@ -96,10 +101,11 @@ class ArticleAdapter() : RecyclerView.Adapter<ArticleAdapter.ArticleViewHolder>(
     }
     override fun getItemCount(): Int = articleList.size
 
-    fun setProductList(productList: List<ArticleEntity>, productItemClickListener: (link:String) -> Unit={ } ,articleShareClickListener:(link:String)->Unit ={} ){
+    fun setProductList(productList: List<ArticleEntity>, productItemClickListener: (link:String) -> Unit={ } ,articleShareClickListener:(link:String)->Unit ={} ,articleBookmarkClickListener:(articleId:String)->Unit ={}){
         this.articleList=productList
         this.articleItemClickListener=productItemClickListener
         this.articleShareClickListener = articleShareClickListener
+        this.articleBookmarkClickListener = articleBookmarkClickListener
         notifyDataSetChanged()
     }
 

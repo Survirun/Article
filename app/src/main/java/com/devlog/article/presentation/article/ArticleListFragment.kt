@@ -4,6 +4,7 @@ import android.content.Intent
 import android.graphics.Color
 import android.graphics.PorterDuff
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -130,7 +131,8 @@ class ArticleListFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
                     title = it.title,
                     text = it.snippet!!,
                     image = it.thumbnail!!,
-                    url = it.link
+                    url = it.link,
+                    articleId = it._id
                 )
             )
         }
@@ -145,6 +147,8 @@ class ArticleListFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
             startActivity(intent)
         }, {
             requireActivity().shareLink(it)
+        },{
+            viewModel.postBookmark(it)
         })
     }
 
