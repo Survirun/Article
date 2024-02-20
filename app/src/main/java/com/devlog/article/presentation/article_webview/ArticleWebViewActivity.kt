@@ -4,7 +4,9 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.text.method.ScrollingMovementMethod
 import android.util.Log
+import android.view.View
 import android.webkit.JavascriptInterface
 import android.webkit.WebChromeClient
 import android.webkit.WebResourceRequest
@@ -88,6 +90,11 @@ class ArticleWebViewActivity : AppCompatActivity() {
     }
 
     private fun initToolBar(){
+        binding.textView.movementMethod = ScrollingMovementMethod()
+        binding.aiButton.setOnCheckedChangeListener { _, isChecked ->
+            binding.textView.visibility = if (isChecked) View.VISIBLE else View.INVISIBLE
+        }
+
         binding.webView.setOnScrollChangeListener { v, scrollX, scrollY, oldScrollX, oldScrollY ->
             val contentHeight = binding.webView.contentHeight * binding.webView.scale
             val webViewHeight = binding.webView.height.toFloat()
