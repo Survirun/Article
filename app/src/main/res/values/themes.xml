@@ -27,5 +27,16 @@
         <item name="android:insetBottom">0dp</item>
         <item name="android:insetLeft">0dp</item>
         <item name="android:insetRight">0dp</item>
+        <item name="backgroundTint">@color/white</item>
+        <item name="rippleColor">@color/gray</item>
+    </style>
+    <style name="IconButtonWebView" parent="Widget.Material3.Button.IconButton">
+        <item name="iconSize">28dp</item>
+        <item name="iconTint">#A0A0AB</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
+        <item name="android:insetLeft">0dp</item>
+        <item name="android:insetRight">0dp</item>
+        <item name="rippleColor">@color/gray</item>
     </style>
 </resources>

@@ -88,10 +88,6 @@ class ArticleWebViewActivity : AppCompatActivity() {
     }
 
     private fun initToolBar(){
-        binding.backButton.setOnClickListener {
-            finish()
-        }
-
         binding.webView.setOnScrollChangeListener { v, scrollX, scrollY, oldScrollX, oldScrollY ->
             val contentHeight = binding.webView.contentHeight * binding.webView.scale
             val webViewHeight = binding.webView.height.toFloat()
