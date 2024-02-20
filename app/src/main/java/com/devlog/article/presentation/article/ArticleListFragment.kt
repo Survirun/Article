@@ -16,6 +16,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.devlog.article.R
 import com.devlog.article.data.entity.ArticleEntity
+import com.devlog.article.data.response.ArticleLogResponse
 import com.devlog.article.data.response.ArticleResponse
 import com.devlog.article.databinding.FragmentArticleBinding
 import com.devlog.article.presentation.article.adapter.ArticleAdapter
@@ -37,7 +38,7 @@ class ArticleListFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     val pageOffset by lazy {
         resources.getDimensionPixelOffset(R.dimen.offset).toFloat()
     }
-
+    var userViewArticlesId = arrayListOf<String>()
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -46,7 +47,7 @@ class ArticleListFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         viewModel = ArticleListViewModel()
 
         processArticleResponse()
-        //viewModel.postArticleLog(arrayListOf<ArticleLogResponse>( ArticleLogResponse(articleResponse.data[0]._id,"click"),ArticleLogResponse(articleResponse.data[1]._id,"click")))
+
         viewPagerInit()
         setBackgroundImage()
 
@@ -142,14 +143,21 @@ class ArticleListFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     fun adapterInit() {
 
         articleAdapter.setProductList(articles, {
+            userViewArticlesId.add(it.articleId)
             val intent = Intent(requireContext(), ArticleWebViewActivity::class.java)
-            intent.putExtra("url", it)
+            intent.putExtra("url", it.url)
             startActivity(intent)
         }, {
             requireActivity().shareLink(it)
         },{
             viewModel.postBookmark(it)
         })
+    }
+
+    override fun onStop() {
+        super.onStop()
+        Log.e("polaris","asfd")
+        //viewModel.postArticleLog(arrayListOf<ArticleLogResponse>( ArticleLogResponse(articleResponse.data[0]._id,"click"),ArticleLogResponse(articleResponse.data[1]._id,"click")))
     }
 
 

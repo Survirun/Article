@@ -5,6 +5,7 @@ package com.devlog.article.data.repository
 import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
+import com.devlog.article.data.entity.ArticleLogEntity
 import com.devlog.article.data.entity.LoginEntity
 import com.devlog.article.data.entity.MyKeyword
 import com.devlog.article.data.network.ApiService
@@ -77,7 +78,7 @@ class DefaultRepository private constructor(
     }
 
     override suspend fun postArticleLog(articleLogResponse: ArrayList<ArticleLogResponse>): Boolean= withContext(ioDispatcher) {
-        val response=api.postArticleLog(articleLogResponse)
+        val response=api.postArticleLog(ArticleLogEntity(articleLogResponse))
         Log.e("polaris",response.message().toString())
         Log.e("polaris",response.body().toString())
         return@withContext response.isSuccessful

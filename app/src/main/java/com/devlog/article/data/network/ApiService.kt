@@ -1,5 +1,6 @@
 package com.devlog.article.data.network
 
+import com.devlog.article.data.entity.ArticleLogEntity
 import com.devlog.article.data.entity.LoginEntity
 import com.devlog.article.data.entity.MyKeyword
 import com.devlog.article.data.response.ArticleLogResponse
@@ -37,5 +38,5 @@ interface ApiService {
     suspend fun getBookMaker():Response<ArticleResponse>
 
     @POST("log/multi")
-    suspend fun postArticleLog(@Body logs:List<ArticleLogResponse>) : Response<DefaultResponse>
+    suspend fun postArticleLog(@Body logs:ArticleLogEntity) : Response<DefaultResponse>
 }
