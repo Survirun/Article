@@ -142,21 +142,32 @@ class ArticleListFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
     fun adapterInit() {
 
-        articleAdapter.setProductList(articles, {
-            userViewArticlesId.add(it.articleId)
-            val intent = Intent(requireContext(), ArticleWebViewActivity::class.java)
-            intent.putExtra("url", it.url)
-            startActivity(intent)
-        }, {
-            requireActivity().shareLink(it)
-        },{
-            viewModel.postBookmark(it)
-        })
+        articleAdapter.setProductList(
+            productList = articles,
+            productItemClickListener = { articleDetails(it) },
+            articleShareClickListener = { shareArticle(it) },
+            articleBookmarkClickListener = { bookmarkArticle(it) }
+        )
+    }
+
+    fun articleDetails(articleEntity: ArticleEntity) {
+        userViewArticlesId.add(articleEntity.articleId)
+        val intent = Intent(requireContext(), ArticleWebViewActivity::class.java)
+        intent.putExtra("url", articleEntity.url)
+        startActivity(intent)
+    }
+
+    fun shareArticle(link: String) {
+        requireActivity().shareLink(link)
+    }
+
+    fun bookmarkArticle(articleId: String) {
+        viewModel.postBookmark(articleId)
     }
 
     override fun onStop() {
         super.onStop()
-        Log.e("polaris","asfd")
+        Log.e("polaris", "asfd")
         //viewModel.postArticleLog(arrayListOf<ArticleLogResponse>( ArticleLogResponse(articleResponse.data[0]._id,"click"),ArticleLogResponse(articleResponse.data[1]._id,"click")))
     }
 
