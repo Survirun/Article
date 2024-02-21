@@ -185,9 +185,9 @@ class ArticleListFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         userBookmarkArticleId.forEach {
             bookmarArticleLogResponseList.add(ArticleLogResponse(it,"bookmark"))
         }
-        if (userViewArticleId.size!=0) viewModel.postArticleLog(viewArticleLogResponseList)
-        if (userShareArticleId.size!=0) viewModel.postArticleLog(shareArticleLogResponseList)
-        if (userBookmarkArticleId.size!=0 )viewModel.postArticleLog(bookmarArticleLogResponseList)
+        //if (userViewArticleId.size!=0) viewModel.postArticleLog(viewArticleLogResponseList)
+        //if (userShareArticleId.size!=0) viewModel.postArticleLog(shareArticleLogResponseList)
+        //if (userBookmarkArticleId.size!=0 )viewModel.postArticleLog(bookmarArticleLogResponseList)
     }
 
 
