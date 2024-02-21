@@ -38,7 +38,9 @@ class ArticleListFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     val pageOffset by lazy {
         resources.getDimensionPixelOffset(R.dimen.offset).toFloat()
     }
-    var userViewArticlesId = arrayListOf<String>()
+    var userViewArticleId = arrayListOf<String>()
+    var userBookmarkArticleId = arrayListOf<String>()
+    var userShareArticleId=arrayListOf<String>()
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -151,24 +153,41 @@ class ArticleListFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     }
 
     fun articleDetails(articleEntity: ArticleEntity) {
-        userViewArticlesId.add(articleEntity.articleId)
+        userViewArticleId.add(articleEntity.articleId)
         val intent = Intent(requireContext(), ArticleWebViewActivity::class.java)
         intent.putExtra("url", articleEntity.url)
         startActivity(intent)
     }
 
-    fun shareArticle(link: String) {
-        requireActivity().shareLink(link)
+    fun shareArticle(articleEntity: ArticleEntity) {
+        userShareArticleId.add(articleEntity.articleId)
+        requireActivity().shareLink(articleEntity.url)
     }
 
     fun bookmarkArticle(articleId: String) {
+        userBookmarkArticleId.add(articleId)
         viewModel.postBookmark(articleId)
     }
 
     override fun onStop() {
         super.onStop()
         Log.e("polaris", "asfd")
-        //viewModel.postArticleLog(arrayListOf<ArticleLogResponse>( ArticleLogResponse(articleResponse.data[0]._id,"click"),ArticleLogResponse(articleResponse.data[1]._id,"click")))
+        val viewArticleLogResponseList = arrayListOf<ArticleLogResponse>()
+        val shareArticleLogResponseList = arrayListOf<ArticleLogResponse>()
+        val bookmarArticleLogResponseList = arrayListOf<ArticleLogResponse>()
+        userViewArticleId.forEach {
+            Log.e("polaris", "asfd")
+            viewArticleLogResponseList.add(ArticleLogResponse(it,"click"))
+        }
+        userShareArticleId.forEach {
+            shareArticleLogResponseList.add(ArticleLogResponse(it,"share"))
+        }
+        userBookmarkArticleId.forEach {
+            bookmarArticleLogResponseList.add(ArticleLogResponse(it,"bookmark"))
+        }
+        if (userViewArticleId.size!=0) viewModel.postArticleLog(viewArticleLogResponseList)
+        if (userShareArticleId.size!=0) viewModel.postArticleLog(shareArticleLogResponseList)
+        if (userBookmarkArticleId.size!=0 )viewModel.postArticleLog(bookmarArticleLogResponseList)
     }
 
 

@@ -21,7 +21,7 @@ import com.devlog.article.presentation.article.deetail.DetailActivity
 class ArticleAdapter() : RecyclerView.Adapter<ArticleAdapter.ArticleViewHolder>() {
     private var articleList:List<ArticleEntity> = listOf()
     private lateinit var articleItemClickListener: (link:ArticleEntity) -> Unit
-    private lateinit var  articleShareClickListener: (link:String) -> Unit
+    private lateinit var  articleShareClickListener: (link:ArticleEntity) -> Unit
     private lateinit var articleBookmarkClickListener : (articleId:String) -> Unit
     lateinit var articleViewHolder:ArticleViewHolder
 
@@ -40,7 +40,7 @@ class ArticleAdapter() : RecyclerView.Adapter<ArticleAdapter.ArticleViewHolder>(
 
             }
             binding.shareButton.setOnClickListener {
-                articleShareClickListener(data.url)
+                articleShareClickListener(data)
             }
             binding.card.setOnClickListener {
               //  articleItemClickListener(data)
@@ -101,7 +101,7 @@ class ArticleAdapter() : RecyclerView.Adapter<ArticleAdapter.ArticleViewHolder>(
     }
     override fun getItemCount(): Int = articleList.size
 
-    fun setProductList(productList: List<ArticleEntity>, productItemClickListener: (link:ArticleEntity) -> Unit={ } ,articleShareClickListener:(link:String)->Unit ={} ,articleBookmarkClickListener:(articleId:String)->Unit ={}){
+    fun setProductList(productList: List<ArticleEntity>, productItemClickListener: (link:ArticleEntity) -> Unit={ } ,articleShareClickListener:(link:ArticleEntity)->Unit ={} ,articleBookmarkClickListener:(articleId:String)->Unit ={}){
         this.articleList=productList
         this.articleItemClickListener=productItemClickListener
         this.articleShareClickListener = articleShareClickListener
