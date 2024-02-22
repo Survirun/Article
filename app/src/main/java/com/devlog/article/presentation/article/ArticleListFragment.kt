@@ -19,6 +19,8 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.devlog.article.R
 import com.devlog.article.data.entity.ArticleEntity
+import com.devlog.article.data.mixpanel.MixPanelManager
+import com.devlog.article.data.mixpanel.Mixpanel
 import com.devlog.article.data.response.ArticleLogResponse
 import com.devlog.article.data.response.ArticleResponse
 import com.devlog.article.databinding.FragmentArticleBinding
@@ -34,7 +36,7 @@ class ArticleListFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     var articleAdapter = ArticleAdapter()
     val articles = ArrayList<ArticleEntity>()
     lateinit var viewModel: ArticleListViewModel
-
+    lateinit var mixpanel: MixPanelManager
     val pageMargin by lazy {
         resources.getDimensionPixelOffset(R.dimen.pageMargin).toFloat()
     }
@@ -50,6 +52,7 @@ class ArticleListFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     ): View {
         binding = FragmentArticleBinding.inflate(layoutInflater)
         viewModel = ArticleListViewModel()
+
         lifecycle.addObserver(object: LifecycleEventObserver {
             override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
                 when (event) {
@@ -184,6 +187,7 @@ class ArticleListFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     }
 
     fun articleDetails(articleEntity: ArticleEntity) {
+        MixPanelManager.articleClick(articleEntity.title)
         userViewArticleId.add(articleEntity.articleId)
         val intent = Intent(requireContext(), ArticleWebViewActivity::class.java)
         intent.putExtra("url", articleEntity.url)
@@ -191,13 +195,15 @@ class ArticleListFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     }
 
     fun shareArticle(articleEntity: ArticleEntity) {
+        MixPanelManager.articleShare(articleEntity.title)
         userShareArticleId.add(articleEntity.articleId)
         requireActivity().shareLink(articleEntity.url)
     }
 
-    fun bookmarkArticle(articleId: String) {
-        userBookmarkArticleId.add(articleId)
-        viewModel.postBookmark(articleId)
+    fun bookmarkArticle(articleEntity: ArticleEntity) {
+        MixPanelManager.articleBookmark(articleEntity.title)
+        userBookmarkArticleId.add(articleEntity.articleId)
+        viewModel.postBookmark(articleEntity.articleId)
     }
     val viewArticleLogResponseList = arrayListOf<ArticleLogResponse>()
     val shareArticleLogResponseList = arrayListOf<ArticleLogResponse>()

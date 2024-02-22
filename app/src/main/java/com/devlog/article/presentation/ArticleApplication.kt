@@ -3,6 +3,7 @@ package com.devlog.article.presentation
 import android.app.Application
 import android.content.Context
 import android.util.Log
+import com.devlog.article.data.mixpanel.MixPanelManager
 import com.devlog.article.data.preference.UserPreference
 
 class ArticleApplication : Application() {
@@ -17,8 +18,14 @@ class ArticleApplication : Application() {
     }
     init {
         instance =this
+
         Log.e("dfafs","safsfdsfsdfsd")
 
+
+    }
+    override fun onCreate() {
+        super.onCreate()
+        MixPanelManager.init(applicationContext)
     }
 
 }

@@ -5,7 +5,7 @@ import android.content.Context
 import android.content.SharedPreferences
 
 
-class UserPreference private constructor(context: Context) {
+class UserPreference private constructor(private var context: Context) {
     companion object {
 
         // Instance 생성
@@ -39,7 +39,19 @@ class UserPreference private constructor(context: Context) {
             userPreferenceEditor.putString(PreferenceConstants.USER_UID, v)
             userPreferenceEditor.apply()
         }
+    var userName: String
+        get() = userPreference.getString(PreferenceConstants.USER_NAME, "")!!
+        set(v) {
+            userPreferenceEditor.putString(PreferenceConstants.USER_NAME, v)
+            userPreferenceEditor.apply()
+        }
 
+    var userAge :String
+        get() = userPreference.getString(PreferenceConstants.USER_AGE, "")!!
+        set(v) {
+            userPreferenceEditor.putString(PreferenceConstants.USER_AGE, v)
+            userPreferenceEditor.apply()
+        }
 
 
 }
