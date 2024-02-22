@@ -31,7 +31,12 @@ class BookmarkViewModel:ViewModel() {
             DefaultRepository.getInstance(api, ioDispatcher = Dispatchers.IO)
         val serverCode = repository.getBookMaker()
 
-        article=serverCode!!.data
+        if (serverCode!=null) {
+            article=serverCode.data
+            succeed()
+        }else{
+            failed()
+        }
 
 
     }
