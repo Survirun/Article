@@ -50,15 +50,11 @@ class ArticleListViewModel : ViewModel() {
                 provideGsonConverterFactory()
             )
         )
-
-        val repository: Repository =
-            DefaultRepository.getInstance(api, ioDispatcher = Dispatchers.IO)
+        val repository: Repository = DefaultRepository.getInstance(api, ioDispatcher = Dispatchers.IO)
         val serverCode = repository.postArticleLog(postArticleLogResponse)
         if (serverCode!=null) {
 
-        } else {
-
-        }
+        } else { }
 
     }
 

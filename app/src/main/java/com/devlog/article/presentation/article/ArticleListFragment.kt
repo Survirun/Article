@@ -168,15 +168,12 @@ class ArticleListFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         userBookmarkArticleId.add(articleId)
         viewModel.postBookmark(articleId)
     }
-
+    val viewArticleLogResponseList = arrayListOf<ArticleLogResponse>()
+    val shareArticleLogResponseList = arrayListOf<ArticleLogResponse>()
+    val bookmarArticleLogResponseList = arrayListOf<ArticleLogResponse>()
     override fun onStop() {
         super.onStop()
-        Log.e("polaris", "asfd")
-        val viewArticleLogResponseList = arrayListOf<ArticleLogResponse>()
-        val shareArticleLogResponseList = arrayListOf<ArticleLogResponse>()
-        val bookmarArticleLogResponseList = arrayListOf<ArticleLogResponse>()
         userViewArticleId.forEach {
-            Log.e("polaris", "asfd")
             viewArticleLogResponseList.add(ArticleLogResponse(it,"click"))
         }
         userShareArticleId.forEach {
@@ -185,9 +182,16 @@ class ArticleListFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         userBookmarkArticleId.forEach {
             bookmarArticleLogResponseList.add(ArticleLogResponse(it,"bookmark"))
         }
-        //if (userViewArticleId.size!=0) viewModel.postArticleLog(viewArticleLogResponseList)
-        //if (userShareArticleId.size!=0) viewModel.postArticleLog(shareArticleLogResponseList)
-        //if (userBookmarkArticleId.size!=0 )viewModel.postArticleLog(bookmarArticleLogResponseList)
+        
+        if (userViewArticleId.size!=0){
+            viewModel.postArticleLog(viewArticleLogResponseList)
+        }
+        if (userShareArticleId.size!=0) {
+            viewModel.postArticleLog(shareArticleLogResponseList)
+        }
+        if (userBookmarkArticleId.size!=0 ){
+            viewModel.postArticleLog(bookmarArticleLogResponseList)
+        }
     }
 
 

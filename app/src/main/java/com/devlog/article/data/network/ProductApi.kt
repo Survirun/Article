@@ -36,9 +36,7 @@ internal fun provideProductRetrofit(
 
 internal fun provideGsonConverterFactory(): GsonConverterFactory {
     return GsonConverterFactory.create(
-        GsonBuilder()
-            .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
-            .create()
+        GsonBuilder().create()
     )
 }
 //로그인 할 때 만 사용

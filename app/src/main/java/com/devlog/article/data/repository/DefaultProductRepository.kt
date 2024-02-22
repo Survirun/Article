@@ -72,15 +72,11 @@ class DefaultRepository private constructor(
 
     override suspend fun getBookMaker(): ArticleResponse? = withContext(ioDispatcher){
         val response=api.getBookMaker()
-        Log.e("test",response.code().toString())
-        Log.e("test",response.body()!!.data.toString())
         return@withContext  response.body()
     }
 
     override suspend fun postArticleLog(articleLogResponse: ArrayList<ArticleLogResponse>): Boolean= withContext(ioDispatcher) {
         val response=api.postArticleLog(ArticleLogEntity(articleLogResponse))
-        Log.e("polaris",response.message().toString())
-        Log.e("polaris",response.body().toString())
         return@withContext response.isSuccessful
     }
 
