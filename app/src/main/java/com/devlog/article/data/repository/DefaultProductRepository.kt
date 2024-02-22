@@ -76,7 +76,10 @@ class DefaultRepository private constructor(
     }
 
     override suspend fun postArticleLog(articleLogResponse: ArrayList<ArticleLogResponse>): Boolean= withContext(ioDispatcher) {
+        Log.e("polaris","실행2")
         val response=api.postArticleLog(ArticleLogEntity(articleLogResponse))
+        Log.e("polaris",response.message().toString())
+        Log.e("polaris",response.body().toString())
         return@withContext response.isSuccessful
     }
 

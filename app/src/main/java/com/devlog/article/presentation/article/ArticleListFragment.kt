@@ -9,6 +9,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.LifecycleOwner
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.viewpager2.widget.ViewPager2
 import com.bumptech.glide.Glide
@@ -47,7 +50,35 @@ class ArticleListFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     ): View {
         binding = FragmentArticleBinding.inflate(layoutInflater)
         viewModel = ArticleListViewModel()
+        lifecycle.addObserver(object: LifecycleEventObserver {
+            override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
+                when (event) {
+                    Lifecycle.Event.ON_STOP -> {
+                        userViewArticleId.forEach {
+                            viewArticleLogResponseList.add(ArticleLogResponse(it,"click"))
+                        }
+                        userShareArticleId.forEach {
+                            shareArticleLogResponseList.add(ArticleLogResponse(it,"share"))
+                        }
+                        userBookmarkArticleId.forEach {
+                            bookmarArticleLogResponseList.add(ArticleLogResponse(it,"bookmark"))
+                        }
 
+                        if (userViewArticleId.size!=0){
+                            viewModel.postArticleLog(viewArticleLogResponseList)
+                        }
+                        if (userShareArticleId.size!=0) {
+                            viewModel.postArticleLog(shareArticleLogResponseList)
+                        }
+                        if (userBookmarkArticleId.size!=0 ){
+                            viewModel.postArticleLog(bookmarArticleLogResponseList)
+                        }
+                    }
+
+                    else -> { }
+                }
+            }
+        })
         processArticleResponse()
 
         viewPagerInit()
@@ -173,25 +204,7 @@ class ArticleListFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     val bookmarArticleLogResponseList = arrayListOf<ArticleLogResponse>()
     override fun onStop() {
         super.onStop()
-        userViewArticleId.forEach {
-            viewArticleLogResponseList.add(ArticleLogResponse(it,"click"))
-        }
-        userShareArticleId.forEach {
-            shareArticleLogResponseList.add(ArticleLogResponse(it,"share"))
-        }
-        userBookmarkArticleId.forEach {
-            bookmarArticleLogResponseList.add(ArticleLogResponse(it,"bookmark"))
-        }
-        
-        if (userViewArticleId.size!=0){
-            viewModel.postArticleLog(viewArticleLogResponseList)
-        }
-        if (userShareArticleId.size!=0) {
-            viewModel.postArticleLog(shareArticleLogResponseList)
-        }
-        if (userBookmarkArticleId.size!=0 ){
-            viewModel.postArticleLog(bookmarArticleLogResponseList)
-        }
+
     }
 
 
