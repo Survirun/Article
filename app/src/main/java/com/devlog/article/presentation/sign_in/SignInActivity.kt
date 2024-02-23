@@ -98,6 +98,7 @@ class SignInActivity : AppCompatActivity() {
 
                         userPreference.userUid=task.result.user!!.uid
                         // 로그인 성공
+                        userPreference.userName=task.result.user!!.displayName.toString()
 
                         loginViewModel.login( userPreference.userUid,task.result.user!!.email.toString(),task.result.user!!.displayName.toString())
 

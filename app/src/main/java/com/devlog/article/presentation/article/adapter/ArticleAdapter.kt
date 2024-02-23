@@ -22,7 +22,7 @@ class ArticleAdapter() : RecyclerView.Adapter<ArticleAdapter.ArticleViewHolder>(
     private var articleList:List<ArticleEntity> = listOf()
     private lateinit var articleItemClickListener: (link:ArticleEntity) -> Unit
     private lateinit var  articleShareClickListener: (link:ArticleEntity) -> Unit
-    private lateinit var articleBookmarkClickListener : (articleId:String) -> Unit
+    private lateinit var articleBookmarkClickListener : (articleId:ArticleEntity) -> Unit
     lateinit var articleViewHolder:ArticleViewHolder
 
     inner class ArticleViewHolder(
@@ -90,7 +90,7 @@ class ArticleAdapter() : RecyclerView.Adapter<ArticleAdapter.ArticleViewHolder>(
         }
         holder.binding.bookmarkButton.setOnClickListener {
             articleViewHolder=holder
-            articleBookmarkClickListener(articleList[position].articleId)
+            articleBookmarkClickListener(articleList[position])
         }
 
 
@@ -101,7 +101,7 @@ class ArticleAdapter() : RecyclerView.Adapter<ArticleAdapter.ArticleViewHolder>(
     }
     override fun getItemCount(): Int = articleList.size
 
-    fun setProductList(productList: List<ArticleEntity>, productItemClickListener: (link:ArticleEntity) -> Unit={ } ,articleShareClickListener:(link:ArticleEntity)->Unit ={} ,articleBookmarkClickListener:(articleId:String)->Unit ={}){
+    fun setProductList(productList: List<ArticleEntity>, productItemClickListener: (link:ArticleEntity) -> Unit={ } ,articleShareClickListener:(link:ArticleEntity)->Unit ={} ,articleBookmarkClickListener:(link:ArticleEntity)->Unit ={}){
         this.articleList=productList
         this.articleItemClickListener=productItemClickListener
         this.articleShareClickListener = articleShareClickListener
