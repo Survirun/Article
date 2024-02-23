@@ -8,6 +8,7 @@ import android.util.Log
 import com.devlog.article.data.entity.ArticleLogEntity
 import com.devlog.article.data.entity.LoginEntity
 import com.devlog.article.data.entity.MyKeyword
+import com.devlog.article.data.entity.Page
 import com.devlog.article.data.network.ApiService
 import com.devlog.article.data.preference.UserPreference
 import com.devlog.article.data.response.ArticleLogResponse
@@ -56,7 +57,7 @@ class DefaultRepository private constructor(
     }
 
     override suspend fun getArticle(): ArticleResponse? = withContext(ioDispatcher) {
-        val response=api.getArticle()
+        val response=api.getArticle(1)
         return@withContext if (response.isSuccessful){
             response.body()
         }else{

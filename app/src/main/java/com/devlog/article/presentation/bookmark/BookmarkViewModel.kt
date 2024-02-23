@@ -32,7 +32,7 @@ class BookmarkViewModel:ViewModel() {
         val serverCode = repository.getBookMaker()
 
         if (serverCode!=null) {
-            article=serverCode.data
+            article=serverCode.data.articles
             succeed()
         }else{
             failed()

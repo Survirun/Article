@@ -156,7 +156,7 @@ class ArticleListFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     }
 
     private fun processArticleResponse() {
-        articleResponse.data.forEach {
+        articleResponse.data.articles.forEach {
             if (it.data == null) {
                 it.data = ""
             }
