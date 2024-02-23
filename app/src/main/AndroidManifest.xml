@@ -11,12 +11,16 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Article"
-        tools:targetApi="31"
-        android:usesCleartextTraffic="true">
+        android:usesCleartextTraffic="true"
+        tools:targetApi="31">
+        <activity
+            android:name=".presentation.bookmark.Bookmark"
+            android:exported="false"
+            android:label="@string/title_activity_bookmark"
+            android:theme="@style/Theme.Article" />
         <activity
             android:name=".presentation.article_webview.ArticleWebViewActivity"
             android:exported="false" />
-
         <activity
             android:name=".presentation.my_keywords_select.MyKeywordSelectActivity"
             android:exported="true"
