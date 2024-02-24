@@ -32,12 +32,22 @@ class BookmarkViewModel:ViewModel() {
         val serverCode = repository.getBookMaker()
 
         if (serverCode!=null) {
-            article=serverCode.data.articles
-            succeed()
-        }else{
-            failed()
+            article=serverCode.data
         }
-
+    }
+    fun postBookmark(articleId:String) : Job=viewModelScope.launch {
+        val api = ApiService(
+            provideNaverRetrofit(
+                buildOkHttpClient(),
+                provideGsonConverterFactory()
+            )
+        )
+        val repository: Repository =
+            DefaultRepository.getInstance(api, ioDispatcher = Dispatchers.IO)
+        val serverCode = repository.postBookmark(articleId)
+        if(serverCode){
+            succeed()
+        }
 
     }
 }

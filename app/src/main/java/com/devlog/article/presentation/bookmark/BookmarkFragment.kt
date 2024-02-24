@@ -7,11 +7,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -24,24 +20,25 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.BookmarkAdded
-import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material.icons.outlined.BookmarkAdded
-import androidx.compose.material.icons.outlined.Check
-import androidx.compose.material.icons.rounded.ArrowDropDown
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.ComposeView
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -49,20 +46,19 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.fragment.app.Fragment
 import coil.compose.AsyncImage
 import com.devlog.article.R
 import com.devlog.article.data.response.Article
 import com.devlog.article.presentation.ui.theme.ArticleTheme
-import com.devlog.article.presentation.ui.theme.BaseColumn
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
 
 
 var articleList = listOf<Article>()
-
+private var viewModel = BookmarkViewModel()
 class BookmarkFragment : Fragment() {
-    private var viewModel = BookmarkViewModel()
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -70,41 +66,78 @@ class BookmarkFragment : Fragment() {
     ): View {
 
         return ComposeView(requireContext()).apply {
-            val bookmark = readFromSharedPreferences(requireContext())
-            val listType = object : TypeToken<List<Article>>() {}.type
-            val gson = GsonBuilder().create()
-            articleList = gson.fromJson(bookmark, listType)
+            readFromSharedPreferences(requireContext())
+
             setContent {
                 ArticleTheme {
                     // A surface container using the 'background' color from the theme
-                    Surface(
-                        modifier = Modifier.fillMaxSize(),
-                        color = MaterialTheme.colorScheme.background
-                    ) {
-                        BookmarkList(articleList)
-                    }
+                    Main(requireContext())
                 }
             }
         }
     }
 }
+@Composable
+fun Main(context: Context){
 
-fun readFromSharedPreferences(context: Context): String {
-    val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
-    return sharedPreferences.getString("Bookmark", "") ?: ""
+    fun deleteTodo(id: String) {
+        viewModel.postBookmark(id)
+        articleList = articleList.filter { it._id != id }
+        viewModel.succeed={
+            val bookmark = GsonBuilder().create().toJson(articleList)
+            saveToSharedPreferences(bookmark, context)
+        }
+    }
+
+    val (showDialog, setShowDialog) =
+        rememberSaveable { mutableStateOf(false) }
+    var deleteItem by rememberSaveable { mutableStateOf("") }
+
+    Surface(
+        modifier = Modifier.fillMaxSize(),
+        color = MaterialTheme.colorScheme.background
+    ) {
+        BookmarkList(articleList,
+            onDelete = {
+                deleteItem = it
+                setShowDialog(true)
+            })
+        DeleteDialog(showDialog, setShowDialog) {
+            deleteTodo(deleteItem)
+        }
+    }
 }
 
+fun saveToSharedPreferences(value: String, context: Context) {
+    val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+    val editor = sharedPreferences.edit()
+    editor.putString("Bookmark", value)
+    editor.apply()
+}
+fun readFromSharedPreferences(context: Context) {
+    val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+    val bookmark =  sharedPreferences.getString("Bookmark", "") ?: ""
+    val listType = object : TypeToken<List<Article>>() {}.type
+    val gson = GsonBuilder().create()
+    articleList = gson.fromJson(bookmark, listType)
+}
+
+
 @Composable
-fun BookmarkList(articleList: List<Article>) {
+fun BookmarkList(
+    articleList: List<Article>,
+    onDelete: (i: String) -> Unit
+) {
     LazyColumn {
         items(articleList) {
-            BookmarkItem(it)
+            BookmarkItem(it,
+                onDelete = { onDelete(it._id) })
         }
     }
 }
 
 @Composable
-fun BookmarkItem(article: Article) {
+fun BookmarkItem(article: Article, onDelete: () -> Unit) {
     Row(
         modifier = Modifier
             .background(Color.White)
@@ -125,7 +158,9 @@ fun BookmarkItem(article: Article) {
             ItemText(article.snippet!!, Color(0xFFA0A0AB))
         }
         IconButton(
-            onClick = {},
+            onClick = {
+                onDelete()
+            },
             modifier = Modifier.size(32.dp),
         ) {
             Icon(
@@ -152,6 +187,39 @@ fun ItemText(text: String, color: Color) {
     )
 }
 
+@Composable
+fun DeleteDialog(
+    showDialog: Boolean,
+    setShowDialog: (Boolean) -> Unit,
+    onConfirm: () -> Unit
+) {
+    if (!showDialog) return
+    AlertDialog(
+        onDismissRequest = { setShowDialog(false) },
+        title = { Text(text = "정말 삭제?") },
+        text = { Text(text = "레알루다가?") },
+        confirmButton = {
+            Button(
+                onClick = {
+                    onConfirm()
+                    setShowDialog(false)
+                }) {
+                Text(
+                    text = "확인"
+                )
+            }
+        },
+        dismissButton = {
+            Button(
+                onClick = { setShowDialog(false) }) {
+                Text(
+                    text = "취소"
+                )
+            }
+        }
+    )
+}
+
 @Preview(showBackground = true)
 @Composable
 fun Preview() {
@@ -161,7 +229,7 @@ fun Preview() {
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background
         ) {
-            BookmarkList(articleList)
+//            BookmarkList(articleList)
         }
     }
 }
