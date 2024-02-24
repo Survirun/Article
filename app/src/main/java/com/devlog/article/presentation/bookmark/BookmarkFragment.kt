@@ -92,18 +92,22 @@ fun Main(context: Context){
     val (showDialog, setShowDialog) =
         rememberSaveable { mutableStateOf(false) }
     var deleteItem by rememberSaveable { mutableStateOf("") }
-
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = MaterialTheme.colorScheme.background
     ) {
-        BookmarkList(articleList,
-            onDelete = {
-                deleteItem = it
-                setShowDialog(true)
-            })
-        DeleteDialog(showDialog, setShowDialog) {
-            deleteTodo(deleteItem)
+        if(articleList.isNotEmpty()){
+
+            BookmarkList(articleList,
+                onDelete = {
+                    deleteItem = it
+                    setShowDialog(true)
+                })
+            DeleteDialog(showDialog, setShowDialog) {
+                deleteTodo(deleteItem)
+            }
+        }else{
+            Text("비어있음")
         }
     }
 }
