@@ -35,7 +35,7 @@ class ArticleAdapter() : RecyclerView.Adapter<ArticleAdapter.ArticleViewHolder>(
                 title.text = data.title
                 text.text = data.text
                 Glide.with(itemView)
-                    .load(data.image)
+                    .load(if(data.url.contains("yozm.wishket")) R.drawable.yozm else data.image)
                     .into(binding.image)
 
             }
@@ -96,8 +96,8 @@ class ArticleAdapter() : RecyclerView.Adapter<ArticleAdapter.ArticleViewHolder>(
 
     }
 
-    fun getImage(position: Int) : String{
-        return articleList[position].image
+    fun getImage(position: Int) : Any{
+        return if(articleList[position].url.contains("yozm.wishket")) R.drawable.yozm else articleList[position].image
     }
     override fun getItemCount(): Int = articleList.size
 

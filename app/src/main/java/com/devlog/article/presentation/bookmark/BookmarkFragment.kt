@@ -131,7 +131,7 @@ fun BookmarkItem(article: ArticleEntity, onDelete: () -> Unit) {
         verticalAlignment = Alignment.CenterVertically
     ) {
         AsyncImage(
-            model = article.image,
+            model = if(article.url.contains("yozm.wishket")) R.drawable.yozm else article.image,
             contentDescription = null,
             contentScale = ContentScale.Crop,
             modifier = Modifier
