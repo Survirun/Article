@@ -1,8 +1,6 @@
 package com.devlog.article.presentation.bookmark
 
-import android.content.Context
 import android.os.Bundle
-import android.preference.PreferenceManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -50,12 +48,12 @@ import coil.compose.AsyncImage
 import com.devlog.article.R
 import com.devlog.article.data.response.Article
 import com.devlog.article.presentation.ui.theme.ArticleTheme
-import com.google.gson.GsonBuilder
 
 
 var articleList = listOf<Article>()
 private var viewModel = BookmarkViewModel()
-lateinit var bookmarkSharedPreferencesHelper : BookmarkSharedPreferencesHelper
+lateinit var bookmarkSharedPreferencesHelper: BookmarkSharedPreferencesHelper
+
 class BookmarkFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -69,19 +67,20 @@ class BookmarkFragment : Fragment() {
             setContent {
                 ArticleTheme {
                     // A surface container using the 'background' color from the theme
-                    Main(requireContext())
+                    Main()
                 }
             }
         }
     }
 }
+
 @Composable
-fun Main(context: Context){
+fun Main() {
 
     fun deleteTodo(id: String) {
         viewModel.postBookmark(id)
         articleList = articleList.filter { it._id != id }
-        viewModel.succeed={
+        viewModel.succeed = {
             bookmarkSharedPreferencesHelper.saveToSharedPreferences(articleList)
         }
     }
@@ -93,7 +92,7 @@ fun Main(context: Context){
         modifier = Modifier.fillMaxSize(),
         color = MaterialTheme.colorScheme.background
     ) {
-        if(articleList.isNotEmpty()){
+        if (articleList.isNotEmpty()) {
 
             BookmarkList(articleList,
                 onDelete = {
@@ -103,7 +102,7 @@ fun Main(context: Context){
             DeleteDialog(showDialog, setShowDialog) {
                 deleteTodo(deleteItem)
             }
-        }else{
+        } else {
             Text("비어있음")
         }
     }
@@ -188,7 +187,7 @@ fun DeleteDialog(
             Button(
                 onClick = {
                     onConfirm()
-                    viewModel.succeed={
+                    viewModel.succeed = {
                         setShowDialog(false)
                     }
                 }) {
