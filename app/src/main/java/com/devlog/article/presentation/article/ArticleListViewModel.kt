@@ -13,6 +13,7 @@ import com.devlog.article.data.repository.Repository
 import com.devlog.article.data.response.Article
 import com.devlog.article.data.response.ArticleLogResponse
 import com.devlog.article.data.response.ArticleResponse
+import com.devlog.article.data.response.BookmarkResponse
 import com.devlog.article.extensions.toMD5
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -22,6 +23,9 @@ class ArticleListViewModel : ViewModel() {
     lateinit var succeed :()->Unit
     lateinit var failed :()->Unit
     lateinit var article: ArticleResponse
+    lateinit var bookmark: List<Article>
+    lateinit var bookmark_succeed :()->Unit
+
     fun getArticle(passed:ArrayList<String>): Job = viewModelScope.launch {
         val api = ApiService(
             provideProductRetrofit(
@@ -74,5 +78,21 @@ class ArticleListViewModel : ViewModel() {
             failed()
         }
 
+    }
+    fun getBookMaker() : Job=viewModelScope.launch {
+        val api = ApiService(
+            provideNaverRetrofit(
+                buildOkHttpClient(),
+                provideGsonConverterFactory()
+            )
+        )
+        val repository: Repository =
+            DefaultRepository.getInstance(api, ioDispatcher = Dispatchers.IO)
+        val serverCode = repository.getBookMaker()
+
+        if (serverCode!=null) {
+            bookmark=serverCode.data
+            bookmark_succeed()
+        }
     }
 }

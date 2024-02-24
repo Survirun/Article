@@ -12,6 +12,7 @@ import com.devlog.article.data.entity.Passed
 import com.devlog.article.data.network.ApiService
 import com.devlog.article.data.response.ArticleLogResponse
 import com.devlog.article.data.response.ArticleResponse
+import com.devlog.article.data.response.BookmarkResponse
 import com.devlog.article.data.response.UserInfoEntity
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
@@ -67,7 +68,7 @@ class DefaultRepository private constructor(
         return@withContext response.isSuccessful
     }
 
-    override suspend fun getBookMaker(): ArticleResponse? = withContext(ioDispatcher){
+    override suspend fun getBookMaker(): BookmarkResponse? = withContext(ioDispatcher){
         val response=api.getBookMaker()
         return@withContext  response.body()
     }

@@ -27,6 +27,7 @@ import com.devlog.article.data.response.ArticleResponse
 import com.devlog.article.databinding.FragmentArticleBinding
 import com.devlog.article.presentation.article.adapter.ArticleAdapter
 import com.devlog.article.presentation.article_webview.ArticleWebViewActivity
+import com.devlog.article.presentation.bookmark.BookmarkSharedPreferencesHelper
 import com.devlog.article.utility.shareLink
 import jp.wasabeef.glide.transformations.BlurTransformation
 
@@ -38,6 +39,7 @@ class ArticleListFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     val articles = ArrayList<ArticleEntity>()
     lateinit var viewModel: ArticleListViewModel
     lateinit var mixpanel: MixPanelManager
+    lateinit var bookmarkSharedPreferencesHelper : BookmarkSharedPreferencesHelper
     val pageMargin by lazy {
         resources.getDimensionPixelOffset(R.dimen.pageMargin).toFloat()
     }
@@ -48,12 +50,15 @@ class ArticleListFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     var userBookmarkArticleId = arrayListOf<String>()
     var userShareArticleId=arrayListOf<String>()
     lateinit var userPreference : UserPreference
+    var isBookmark = false
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentArticleBinding.inflate(layoutInflater)
         viewModel = ArticleListViewModel()
+        bookmarkSharedPreferencesHelper = BookmarkSharedPreferencesHelper(requireContext())
+        isBookmark = false
         userPreference= UserPreference.getInstance(requireContext())
         lifecycle.addObserver(object: LifecycleEventObserver {
             override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
@@ -205,6 +210,7 @@ class ArticleListFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     }
 
     fun bookmarkArticle(articleEntity: ArticleEntity) {
+        isBookmark = true
         MixPanelManager.articleBookmark(articleEntity.title)
         userBookmarkArticleId.add(articleEntity.articleId)
         viewModel.postBookmark(articleEntity.articleId)
@@ -217,5 +223,14 @@ class ArticleListFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
     }
 
+    override fun onPause() {
+        super.onPause()
+        if(isBookmark){
+            viewModel.getBookMaker()
+            viewModel.bookmark_succeed={
+                bookmarkSharedPreferencesHelper.saveToSharedPreferences(viewModel.bookmark)
+            }
+        }
+    }
 
 }
