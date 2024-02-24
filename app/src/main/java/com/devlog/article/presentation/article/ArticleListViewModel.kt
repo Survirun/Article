@@ -22,7 +22,7 @@ class ArticleListViewModel : ViewModel() {
     lateinit var succeed :()->Unit
     lateinit var failed :()->Unit
     lateinit var article: ArticleResponse
-    fun getArticle(): Job = viewModelScope.launch {
+    fun getArticle(passed:ArrayList<String>): Job = viewModelScope.launch {
         val api = ApiService(
             provideProductRetrofit(
                 buildOkHttpClient(),
@@ -32,7 +32,7 @@ class ArticleListViewModel : ViewModel() {
 
         val repository: Repository =
             DefaultRepository.getInstance(api, ioDispatcher = Dispatchers.IO)
-        val serverCode = repository.getArticle()
+        val serverCode = repository.getArticle(1,passed)
         if (serverCode!=null) {
             article=serverCode
             succeed()

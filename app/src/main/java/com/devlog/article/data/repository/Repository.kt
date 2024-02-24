@@ -18,7 +18,7 @@ interface Repository {
 
     suspend fun getUserInfo():UserInfoEntity?
 
-    suspend fun getArticle():ArticleResponse?
+    suspend fun getArticle(page:Int,passed:ArrayList<String>):ArticleResponse?
 
     suspend fun postBookmark(articleId:String):Boolean
 

@@ -3,7 +3,7 @@ package com.devlog.article.data.network
 import com.devlog.article.data.entity.ArticleLogEntity
 import com.devlog.article.data.entity.LoginEntity
 import com.devlog.article.data.entity.MyKeyword
-import com.devlog.article.data.entity.Page
+import com.devlog.article.data.entity.Passed
 import com.devlog.article.data.response.ArticleLogResponse
 import com.devlog.article.data.response.ArticleResponse
 import com.devlog.article.data.response.DefaultResponse
@@ -29,8 +29,8 @@ interface ApiService {
     suspend fun getUserInfo():Response<UserInfoEntity>
 
     //유저 기사 가져오기
-    @GET("article")
-    suspend fun getArticle(@Query("page")page:Int):Response<ArticleResponse>
+    @POST("article")
+    suspend fun getArticle(@Query("page")page:Int,@Body passed : Passed?):Response<ArticleResponse>
 
     //북마크 삭제 또는 추가 서버에서 판단함
     @POST("bookmark/{articleId}")

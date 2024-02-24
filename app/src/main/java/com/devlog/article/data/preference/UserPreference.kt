@@ -3,6 +3,8 @@ package com.devlog.article.data.preference
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 
 
 class UserPreference private constructor(private var context: Context) {
@@ -52,6 +54,15 @@ class UserPreference private constructor(private var context: Context) {
             userPreferenceEditor.putString(PreferenceConstants.USER_AGE, v)
             userPreferenceEditor.apply()
         }
+    fun setUserPagePassed(value: ArrayList<String>?) {
+        val json = Gson().toJson(value)
+        userPreferenceEditor.putString("Pages_passed_user", json).apply()
+    }
 
+
+    fun getUserPagePassed(): ArrayList<String> {
+        val json = userPreference.getString("Pages_passed_user", null)
+        return Gson().fromJson(json, object: TypeToken<ArrayList<String>>() {}.type) ?: arrayListOf<String>()
+    }
 
 }

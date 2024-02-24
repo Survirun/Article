@@ -53,7 +53,7 @@ class SplashActivity : ComponentActivity()  {
             if ( userPreference.userSignInCheck){
                 if (userPreference.userKeywordCheck){
 
-                   viewModel.getArticle()
+                   viewModel.getArticle(userPreference.getUserPagePassed())
                 }else{
                     Handler(Looper.getMainLooper()).postDelayed({
                         startActivity(Intent(this,MyKeywordSelectActivity::class.java))

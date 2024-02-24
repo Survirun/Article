@@ -3,21 +3,18 @@ package com.devlog.article.data.repository
 
 
 import android.annotation.SuppressLint
-import android.content.Context
+import android.graphics.pdf.PdfDocument.Page
 import android.util.Log
 import com.devlog.article.data.entity.ArticleLogEntity
 import com.devlog.article.data.entity.LoginEntity
 import com.devlog.article.data.entity.MyKeyword
-import com.devlog.article.data.entity.Page
+import com.devlog.article.data.entity.Passed
 import com.devlog.article.data.network.ApiService
-import com.devlog.article.data.preference.UserPreference
 import com.devlog.article.data.response.ArticleLogResponse
 import com.devlog.article.data.response.ArticleResponse
 import com.devlog.article.data.response.UserInfoEntity
-
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
-import java.util.ArrayList
 
 class DefaultRepository private constructor(
     private val api: ApiService,
@@ -56,8 +53,8 @@ class DefaultRepository private constructor(
         }
     }
 
-    override suspend fun getArticle(): ArticleResponse? = withContext(ioDispatcher) {
-        val response=api.getArticle(1)
+    override suspend fun getArticle(page:Int,passed:ArrayList<String>): ArticleResponse? = withContext(ioDispatcher) {
+        val response=api.getArticle(1, Passed(passed))
         return@withContext if (response.isSuccessful){
             response.body()
         }else{
@@ -67,7 +64,6 @@ class DefaultRepository private constructor(
 
     override suspend fun postBookmark(articleId:String): Boolean = withContext(ioDispatcher) {
         val response=api.postBookmark(articleId)
-        Log.e("test",response.code().toString())
         return@withContext response.isSuccessful
     }
 
@@ -77,10 +73,7 @@ class DefaultRepository private constructor(
     }
 
     override suspend fun postArticleLog(articleLogResponse: ArrayList<ArticleLogResponse>): Boolean= withContext(ioDispatcher) {
-        Log.e("polaris","실행2")
         val response=api.postArticleLog(ArticleLogEntity(articleLogResponse))
-        Log.e("polaris",response.message().toString())
-        Log.e("polaris",response.body().toString())
         return@withContext response.isSuccessful
     }
 

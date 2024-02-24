@@ -49,7 +49,7 @@ class MyKeywordSelectActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         userPreference=UserPreference.getInstance(this)
-        viewModel.succeed={
+        viewModel.succeedGetArticle={
             userPreference.userKeywordCheck=true
             val intent =Intent(this, MainActivity::class.java)
             intent.putExtra("article",viewModel.article)
@@ -58,6 +58,10 @@ class MyKeywordSelectActivity : ComponentActivity() {
         }
         viewModel.failed ={
             Toast.makeText(this,"잠시후 다시 시도해주세요",Toast.LENGTH_SHORT).show()
+        }
+        viewModel.succeedPathMyKeywords ={
+            viewModel.getArticle(userPreference.getUserPagePassed())
+
         }
 
         setContent {

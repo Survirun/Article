@@ -1,5 +1,6 @@
 package com.devlog.article.presentation.splash
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.devlog.article.data.network.ApiService
@@ -18,7 +19,7 @@ class SplashViewMode():ViewModel() {
     lateinit var succeed: () -> Unit
     lateinit var failed: () -> Unit
     lateinit var article: ArticleResponse
-    fun getArticle(): Job = viewModelScope.launch {
+    fun getArticle(page:ArrayList<String>): Job = viewModelScope.launch {
         val api = ApiService(
             provideProductRetrofit(
                 buildOkHttpClient(),
@@ -26,9 +27,8 @@ class SplashViewMode():ViewModel() {
             )
         )
 
-        val repository: Repository =
-            DefaultRepository.getInstance(api, ioDispatcher = Dispatchers.IO)
-        val serverCode = repository.getArticle()
+        val repository: Repository = DefaultRepository.getInstance(api, ioDispatcher = Dispatchers.IO)
+        val serverCode = repository.getArticle(1,page)
         if (serverCode!=null) {
             article=serverCode
             succeed()

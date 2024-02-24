@@ -15,11 +15,13 @@ import com.devlog.article.data.response.ArticleResponse
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-import java.util.ArrayList
+
 
 class MyKeywordSelectViewModel :ViewModel(){
     lateinit var succeed :()->Unit
     lateinit var failed :()->Unit
+    lateinit var succeedPathMyKeywords:()-> Unit
+    lateinit var succeedGetArticle:()->Unit
     lateinit var article: ArticleResponse
     fun pathMyKeywords(keywords: Array<Int>):Job =viewModelScope.launch{
         val api= ApiService(
@@ -32,14 +34,14 @@ class MyKeywordSelectViewModel :ViewModel(){
         val repository: Repository = DefaultRepository.getInstance(api, ioDispatcher = Dispatchers.IO)
         val serverCode= repository.pathMyKeywords(keywords)
         if (serverCode){
-            getArticle()
+            succeedPathMyKeywords()
 
         }else{
             failed()
         }
 
     }
-    fun getArticle(): Job = viewModelScope.launch {
+    fun getArticle(page:ArrayList<String>): Job = viewModelScope.launch {
         val api = ApiService(
             provideProductRetrofit(
                 buildOkHttpClient(),
@@ -49,10 +51,10 @@ class MyKeywordSelectViewModel :ViewModel(){
 
         val repository: Repository =
             DefaultRepository.getInstance(api, ioDispatcher = Dispatchers.IO)
-        val serverCode = repository.getArticle()
+        val serverCode = repository.getArticle(1,page )
         if (serverCode!=null) {
             article=serverCode
-            succeed()
+            succeedGetArticle()
 
         } else {
             failed()

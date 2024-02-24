@@ -21,6 +21,7 @@ import com.devlog.article.R
 import com.devlog.article.data.entity.ArticleEntity
 import com.devlog.article.data.mixpanel.MixPanelManager
 import com.devlog.article.data.mixpanel.Mixpanel
+import com.devlog.article.data.preference.UserPreference
 import com.devlog.article.data.response.ArticleLogResponse
 import com.devlog.article.data.response.ArticleResponse
 import com.devlog.article.databinding.FragmentArticleBinding
@@ -46,13 +47,14 @@ class ArticleListFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     var userViewArticleId = arrayListOf<String>()
     var userBookmarkArticleId = arrayListOf<String>()
     var userShareArticleId=arrayListOf<String>()
+    lateinit var userPreference : UserPreference
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentArticleBinding.inflate(layoutInflater)
         viewModel = ArticleListViewModel()
-
+        userPreference= UserPreference.getInstance(requireContext())
         lifecycle.addObserver(object: LifecycleEventObserver {
             override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
                 when (event) {
@@ -83,7 +85,6 @@ class ArticleListFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
             }
         })
         processArticleResponse()
-
         viewPagerInit()
         setBackgroundImage()
 
@@ -144,7 +145,7 @@ class ArticleListFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     }
 
     fun updateLayoutView() {
-        viewModel.getArticle()
+        viewModel.getArticle(userPreference.getUserPagePassed())
         viewModel.succeed = {
             articles.clear()
             articleResponse = viewModel.article
@@ -156,7 +157,9 @@ class ArticleListFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     }
 
     private fun processArticleResponse() {
+        var list=userPreference.getUserPagePassed()
         articleResponse.data.articles.forEach {
+            list.add(it._id)
             if (it.data == null) {
                 it.data = ""
             }
@@ -173,6 +176,7 @@ class ArticleListFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
                 )
             )
         }
+        userPreference.setUserPagePassed(list)
         adapterInit()
     }
 
