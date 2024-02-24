@@ -47,6 +47,8 @@ class BookmarkViewModel:ViewModel() {
         val serverCode = repository.postBookmark(articleId)
         if(serverCode){
             succeed()
+        }else{
+            failed()
         }
 
     }

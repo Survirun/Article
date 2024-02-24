@@ -188,7 +188,9 @@ fun DeleteDialog(
             Button(
                 onClick = {
                     onConfirm()
-                    setShowDialog(false)
+                    viewModel.succeed={
+                        setShowDialog(false)
+                    }
                 }) {
                 Text(
                     text = "확인"
