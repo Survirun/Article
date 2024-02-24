@@ -46,11 +46,11 @@ import androidx.compose.ui.unit.sp
 import androidx.fragment.app.Fragment
 import coil.compose.AsyncImage
 import com.devlog.article.R
-import com.devlog.article.data.response.Article
+import com.devlog.article.data.entity.ArticleEntity
 import com.devlog.article.presentation.ui.theme.ArticleTheme
 
 
-var articleList = listOf<Article>()
+var articleList = ArrayList<ArticleEntity>()
 private var viewModel = BookmarkViewModel()
 lateinit var bookmarkSharedPreferencesHelper: BookmarkSharedPreferencesHelper
 
@@ -79,7 +79,7 @@ fun Main() {
 
     fun deleteTodo(id: String) {
         viewModel.postBookmark(id)
-        articleList = articleList.filter { it._id != id }
+        articleList = articleList.filter { it.articleId != id } as ArrayList<ArticleEntity>
         viewModel.succeed = {
             bookmarkSharedPreferencesHelper.saveToSharedPreferences(articleList)
         }
@@ -110,19 +110,19 @@ fun Main() {
 
 @Composable
 fun BookmarkList(
-    articleList: List<Article>,
+    articleList: ArrayList<ArticleEntity>,
     onDelete: (i: String) -> Unit
 ) {
     LazyColumn {
         items(articleList) {
             BookmarkItem(it,
-                onDelete = { onDelete(it._id) })
+                onDelete = { onDelete(it.articleId) })
         }
     }
 }
 
 @Composable
-fun BookmarkItem(article: Article, onDelete: () -> Unit) {
+fun BookmarkItem(article: ArticleEntity, onDelete: () -> Unit) {
     Row(
         modifier = Modifier
             .background(Color.White)
@@ -131,7 +131,7 @@ fun BookmarkItem(article: Article, onDelete: () -> Unit) {
         verticalAlignment = Alignment.CenterVertically
     ) {
         AsyncImage(
-            model = article.thumbnail,
+            model = article.image,
             contentDescription = null,
             contentScale = ContentScale.Crop,
             modifier = Modifier
@@ -140,7 +140,7 @@ fun BookmarkItem(article: Article, onDelete: () -> Unit) {
         )
         Column(modifier = Modifier.padding(start = 8.dp, end = 16.dp).fillMaxWidth(0.9f)) {
             ItemText(article.title, Color.Black)
-            ItemText(article.snippet!!, Color(0xFFA0A0AB))
+            ItemText(article.text!!, Color(0xFFA0A0AB))
         }
         IconButton(
             onClick = {

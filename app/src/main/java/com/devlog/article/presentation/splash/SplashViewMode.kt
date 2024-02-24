@@ -3,6 +3,7 @@ package com.devlog.article.presentation.splash
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.devlog.article.data.entity.ArticleEntity
 import com.devlog.article.data.network.ApiService
 import com.devlog.article.data.network.buildOkHttpClient
 import com.devlog.article.data.network.naver.provideNaverRetrofit
@@ -22,7 +23,7 @@ class SplashViewMode():ViewModel() {
     lateinit var bookmark_succeed: () -> Unit
     lateinit var bookmark_failed: () -> Unit
     lateinit var article: ArticleResponse
-    var bookmark = listOf<Article>()
+    var bookmark = ArrayList<ArticleEntity>()
     fun getArticle(page:ArrayList<String>): Job = viewModelScope.launch {
         val api = ApiService(
             provideProductRetrofit(
@@ -55,9 +56,19 @@ class SplashViewMode():ViewModel() {
             DefaultRepository.getInstance(api, ioDispatcher = Dispatchers.IO)
         val serverCode = repository.getBookMaker()
 
-        if (serverCode!=null) {
-            bookmark=serverCode.data
+        if (serverCode != null) {
+            serverCode.data.forEach{
+                bookmark.add(
+                    ArticleEntity(
+                        title = it.title,
+                        text = it.snippet!!,
+                        image = it.thumbnail!!,
+                        url = it.link,
+                        articleId = it._id
+                    )
+                )
+            }
             bookmark_succeed()
-        }else bookmark_failed()
+        }
     }
 }

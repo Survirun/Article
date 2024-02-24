@@ -50,7 +50,6 @@ class ArticleListFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     var userBookmarkArticleId = arrayListOf<String>()
     var userShareArticleId=arrayListOf<String>()
     lateinit var userPreference : UserPreference
-    var isBookmark = false
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -58,7 +57,6 @@ class ArticleListFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         binding = FragmentArticleBinding.inflate(layoutInflater)
         viewModel = ArticleListViewModel()
         bookmarkSharedPreferencesHelper = BookmarkSharedPreferencesHelper(requireContext())
-        isBookmark = false
         userPreference= UserPreference.getInstance(requireContext())
         lifecycle.addObserver(object: LifecycleEventObserver {
             override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
@@ -210,10 +208,10 @@ class ArticleListFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     }
 
     fun bookmarkArticle(articleEntity: ArticleEntity) {
-        isBookmark = true
         MixPanelManager.articleBookmark(articleEntity.title)
         userBookmarkArticleId.add(articleEntity.articleId)
         viewModel.postBookmark(articleEntity.articleId)
+        bookmarkSharedPreferencesHelper.addArticle(articleEntity)
     }
     val viewArticleLogResponseList = arrayListOf<ArticleLogResponse>()
     val shareArticleLogResponseList = arrayListOf<ArticleLogResponse>()
@@ -221,16 +219,6 @@ class ArticleListFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     override fun onStop() {
         super.onStop()
 
-    }
-
-    override fun onPause() {
-        super.onPause()
-        if(isBookmark){
-            viewModel.getBookMaker()
-            viewModel.bookmark_succeed={
-                bookmarkSharedPreferencesHelper.saveToSharedPreferences(viewModel.bookmark)
-            }
-        }
     }
 
 }
