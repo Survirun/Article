@@ -1,10 +1,14 @@
 package com.devlog.article.presentation.splash
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.preference.PreferenceManager
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
@@ -26,9 +30,13 @@ import androidx.compose.ui.unit.dp
 import com.devlog.article.R
 import com.devlog.article.presentation.main.MainActivity
 import com.devlog.article.data.preference.UserPreference
+import com.devlog.article.data.response.Article
+import com.devlog.article.presentation.bookmark.BookmarkSharedPreferencesHelper
 import com.devlog.article.presentation.my_keywords_select.MyKeywordSelectActivity
 import com.devlog.article.presentation.sign_in.SignInActivity
 import com.devlog.article.presentation.ui.theme.ArticleTheme
+import com.google.gson.GsonBuilder
+import com.google.gson.reflect.TypeToken
 
 @SuppressLint("CustomSplashScreen")
 class SplashActivity : ComponentActivity()  {
@@ -49,11 +57,17 @@ class SplashActivity : ComponentActivity()  {
             viewModel.failed={
 
             }
+            viewModel.bookmark_succeed={
+                BookmarkSharedPreferencesHelper(this).saveToSharedPreferences(viewModel.bookmark)
+            }
+            viewModel.bookmark_failed={
+                Log.e("test", "왜")
+            }
             userPreference= UserPreference.getInstance(this)
             if ( userPreference.userSignInCheck){
+                viewModel.getBookMaker()
                 if (userPreference.userKeywordCheck){
-
-                   viewModel.getArticle()
+                    viewModel.getArticle()
                 }else{
                     Handler(Looper.getMainLooper()).postDelayed({
                         startActivity(Intent(this,MyKeywordSelectActivity::class.java))
@@ -84,7 +98,6 @@ class SplashActivity : ComponentActivity()  {
         }
     }
 }
-
 @Composable
 fun Logo(){
     Row(verticalAlignment = Alignment.CenterVertically,
