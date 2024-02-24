@@ -1,6 +1,8 @@
 package com.devlog.article.presentation.bookmark
 
+import android.content.Context
 import android.os.Bundle
+import android.preference.PreferenceManager
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -53,6 +55,8 @@ import com.devlog.article.R
 import com.devlog.article.data.response.Article
 import com.devlog.article.presentation.ui.theme.ArticleTheme
 import com.devlog.article.presentation.ui.theme.BaseColumn
+import com.google.gson.GsonBuilder
+import com.google.gson.reflect.TypeToken
 
 
 var articleList = listOf<Article>()
@@ -65,11 +69,11 @@ class BookmarkFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
 
-        viewModel.getBookMaker()
-        viewModel.succeed = {
-            articleList = viewModel.article
-        }
         return ComposeView(requireContext()).apply {
+            val bookmark = readFromSharedPreferences(requireContext())
+            val listType = object : TypeToken<List<Article>>() {}.type
+            val gson = GsonBuilder().create()
+            articleList = gson.fromJson(bookmark, listType)
             setContent {
                 ArticleTheme {
                     // A surface container using the 'background' color from the theme
@@ -83,6 +87,11 @@ class BookmarkFragment : Fragment() {
             }
         }
     }
+}
+
+fun readFromSharedPreferences(context: Context): String {
+    val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+    return sharedPreferences.getString("Bookmark", "") ?: ""
 }
 
 @Composable
