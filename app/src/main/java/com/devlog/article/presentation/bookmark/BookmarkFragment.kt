@@ -3,7 +3,6 @@ package com.devlog.article.presentation.bookmark
 import android.content.Context
 import android.os.Bundle
 import android.preference.PreferenceManager
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -46,27 +45,26 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.fragment.app.Fragment
 import coil.compose.AsyncImage
 import com.devlog.article.R
 import com.devlog.article.data.response.Article
 import com.devlog.article.presentation.ui.theme.ArticleTheme
 import com.google.gson.GsonBuilder
-import com.google.gson.reflect.TypeToken
 
 
 var articleList = listOf<Article>()
 private var viewModel = BookmarkViewModel()
+lateinit var bookmarkSharedPreferencesHelper : BookmarkSharedPreferencesHelper
 class BookmarkFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-
+        bookmarkSharedPreferencesHelper = BookmarkSharedPreferencesHelper(requireContext())
         return ComposeView(requireContext()).apply {
-            readFromSharedPreferences(requireContext())
+            articleList = bookmarkSharedPreferencesHelper.readFromSharedPreferences()
 
             setContent {
                 ArticleTheme {
@@ -84,8 +82,7 @@ fun Main(context: Context){
         viewModel.postBookmark(id)
         articleList = articleList.filter { it._id != id }
         viewModel.succeed={
-            val bookmark = GsonBuilder().create().toJson(articleList)
-            saveToSharedPreferences(bookmark, context)
+            bookmarkSharedPreferencesHelper.saveToSharedPreferences(articleList)
         }
     }
 
@@ -111,21 +108,6 @@ fun Main(context: Context){
         }
     }
 }
-
-fun saveToSharedPreferences(value: String, context: Context) {
-    val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
-    val editor = sharedPreferences.edit()
-    editor.putString("Bookmark", value)
-    editor.apply()
-}
-fun readFromSharedPreferences(context: Context) {
-    val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
-    val bookmark =  sharedPreferences.getString("Bookmark", "") ?: ""
-    val listType = object : TypeToken<List<Article>>() {}.type
-    val gson = GsonBuilder().create()
-    articleList = gson.fromJson(bookmark, listType)
-}
-
 
 @Composable
 fun BookmarkList(

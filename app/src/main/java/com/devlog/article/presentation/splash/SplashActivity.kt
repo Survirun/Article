@@ -31,6 +31,7 @@ import com.devlog.article.R
 import com.devlog.article.presentation.main.MainActivity
 import com.devlog.article.data.preference.UserPreference
 import com.devlog.article.data.response.Article
+import com.devlog.article.presentation.bookmark.BookmarkSharedPreferencesHelper
 import com.devlog.article.presentation.my_keywords_select.MyKeywordSelectActivity
 import com.devlog.article.presentation.sign_in.SignInActivity
 import com.devlog.article.presentation.ui.theme.ArticleTheme
@@ -57,8 +58,7 @@ class SplashActivity : ComponentActivity()  {
 
             }
             viewModel.bookmark_succeed={
-                val bookmark = GsonBuilder().create().toJson(viewModel.bookmark)
-                saveToSharedPreferences(bookmark, this)
+                BookmarkSharedPreferencesHelper(this).saveToSharedPreferences(viewModel.bookmark)
             }
             viewModel.bookmark_failed={
                 Log.e("test", "왜")
@@ -98,13 +98,6 @@ class SplashActivity : ComponentActivity()  {
         }
     }
 }
-fun saveToSharedPreferences(value: String, context: Context) {
-    val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
-    val editor = sharedPreferences.edit()
-    editor.putString("Bookmark", value)
-    editor.apply()
-}
-
 @Composable
 fun Logo(){
     Row(verticalAlignment = Alignment.CenterVertically,
