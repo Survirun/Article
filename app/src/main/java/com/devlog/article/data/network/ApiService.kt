@@ -31,7 +31,7 @@ interface ApiService {
 
     //유저 기사 가져오기
     @POST("article")
-    suspend fun getArticle(@Query("page")page:Int,@Body passed : Passed?):Response<ArticleResponse>
+    suspend fun getArticle(@Query("page")page:Int,@Body passed : Passed):Response<ArticleResponse>
 
     //북마크 삭제 또는 추가 서버에서 판단함
     @POST("bookmark/{articleId}")
