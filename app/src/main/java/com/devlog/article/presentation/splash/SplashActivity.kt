@@ -65,8 +65,8 @@ class SplashActivity : ComponentActivity()  {
             }
             userPreference= UserPreference.getInstance(this)
             if ( userPreference.userSignInCheck){
+                viewModel.getBookMaker()
                 if (userPreference.userKeywordCheck){
-                    viewModel.getBookMaker()
                     viewModel.getArticle()
                 }else{
                     Handler(Looper.getMainLooper()).postDelayed({
