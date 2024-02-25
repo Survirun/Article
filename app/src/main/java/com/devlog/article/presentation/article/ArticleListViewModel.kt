@@ -3,6 +3,7 @@ package com.devlog.article.presentation.article
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.devlog.article.data.entity.ArticleEntity
 import com.devlog.article.data.network.ApiService
 import com.devlog.article.data.network.buildOkHttpClient
 import com.devlog.article.data.network.naver.provideNaverRetrofit
@@ -23,8 +24,7 @@ class ArticleListViewModel : ViewModel() {
     lateinit var succeed :()->Unit
     lateinit var failed :()->Unit
     lateinit var article: ArticleResponse
-    lateinit var bookmark: List<Article>
-    lateinit var bookmark_succeed :()->Unit
+    lateinit var bookmark: ArrayList<ArticleEntity>
 
     fun getArticle(passed:ArrayList<String>): Job = viewModelScope.launch {
         val api = ApiService(
@@ -89,10 +89,16 @@ class ArticleListViewModel : ViewModel() {
         val repository: Repository =
             DefaultRepository.getInstance(api, ioDispatcher = Dispatchers.IO)
         val serverCode = repository.getBookMaker()
-
-        if (serverCode!=null) {
-            bookmark=serverCode.data
-            bookmark_succeed()
+        serverCode?.data?.forEach{
+            bookmark.add(
+                ArticleEntity(
+                    title = it.title,
+                    text = it.snippet!!,
+                    image = it.thumbnail!!,
+                    url = it.link,
+                    articleId = it._id
+                )
+            )
         }
     }
 }

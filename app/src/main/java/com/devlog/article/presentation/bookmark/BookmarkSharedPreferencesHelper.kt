@@ -2,7 +2,7 @@ package com.devlog.article.presentation.bookmark
 
 import android.content.Context
 import android.preference.PreferenceManager
-import com.devlog.article.data.response.Article
+import com.devlog.article.data.entity.ArticleEntity
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
 
@@ -14,8 +14,14 @@ class BookmarkSharedPreferencesHelper(context: Context) {
         private const val KEY_BOOKMARK = "Bookmark"
 
     }
+    fun addArticle(article: ArticleEntity) {
+        val articles = readFromSharedPreferences()
 
-    fun saveToSharedPreferences(articles: List<Article>){
+        articles.add(article)
+
+        saveToSharedPreferences(articles)
+    }
+    fun saveToSharedPreferences(articles: MutableList<ArticleEntity>){
         val editor = sharedPreferences.edit()
 
         // Article 리스트를 JSON으로 변환하여 저장
@@ -24,10 +30,10 @@ class BookmarkSharedPreferencesHelper(context: Context) {
         editor.apply()
     }
 
-    fun readFromSharedPreferences(): List<Article> {
+    fun readFromSharedPreferences(): ArrayList<ArticleEntity> {
         // 저장된 JSON 문자열을 가져와서 Article 리스트로 변환
         val bookmark = sharedPreferences.getString(KEY_BOOKMARK, "") ?: ""
-        val listType = object : TypeToken<List<Article>>() {}.type
-        return gson.fromJson(bookmark, listType) ?: emptyList()
+        val listType = object : TypeToken<ArrayList<ArticleEntity>>() {}.type
+        return gson.fromJson(bookmark, listType) ?: arrayListOf<ArticleEntity>()
     }
 }
