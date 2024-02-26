@@ -69,7 +69,7 @@
             app:layout_constraintEnd_toStartOf="@id/shareButton"
             app:layout_constraintStart_toEndOf="@id/aiButton"
             app:layout_constraintTop_toTopOf="parent"
-            app:trackColor="#DCDCEA"
+            app:trackColor="@color/Gray400"
             app:trackCornerRadius="30dp" />
 
         <Button
