@@ -29,7 +29,7 @@
         <item name="android:insetLeft">0dp</item>
         <item name="android:insetRight">0dp</item>
         <item name="backgroundTint">@color/white</item>
-        <item name="rippleColor">@color/gray</item>
+        <item name="rippleColor">@color/Gray400</item>
     </style>
 
     <style name="IconButtonWebView" parent="Widget.Material3.Button.IconButton">
@@ -39,6 +39,6 @@
         <item name="android:insetBottom">0dp</item>
         <item name="android:insetLeft">0dp</item>
         <item name="android:insetRight">0dp</item>
-        <item name="rippleColor">@color/gray</item>
+        <item name="rippleColor">@color/Gray400</item>
     </style>
 </resources>
