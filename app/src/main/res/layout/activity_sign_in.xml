@@ -33,7 +33,7 @@
         app:icon="@drawable/google_logo"
         app:shapeAppearance="@style/ShapeRadius"
         app:iconTint="@null"
-        app:rippleColor="@color/Gray400"
+        app:rippleColor="@color/GrayButtonClick"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"/>
