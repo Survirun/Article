@@ -13,6 +13,7 @@ import com.devlog.article.data.network.ApiService
 import com.devlog.article.data.response.ArticleLogResponse
 import com.devlog.article.data.response.ArticleResponse
 import com.devlog.article.data.response.BookmarkResponse
+import com.devlog.article.data.response.DefaultResponse
 import com.devlog.article.data.response.UserInfoEntity
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
@@ -31,12 +32,12 @@ class DefaultRepository private constructor(
             return instance as DefaultRepository
         }
     }
-    override suspend fun postLogin(loginEntity: LoginEntity):Int = withContext(ioDispatcher) {
+    override suspend fun postLogin(loginEntity: LoginEntity):DefaultResponse? = withContext(ioDispatcher) {
         val response=api.postLogin(loginEntity)
         return@withContext if (response.isSuccessful){
-            response.code()
+            response.body()
         }else{
-            500
+            null
         }
     }
 

@@ -6,6 +6,7 @@ import com.devlog.article.data.network.ApiService
 import com.devlog.article.data.response.ArticleLogResponse
 import com.devlog.article.data.response.ArticleResponse
 import com.devlog.article.data.response.BookmarkResponse
+import com.devlog.article.data.response.DefaultResponse
 import com.devlog.article.data.response.UserInfoEntity
 import kotlinx.coroutines.CoroutineDispatcher
 import java.util.ArrayList
@@ -13,7 +14,7 @@ import java.util.ArrayList
 
 interface Repository {
 
-    suspend fun postLogin(loginEntity: LoginEntity):Int
+    suspend fun postLogin(loginEntity: LoginEntity): DefaultResponse?
 
     suspend fun pathMyKeywords(keywords: Array<Int>): Boolean
 
