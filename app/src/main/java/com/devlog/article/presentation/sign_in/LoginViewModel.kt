@@ -23,6 +23,7 @@ class LoginViewModel:ViewModel() {
 
     lateinit var loginSucceed :()->Unit
     lateinit var loginFailed :()->Unit
+    lateinit var accessToken : String
 
     fun login(uid:String,email:String,name:String):Job =viewModelScope.launch {
         val api= ApiService(
@@ -32,13 +33,18 @@ class LoginViewModel:ViewModel() {
             )
         )
         val repository: Repository = DefaultRepository.getInstance(api, ioDispatcher = Dispatchers.IO)
-        val serverConde= repository.postLogin(LoginEntity(uid = uid , email =email ,name=name))
+        val response= repository.postLogin(LoginEntity(uid = uid , email =email ,name=name))
 
-        if (serverConde==200){
+        if(response != null){
+            accessToken = response.data!!
             loginSucceed()
-        }else{
-            loginFailed()
         }
+
+//        if (serverConde==200){
+//            loginSucceed()
+//        }else{
+//            loginFailed()
+//        }
 
     }
 

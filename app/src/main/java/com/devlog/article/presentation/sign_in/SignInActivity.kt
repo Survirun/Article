@@ -66,8 +66,7 @@ class SignInActivity : AppCompatActivity() {
         auth = Firebase.auth
 
         loginViewModel.loginSucceed = {
-            Log.e("dfsafdsfa","adafd")
-
+            userPreference.userAccessToken = loginViewModel.accessToken
             userPreference.userSignInCheck = true
             startActivity(Intent(this, MyKeywordSelectActivity::class.java))
             finish()
