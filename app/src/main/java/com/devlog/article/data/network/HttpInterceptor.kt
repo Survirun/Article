@@ -12,7 +12,7 @@ class HttpInterceptor :
     }
     override fun intercept(chain: Interceptor.Chain): Response {
         val request = chain.request().newBuilder()
-            .addHeader("uid", userPreference.userUid)
+            .addHeader("x-access-token", userPreference.userAccessToken)
 
             .build()
         return chain.proceed(request)
