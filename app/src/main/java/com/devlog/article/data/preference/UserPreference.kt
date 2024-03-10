@@ -61,6 +61,12 @@ class UserPreference private constructor(private var context: Context) {
             userPreferenceEditor.putString(PreferenceConstants.USER_ACCESS_TOKEN, v)
             userPreferenceEditor.apply()
         }
+    var userPermission : String
+        get() = userPreference.getString(PreferenceConstants.USER_PERMISSION, "")!!
+        set(v){
+            userPreferenceEditor.putString(PreferenceConstants.USER_PERMISSION, v)
+            userPreferenceEditor.apply()
+        }
     fun setUserPagePassed(value: ArrayList<String>?) {
         val json = Gson().toJson(value)
         userPreferenceEditor.putString("Pages_passed_user", json).apply()

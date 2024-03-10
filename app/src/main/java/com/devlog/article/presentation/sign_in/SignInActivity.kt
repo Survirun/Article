@@ -22,6 +22,8 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import org.json.JSONObject
+import java.util.Base64
 
 class SignInActivity : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
@@ -66,8 +68,11 @@ class SignInActivity : AppCompatActivity() {
         auth = Firebase.auth
 
         loginViewModel.loginSucceed = {
-            userPreference.userAccessToken = loginViewModel.accessToken
+            val accessToken = loginViewModel.accessToken
+            userPreference.userAccessToken = accessToken
             userPreference.userSignInCheck = true
+            userPreference.userPermission = decodeToken(accessToken)
+            Log.d("test", userPreference.userPermission)
             startActivity(Intent(this, MyKeywordSelectActivity::class.java))
             finish()
         }
@@ -88,6 +93,12 @@ class SignInActivity : AppCompatActivity() {
 
     }
 
+    private fun decodeToken(jwt: String): String {
+        val parts = jwt.split(".")
+        val charset = charset("UTF-8")
+        val payload = String(Base64.getUrlDecoder().decode(parts[1].toByteArray(charset)), charset)
+        return JSONObject(payload).getString("permission")
+    }
     private fun firebaseAuthWithGoogle(acct: GoogleSignInAccount) {
         val credential = GoogleAuthProvider.getCredential(acct.idToken, null)
         auth.signInWithCredential(credential)
