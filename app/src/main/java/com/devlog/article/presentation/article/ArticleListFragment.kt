@@ -191,7 +191,7 @@ class ArticleListFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
             articleShareClickListener = { shareArticle(it) },
             articleBookmarkClickListener = { bookmarkArticle(it) },
             articleReportClickListener = {reportArticle(it)},
-            View.VISIBLE
+            isAdmin()
         )
     }
 
@@ -227,6 +227,9 @@ class ArticleListFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         viewModel.reportFailed={
             Log.e("test", "실패")
         }
+    }
+    fun isAdmin():Int{
+        return if(userPreference.userPermission == "admin") View.VISIBLE else View.INVISIBLE
     }
     override fun onStop() {
         super.onStop()
