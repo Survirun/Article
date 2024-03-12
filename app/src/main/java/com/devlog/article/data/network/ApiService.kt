@@ -42,4 +42,7 @@ interface ApiService {
 
     @POST("log/multi")
     suspend fun postArticleLog(@Body logs:ArticleLogEntity) : Response<DefaultResponse>
+
+    @POST("article/report/{articleId}")
+    suspend fun postReport(@Path("articleId")articleId:String):Response<DefaultResponse>
 }

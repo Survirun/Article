@@ -27,6 +27,8 @@ interface Repository {
     suspend fun getBookMaker(): BookmarkResponse?
 
     suspend fun postArticleLog(articleLogResponse: ArrayList<ArticleLogResponse>):Boolean
+
+    suspend fun postReport(articleId: String): Boolean
 //
 //    suspend fun getLocalProductList():List<ProductEntity>
 //
