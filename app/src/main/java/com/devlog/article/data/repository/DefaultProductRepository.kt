@@ -79,4 +79,9 @@ class DefaultRepository private constructor(
         return@withContext response.isSuccessful
     }
 
+    override suspend fun postReport(articleId: String): Boolean  = withContext(ioDispatcher){
+        val response = api.postReport(articleId)
+        return@withContext response.isSuccessful
+    }
+
 }

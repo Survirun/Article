@@ -189,7 +189,9 @@ class ArticleListFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
             productList = articles,
             productItemClickListener = { articleDetails(it) },
             articleShareClickListener = { shareArticle(it) },
-            articleBookmarkClickListener = { bookmarkArticle(it) }
+            articleBookmarkClickListener = { bookmarkArticle(it) },
+            articleReportClickListener = {reportArticle(it)},
+            isAdmin()
         )
     }
 
@@ -216,6 +218,19 @@ class ArticleListFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     val viewArticleLogResponseList = arrayListOf<ArticleLogResponse>()
     val shareArticleLogResponseList = arrayListOf<ArticleLogResponse>()
     val bookmarArticleLogResponseList = arrayListOf<ArticleLogResponse>()
+
+    fun reportArticle(articleId:String){
+        viewModel.postReport(articleId)
+        viewModel.reportSucceed={
+            Log.e("test", "성공")
+        }
+        viewModel.reportFailed={
+            Log.e("test", "실패")
+        }
+    }
+    fun isAdmin():Int{
+        return if(userPreference.userPermission == "admin") View.VISIBLE else View.INVISIBLE
+    }
     override fun onStop() {
         super.onStop()
 

@@ -21,12 +21,14 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 class ArticleListViewModel : ViewModel() {
-    lateinit var succeed :()->Unit
-    lateinit var failed :()->Unit
+    lateinit var succeed: () -> Unit
+    lateinit var failed: () -> Unit
+    lateinit var reportSucceed: () -> Unit
+    lateinit var reportFailed: () -> Unit
     lateinit var article: ArticleResponse
     lateinit var bookmark: ArrayList<ArticleEntity>
 
-    fun getArticle(passed:ArrayList<String>): Job = viewModelScope.launch {
+    fun getArticle(passed: ArrayList<String>): Job = viewModelScope.launch {
         val api = ApiService(
             provideProductRetrofit(
                 buildOkHttpClient(),
@@ -36,9 +38,9 @@ class ArticleListViewModel : ViewModel() {
 
         val repository: Repository =
             DefaultRepository.getInstance(api, ioDispatcher = Dispatchers.IO)
-        val serverCode = repository.getArticle(1,passed)
-        if (serverCode!=null) {
-            article=serverCode
+        val serverCode = repository.getArticle(1, passed)
+        if (serverCode != null) {
+            article = serverCode
             succeed()
 
         } else {
@@ -47,22 +49,26 @@ class ArticleListViewModel : ViewModel() {
 
 
     }
-    fun postArticleLog(postArticleLogResponse: ArrayList<ArticleLogResponse>):Job=viewModelScope.launch{
-        val api = ApiService(
-            provideProductRetrofit(
-                buildOkHttpClient(),
-                provideGsonConverterFactory()
+
+    fun postArticleLog(postArticleLogResponse: ArrayList<ArticleLogResponse>): Job =
+        viewModelScope.launch {
+            val api = ApiService(
+                provideProductRetrofit(
+                    buildOkHttpClient(),
+                    provideGsonConverterFactory()
+                )
             )
-        )
-        val repository: Repository = DefaultRepository.getInstance(api, ioDispatcher = Dispatchers.IO)
-        val serverCode = repository.postArticleLog(postArticleLogResponse)
-        if (serverCode!=null) {
+            val repository: Repository =
+                DefaultRepository.getInstance(api, ioDispatcher = Dispatchers.IO)
+            val serverCode = repository.postArticleLog(postArticleLogResponse)
+            if (serverCode != null) {
 
-        } else { }
+            } else {
+            }
 
-    }
+        }
 
-    fun postBookmark(articleId:String) : Job=viewModelScope.launch {
+    fun postBookmark(articleId: String): Job = viewModelScope.launch {
         val api = ApiService(
             provideNaverRetrofit(
                 buildOkHttpClient(),
@@ -79,7 +85,8 @@ class ArticleListViewModel : ViewModel() {
         }
 
     }
-    fun getBookMaker() : Job=viewModelScope.launch {
+
+    fun getBookMaker(): Job = viewModelScope.launch {
         val api = ApiService(
             provideNaverRetrofit(
                 buildOkHttpClient(),
@@ -89,7 +96,7 @@ class ArticleListViewModel : ViewModel() {
         val repository: Repository =
             DefaultRepository.getInstance(api, ioDispatcher = Dispatchers.IO)
         val serverCode = repository.getBookMaker()
-        serverCode?.data?.forEach{
+        serverCode?.data?.forEach {
             bookmark.add(
                 ArticleEntity(
                     title = it.title,
@@ -100,5 +107,23 @@ class ArticleListViewModel : ViewModel() {
                 )
             )
         }
+    }
+
+    fun postReport(articleId: String): Job = viewModelScope.launch {
+        val api = ApiService(
+            provideNaverRetrofit(
+                buildOkHttpClient(),
+                provideGsonConverterFactory()
+            )
+        )
+        val repository: Repository =
+            DefaultRepository.getInstance(api, ioDispatcher = Dispatchers.IO)
+        val serverCode = repository.postReport(articleId)
+        if (serverCode) {
+            reportSucceed()
+        } else {
+            reportFailed()
+        }
+
     }
 }
