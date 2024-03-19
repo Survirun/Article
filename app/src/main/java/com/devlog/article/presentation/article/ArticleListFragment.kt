@@ -43,7 +43,7 @@ class ArticleListFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     val articles = ArrayList<ArticleEntity>()
     lateinit var viewModel: ArticleListViewModel
     lateinit var mixpanel: MixPanelManager
-    lateinit var bookmarkSharedPreferencesHelper : BookmarkSharedPreferencesHelper
+    lateinit var bookmarkSharedPreferencesHelper: BookmarkSharedPreferencesHelper
     val pageMargin by lazy {
         resources.getDimensionPixelOffset(R.dimen.pageMargin).toFloat()
     }
@@ -52,8 +52,10 @@ class ArticleListFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     }
     var userViewArticleId = arrayListOf<String>()
     var userBookmarkArticleId = arrayListOf<String>()
-    var userShareArticleId=arrayListOf<String>()
-    lateinit var userPreference : UserPreference
+    var userShareArticleId = arrayListOf<String>()
+    lateinit var userPreference: UserPreference
+    var page = 1
+    var pageChangePoint = 15
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -61,50 +63,50 @@ class ArticleListFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         binding = FragmentArticleBinding.inflate(layoutInflater)
         viewModel = ArticleListViewModel()
         bookmarkSharedPreferencesHelper = BookmarkSharedPreferencesHelper(requireContext())
-        userPreference= UserPreference.getInstance(requireContext())
-        lifecycle.addObserver(object: LifecycleEventObserver {
+        userPreference = UserPreference.getInstance(requireContext())
+        lifecycle.addObserver(object : LifecycleEventObserver {
             override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
                 when (event) {
                     Lifecycle.Event.ON_STOP -> {
                         userViewArticleId.forEach {
-                            viewArticleLogResponseList.add(ArticleLogResponse(it,"click"))
+                            viewArticleLogResponseList.add(ArticleLogResponse(it, "click"))
                         }
                         userShareArticleId.forEach {
-                            shareArticleLogResponseList.add(ArticleLogResponse(it,"share"))
+                            shareArticleLogResponseList.add(ArticleLogResponse(it, "share"))
                         }
                         userBookmarkArticleId.forEach {
-                            bookmarArticleLogResponseList.add(ArticleLogResponse(it,"bookmark"))
+                            bookmarArticleLogResponseList.add(ArticleLogResponse(it, "bookmark"))
                         }
 
-                        if (userViewArticleId.size!=0){
+                        if (userViewArticleId.size != 0) {
                             viewModel.postArticleLog(viewArticleLogResponseList)
                         }
-                        if (userShareArticleId.size!=0) {
+                        if (userShareArticleId.size != 0) {
                             viewModel.postArticleLog(shareArticleLogResponseList)
                         }
-                        if (userBookmarkArticleId.size!=0 ){
+                        if (userBookmarkArticleId.size != 0) {
                             viewModel.postArticleLog(bookmarArticleLogResponseList)
                         }
                     }
 
-                    else -> { }
+                    else -> {}
                 }
             }
         })
         processArticleResponse()
         viewPagerInit()
         setBackgroundImage()
-        viewModel.test={
-            userPreference.userName=""
-            userPreference.userUid=""
-            userPreference.userSignInCheck=false
-            userPreference.userKeywordCheck=false
-            Toast.makeText(context,"앱 계정이 삭제 되었습니다",Toast.LENGTH_SHORT).show()
+        viewModel.test = {
+            userPreference.userName = ""
+            userPreference.userUid = ""
+            userPreference.userSignInCheck = false
+            userPreference.userKeywordCheck = false
+            Toast.makeText(context, "앱 계정이 삭제 되었습니다", Toast.LENGTH_SHORT).show()
             finishAffinity(requireActivity())
 
         }
-        viewModel.test1 ={
-            Toast.makeText(context,"잠시 후 다시 시도해주세요",Toast.LENGTH_SHORT).show()
+        viewModel.test1 = {
+            Toast.makeText(context, "잠시 후 다시 시도해주세요", Toast.LENGTH_SHORT).show()
         }
 
         binding.imageView.setOnClickListener {
@@ -117,7 +119,7 @@ class ArticleListFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
                 "확인",
                 DialogInterface.OnClickListener { dialog, which -> //토스트 메시지
                     viewModel.deleteUser()
-                    Toast.makeText(context,"삭제중입니다 조금만 기달려주세요",Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "삭제중입니다 조금만 기달려주세요", Toast.LENGTH_SHORT).show()
                 })
             dlg.show()
 
@@ -150,6 +152,8 @@ class ArticleListFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
             registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
                 override fun onPageSelected(position: Int) {
                     super.onPageSelected(position)
+                    Log.d("test", position.toString())
+                    if(position % pageChangePoint == 0 && position != 0) addArticles()
                     val image = articleAdapter.getImage(position)
 
                     Glide.with(this@ArticleListFragment)
@@ -178,8 +182,28 @@ class ArticleListFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         }
     }
 
+    fun addArticles(){
+        page += 1
+        pageChangePoint += 20
+        viewModel.getArticle(userPreference.getUserPagePassed(), page)
+        viewModel.succeed = {
+            Log.d("test", "오예")
+            viewModel.article.data.articles.forEach{
+                articles.add(
+                    ArticleEntity(
+                        title = it.title,
+                        text = it.snippet!!,
+                        image = it.thumbnail!!,
+                        url = it.link,
+                        articleId = it._id
+                    ))
+            }
+            articleAdapter.notifyDataSetChanged()
+        }
+    }
+
     fun updateLayoutView() {
-        viewModel.getArticle(userPreference.getUserPagePassed())
+        viewModel.getArticle(userPreference.getUserPagePassed(), 1)
         viewModel.succeed = {
             articles.clear()
             articleResponse = viewModel.article
@@ -191,7 +215,7 @@ class ArticleListFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     }
 
     private fun processArticleResponse() {
-        var list=userPreference.getUserPagePassed()
+        var list = userPreference.getUserPagePassed()
         articleResponse.data.articles.forEach {
             list.add(it._id)
             if (it.data == null) {
@@ -221,7 +245,7 @@ class ArticleListFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
             productItemClickListener = { articleDetails(it) },
             articleShareClickListener = { shareArticle(it) },
             articleBookmarkClickListener = { bookmarkArticle(it) },
-            articleReportClickListener = {reportArticle(it)},
+            articleReportClickListener = { reportArticle(it) },
             isAdmin()
         )
     }
@@ -246,22 +270,25 @@ class ArticleListFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         viewModel.postBookmark(articleEntity.articleId)
         bookmarkSharedPreferencesHelper.addArticle(articleEntity)
     }
+
     val viewArticleLogResponseList = arrayListOf<ArticleLogResponse>()
     val shareArticleLogResponseList = arrayListOf<ArticleLogResponse>()
     val bookmarArticleLogResponseList = arrayListOf<ArticleLogResponse>()
 
-    fun reportArticle(articleId:String){
+    fun reportArticle(articleId: String) {
         viewModel.postReport(articleId)
-        viewModel.reportSucceed={
+        viewModel.reportSucceed = {
             Log.e("test", "성공")
         }
-        viewModel.reportFailed={
+        viewModel.reportFailed = {
             Log.e("test", "실패")
         }
     }
-    fun isAdmin():Int{
-        return if(userPreference.userPermission == "admin") View.VISIBLE else View.INVISIBLE
+
+    fun isAdmin(): Int {
+        return if (userPreference.userPermission == "admin") View.VISIBLE else View.INVISIBLE
     }
+
     override fun onStop() {
         super.onStop()
 
