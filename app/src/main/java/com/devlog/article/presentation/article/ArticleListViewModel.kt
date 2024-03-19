@@ -28,6 +28,8 @@ class ArticleListViewModel : ViewModel() {
     lateinit var article: ArticleResponse
     lateinit var bookmark: ArrayList<ArticleEntity>
 
+    lateinit var test: () -> Unit
+    lateinit var test1: () -> Unit
     fun getArticle(passed: ArrayList<String>): Job = viewModelScope.launch {
         val api = ApiService(
             provideProductRetrofit(
@@ -125,5 +127,22 @@ class ArticleListViewModel : ViewModel() {
             reportFailed()
         }
 
+    }
+
+    fun deleteUser(): Job = viewModelScope.launch {
+        val api = ApiService(
+            provideProductRetrofit(
+                buildOkHttpClient(),
+                provideGsonConverterFactory()
+            )
+        )
+        val repository: Repository =
+            DefaultRepository.getInstance(api, ioDispatcher = Dispatchers.IO)
+        val serverCode = repository.deleteUser()
+        if (serverCode==200) {
+            test()
+        } else {
+            test1()
+        }
     }
 }

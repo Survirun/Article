@@ -1,5 +1,8 @@
 package com.devlog.article.presentation.article
 
+
+import android.app.AlertDialog
+import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.PorterDuff
@@ -8,6 +11,8 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.core.app.ActivityCompat.finishAffinity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
@@ -20,7 +25,6 @@ import com.bumptech.glide.request.RequestOptions
 import com.devlog.article.R
 import com.devlog.article.data.entity.ArticleEntity
 import com.devlog.article.data.mixpanel.MixPanelManager
-import com.devlog.article.data.mixpanel.Mixpanel
 import com.devlog.article.data.preference.UserPreference
 import com.devlog.article.data.response.ArticleLogResponse
 import com.devlog.article.data.response.ArticleResponse
@@ -90,7 +94,34 @@ class ArticleListFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         processArticleResponse()
         viewPagerInit()
         setBackgroundImage()
+        viewModel.test={
+            userPreference.userName=""
+            userPreference.userUid=""
+            userPreference.userSignInCheck=false
+            userPreference.userKeywordCheck=false
+            Toast.makeText(context,"앱 계정이 삭제 되었습니다",Toast.LENGTH_SHORT).show()
+            finishAffinity(requireActivity())
 
+        }
+        viewModel.test1 ={
+            Toast.makeText(context,"잠시 후 다시 시도해주세요",Toast.LENGTH_SHORT).show()
+        }
+
+        binding.imageView.setOnClickListener {
+            val dlg: AlertDialog.Builder = AlertDialog.Builder(requireContext())
+            dlg.setTitle("계정을 삭제하시겠습니까?") //제목
+
+            dlg.setMessage("계정을 삭제하시겠습니까?") // 메시지
+
+            dlg.setPositiveButton(
+                "확인",
+                DialogInterface.OnClickListener { dialog, which -> //토스트 메시지
+                    viewModel.deleteUser()
+                    Toast.makeText(context,"삭제중입니다 조금만 기달려주세요",Toast.LENGTH_SHORT).show()
+                })
+            dlg.show()
+
+        }
 
         binding.swipeLayout.setOnRefreshListener(this)
 

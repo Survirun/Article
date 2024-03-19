@@ -29,6 +29,8 @@ interface Repository {
     suspend fun postArticleLog(articleLogResponse: ArrayList<ArticleLogResponse>):Boolean
 
     suspend fun postReport(articleId: String): Boolean
+
+    suspend fun deleteUser():Int
 //
 //    suspend fun getLocalProductList():List<ProductEntity>
 //

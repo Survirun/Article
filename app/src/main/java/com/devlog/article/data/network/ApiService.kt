@@ -11,6 +11,7 @@ import com.devlog.article.data.response.DefaultResponse
 import com.devlog.article.data.response.UserInfoEntity
 import retrofit2.Response
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path
@@ -45,4 +46,7 @@ interface ApiService {
 
     @POST("article/report/{articleId}")
     suspend fun postReport(@Path("articleId")articleId:String):Response<DefaultResponse>
+
+    @DELETE("user/my")
+    suspend fun userDelete():Response<Any>
 }

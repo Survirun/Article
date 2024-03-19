@@ -39,10 +39,10 @@ class MainActivity() : AppCompatActivity() {
                     replaceFragment(BookmarkFragment())
                     true
                 }
-                R.id.profile -> {
-                    replaceFragment(ProfileFragment())
-                    true
-                }
+//                R.id.profile -> {
+//                    replaceFragment(ProfileFragment())
+//                    true
+//                }
                 else -> false
             }
 

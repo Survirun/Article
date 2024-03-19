@@ -84,4 +84,10 @@ class DefaultRepository private constructor(
         return@withContext response.isSuccessful
     }
 
+    override suspend fun deleteUser() :Int = withContext(ioDispatcher){
+       val response =api.userDelete()
+        return@withContext response.code()
+    }
+
+
 }
