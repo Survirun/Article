@@ -7,6 +7,8 @@ import com.devlog.article.data.network.ApiService
 import com.devlog.article.data.network.buildOkHttpClient
 import com.devlog.article.data.network.provideGsonConverterFactory
 import com.devlog.article.data.network.provideProductRetrofit
+import com.devlog.article.data.repository.ArticleRepository
+import com.devlog.article.data.repository.ArticleRepositoryImpl
 import com.devlog.article.data.repository.DefaultRepository
 import com.devlog.article.data.repository.Repository
 import kotlinx.coroutines.Dispatchers
@@ -25,8 +27,8 @@ class BookmarkViewModel : ViewModel() {
                 provideGsonConverterFactory()
             )
         )
-        val repository: Repository =
-            DefaultRepository.getInstance(api, ioDispatcher = Dispatchers.IO)
+        val repository: ArticleRepository =
+            ArticleRepositoryImpl.getInstance(api, ioDispatcher = Dispatchers.IO)
         val serverCode = repository.postBookmark(articleId)
         if (serverCode) {
             succeed()
