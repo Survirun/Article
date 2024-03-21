@@ -2,16 +2,9 @@ package com.devlog.article.data.repository
 
 
 import android.annotation.SuppressLint
-import android.graphics.pdf.PdfDocument.Page
-import android.util.Log
-import com.devlog.article.data.entity.ArticleLogEntity
 import com.devlog.article.data.entity.LoginEntity
 import com.devlog.article.data.entity.MyKeyword
-import com.devlog.article.data.entity.Passed
 import com.devlog.article.data.network.ApiService
-import com.devlog.article.data.response.ArticleLogResponse
-import com.devlog.article.data.response.ArticleResponse
-import com.devlog.article.data.response.BookmarkResponse
 import com.devlog.article.data.response.DefaultResponse
 import com.devlog.article.data.response.UserInfoEntity
 import kotlinx.coroutines.CoroutineDispatcher
@@ -20,7 +13,7 @@ import kotlinx.coroutines.withContext
 class DefaultRepository private constructor(
     private val api: ApiService,
     private val ioDispatcher: CoroutineDispatcher
-) : Repository {
+) : UserRepository {
     companion object {
 
         // Instance 생성

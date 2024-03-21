@@ -5,7 +5,7 @@ import com.devlog.article.data.response.DefaultResponse
 import com.devlog.article.data.response.UserInfoEntity
 
 
-interface Repository {
+interface UserRepository {
 
     suspend fun postLogin(loginEntity: LoginEntity): DefaultResponse?
 

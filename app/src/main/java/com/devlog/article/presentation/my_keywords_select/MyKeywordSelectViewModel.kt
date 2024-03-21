@@ -1,18 +1,15 @@
 package com.devlog.article.presentation.my_keywords_select
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.devlog.article.data.entity.LoginEntity
 import com.devlog.article.data.network.ApiService
-import com.devlog.article.data.network.LoginBuildOkHttpClient
 import com.devlog.article.data.network.buildOkHttpClient
 import com.devlog.article.data.network.provideGsonConverterFactory
 import com.devlog.article.data.network.provideProductRetrofit
 import com.devlog.article.data.repository.ArticleRepository
 import com.devlog.article.data.repository.ArticleRepositoryImpl
 import com.devlog.article.data.repository.DefaultRepository
-import com.devlog.article.data.repository.Repository
+import com.devlog.article.data.repository.UserRepository
 import com.devlog.article.data.response.ArticleResponse
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -33,7 +30,7 @@ class MyKeywordSelectViewModel :ViewModel(){
             )
         )
 
-        val repository: Repository = DefaultRepository.getInstance(api, ioDispatcher = Dispatchers.IO)
+        val repository: UserRepository = DefaultRepository.getInstance(api, ioDispatcher = Dispatchers.IO)
         val serverCode= repository.pathMyKeywords(keywords)
         if (serverCode){
             succeedPathMyKeywords()

@@ -1,6 +1,5 @@
 package com.devlog.article.presentation.article
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.devlog.article.data.entity.ArticleEntity
@@ -11,12 +10,9 @@ import com.devlog.article.data.network.provideProductRetrofit
 import com.devlog.article.data.repository.ArticleRepository
 import com.devlog.article.data.repository.ArticleRepositoryImpl
 import com.devlog.article.data.repository.DefaultRepository
-import com.devlog.article.data.repository.Repository
-import com.devlog.article.data.response.Article
+import com.devlog.article.data.repository.UserRepository
 import com.devlog.article.data.response.ArticleLogResponse
 import com.devlog.article.data.response.ArticleResponse
-import com.devlog.article.data.response.BookmarkResponse
-import com.devlog.article.extensions.toMD5
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -137,7 +133,7 @@ class ArticleListViewModel : ViewModel() {
                 provideGsonConverterFactory()
             )
         )
-        val repository: Repository =
+        val repository: UserRepository =
             DefaultRepository.getInstance(api, ioDispatcher = Dispatchers.IO)
         val serverCode = repository.deleteUser()
         if (serverCode==200) {
