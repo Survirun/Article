@@ -5,11 +5,10 @@ import androidx.lifecycle.viewModelScope
 import com.devlog.article.data.entity.ArticleEntity
 import com.devlog.article.data.network.ApiService
 import com.devlog.article.data.network.buildOkHttpClient
-import com.devlog.article.data.network.naver.provideNaverRetrofit
 import com.devlog.article.data.network.provideGsonConverterFactory
+import com.devlog.article.data.network.provideProductRetrofit
 import com.devlog.article.data.repository.DefaultRepository
 import com.devlog.article.data.repository.Repository
-import com.devlog.article.data.response.Article
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -21,7 +20,7 @@ class BookmarkViewModel : ViewModel() {
 
     fun postBookmark(articleId: String): Job = viewModelScope.launch {
         val api = ApiService(
-            provideNaverRetrofit(
+            provideProductRetrofit(
                 buildOkHttpClient(),
                 provideGsonConverterFactory()
             )

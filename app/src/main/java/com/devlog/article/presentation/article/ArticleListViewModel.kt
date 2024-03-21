@@ -6,7 +6,6 @@ import androidx.lifecycle.viewModelScope
 import com.devlog.article.data.entity.ArticleEntity
 import com.devlog.article.data.network.ApiService
 import com.devlog.article.data.network.buildOkHttpClient
-import com.devlog.article.data.network.naver.provideNaverRetrofit
 import com.devlog.article.data.network.provideGsonConverterFactory
 import com.devlog.article.data.network.provideProductRetrofit
 import com.devlog.article.data.repository.DefaultRepository
@@ -72,7 +71,7 @@ class ArticleListViewModel : ViewModel() {
 
     fun postBookmark(articleId: String): Job = viewModelScope.launch {
         val api = ApiService(
-            provideNaverRetrofit(
+            provideProductRetrofit(
                 buildOkHttpClient(),
                 provideGsonConverterFactory()
             )
@@ -90,7 +89,7 @@ class ArticleListViewModel : ViewModel() {
 
     fun getBookMaker(): Job = viewModelScope.launch {
         val api = ApiService(
-            provideNaverRetrofit(
+            provideProductRetrofit(
                 buildOkHttpClient(),
                 provideGsonConverterFactory()
             )
@@ -113,7 +112,7 @@ class ArticleListViewModel : ViewModel() {
 
     fun postReport(articleId: String): Job = viewModelScope.launch {
         val api = ApiService(
-            provideNaverRetrofit(
+            provideProductRetrofit(
                 buildOkHttpClient(),
                 provideGsonConverterFactory()
             )

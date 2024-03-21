@@ -22,7 +22,7 @@ class ArticleWebViewActivity : AppCompatActivity() {
     lateinit var binding: ActivityArticleWebViewBinding
     lateinit var articleWebViewModel: ArticleWebViewModel
     var body = ""
-    lateinit var postTextSummary :()->Unit
+
     var url =""
     lateinit var articleGetbody:ArticleGetbody
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -36,14 +36,9 @@ class ArticleWebViewActivity : AppCompatActivity() {
         articleGetbody = ArticleGetbody(binding.webView)
 
 
-        postTextSummary={
-            cutString()
-            articleWebViewModel.textSummary(ApiData(Document(title = "", content = body)))
-        }
 
-        articleWebViewModel.succeed ={
-            binding.textView.text = it
-        }
+
+
         binding.shareButton.setOnClickListener {
             shareLink(url)
         }
@@ -110,7 +105,6 @@ class ArticleWebViewActivity : AppCompatActivity() {
         fun getHtml(html: String) {
 
             activity.body += html.replace("\n","")
-            activity.postTextSummary()
 
 
             Log.d("Test", "html: $html")

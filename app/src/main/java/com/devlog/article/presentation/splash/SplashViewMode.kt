@@ -6,7 +6,6 @@ import androidx.lifecycle.viewModelScope
 import com.devlog.article.data.entity.ArticleEntity
 import com.devlog.article.data.network.ApiService
 import com.devlog.article.data.network.buildOkHttpClient
-import com.devlog.article.data.network.naver.provideNaverRetrofit
 import com.devlog.article.data.network.provideGsonConverterFactory
 import com.devlog.article.data.network.provideProductRetrofit
 import com.devlog.article.data.repository.DefaultRepository
@@ -34,6 +33,7 @@ class SplashViewMode():ViewModel() {
 
         val repository: Repository = DefaultRepository.getInstance(api, ioDispatcher = Dispatchers.IO)
         val serverCode = repository.getArticle(1,page)
+
         if (serverCode!=null) {
             article=serverCode
             succeed()
