@@ -1,6 +1,5 @@
 package com.devlog.article.presentation.splash
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.devlog.article.data.entity.ArticleEntity
@@ -8,9 +7,8 @@ import com.devlog.article.data.network.ApiService
 import com.devlog.article.data.network.buildOkHttpClient
 import com.devlog.article.data.network.provideGsonConverterFactory
 import com.devlog.article.data.network.provideProductRetrofit
-import com.devlog.article.data.repository.DefaultRepository
-import com.devlog.article.data.repository.Repository
-import com.devlog.article.data.response.Article
+import com.devlog.article.data.repository.ArticleRepository
+import com.devlog.article.data.repository.ArticleRepositoryImpl
 import com.devlog.article.data.response.ArticleResponse
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -31,7 +29,7 @@ class SplashViewMode():ViewModel() {
             )
         )
 
-        val repository: Repository = DefaultRepository.getInstance(api, ioDispatcher = Dispatchers.IO)
+        val repository: ArticleRepository = ArticleRepositoryImpl.getInstance(api, ioDispatcher = Dispatchers.IO)
         val serverCode = repository.getArticle(1,page)
 
         if (serverCode!=null) {
@@ -52,8 +50,8 @@ class SplashViewMode():ViewModel() {
                 provideGsonConverterFactory()
             )
         )
-        val repository: Repository =
-            DefaultRepository.getInstance(api, ioDispatcher = Dispatchers.IO)
+        val repository: ArticleRepository =
+            ArticleRepositoryImpl.getInstance(api, ioDispatcher = Dispatchers.IO)
         val serverCode = repository.getBookMaker()
 
         if (serverCode != null) {
