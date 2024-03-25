@@ -255,6 +255,7 @@ class ArticleListFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         userViewArticleId.add(articleEntity.articleId)
         val intent = Intent(requireContext(), ArticleWebViewActivity::class.java)
         intent.putExtra("url", articleEntity.url)
+        intent.putExtra("title", articleEntity.title)
         startActivity(intent)
     }
 
