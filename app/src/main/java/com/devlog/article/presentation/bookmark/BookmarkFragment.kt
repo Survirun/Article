@@ -3,6 +3,7 @@ package com.devlog.article.presentation.bookmark
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -29,6 +30,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.RememberObserver
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -56,11 +59,13 @@ import com.devlog.article.presentation.article_webview.ArticleWebViewActivity
 import com.devlog.article.presentation.ui.theme.ArticleTheme
 
 
-var articleList = ArrayList<ArticleEntity>()
-private var viewModel = BookmarkViewModel()
-lateinit var bookmarkSharedPreferencesHelper: BookmarkSharedPreferencesHelper
-
 class BookmarkFragment : Fragment() {
+    var articleList = ArrayList<ArticleEntity>()
+    private var viewModel = BookmarkViewModel()
+    lateinit var bookmarkSharedPreferencesHelper: BookmarkSharedPreferencesHelper
+    lateinit var deleteItem : MutableState<String>
+
+    lateinit var showDialog : MutableState<Boolean>
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -71,170 +76,171 @@ class BookmarkFragment : Fragment() {
             articleList = bookmarkSharedPreferencesHelper.readFromSharedPreferences()
 
             setContent {
+                initData()
                 ArticleTheme {
-                    // A surface container using the 'background' color from the theme
-                    Main(requireContext())
+                    Surface(modifier = Modifier.fillMaxSize(),
+                        color = MaterialTheme.colorScheme.background) {
+                        if (articleList.isNotEmpty()) {
+                            BookmarkList()
+
+                        } else {
+                            Text("비어있음")
+                        }
+                    }
+
+
                 }
             }
         }
     }
-}
-
-@Composable
-fun Main(context: Context) {
-
-    fun deleteTodo(id: String) {
-        viewModel.postBookmark(id)
-        articleList = articleList.filter { it.articleId != id } as ArrayList<ArticleEntity>
+    @Composable
+    fun initData(){
+        initViewModel()
+        showDialog = rememberSaveable { mutableStateOf(false) }
+        deleteItem = rememberSaveable { mutableStateOf("") }
+    }
+    fun initViewModel(){
         viewModel.succeed = {
+            showDialog.value=false
             bookmarkSharedPreferencesHelper.saveToSharedPreferences(articleList)
         }
     }
-
-    fun articleDetails(url: String) {
+    fun articleDetails(article: ArticleEntity) {
         val intent = Intent(context, ArticleWebViewActivity::class.java)
-        intent.putExtra("url", url)
-        startActivity(context, intent, null)
+        intent.putExtra("title",article.title)
+        intent.putExtra("url", article.url)
+        startActivity(requireContext(), intent, null)
     }
 
-    val (showDialog, setShowDialog) =
-        rememberSaveable { mutableStateOf(false) }
-    var deleteItem by rememberSaveable { mutableStateOf("") }
-    Surface(
-        modifier = Modifier.fillMaxSize(),
-        color = MaterialTheme.colorScheme.background
-    ) {
-        if (articleList.isNotEmpty()) {
+    fun deleteArticle(id: String) {
+        viewModel.postBookmark(id)
+        articleList = articleList.filter { it.articleId != id } as ArrayList<ArticleEntity>
 
-            BookmarkList(articleList,
-                onClick = {
-                    articleDetails(it)
-                },
-                onDelete = {
-                    deleteItem = it
-                    setShowDialog(true)
-                })
-            DeleteDialog(showDialog, setShowDialog) {
-                deleteTodo(deleteItem)
+    }
+
+
+    @Composable
+    fun BookmarkList() {
+        DeleteDialog()
+        LazyColumn {
+            items(articleList) {
+                BookmarkItem(it)
             }
-        } else {
-            Text("비어있음")
         }
     }
-}
 
-@Composable
-fun BookmarkList(
-    articleList: ArrayList<ArticleEntity>,
-    onClick: (i: String) -> Unit,
-    onDelete: (i: String) -> Unit
-) {
-    LazyColumn {
-        items(articleList) {
-            BookmarkItem(it,
-                onClick = { onClick(it.url) },
-                onDelete = { onDelete(it.articleId) })
-        }
-    }
-}
-
-@Composable
-fun BookmarkItem(article: ArticleEntity, onClick: () -> Unit, onDelete: () -> Unit) {
-    Row(
-        modifier = Modifier
-            .clickable(onClick = onClick)
-            .background(Color.White)
-            .fillMaxWidth()
-            .padding(vertical = 16.dp, horizontal = 24.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        AsyncImage(
-            model = if (article.url.contains("yozm.wishket")) R.drawable.yozm else article.image,
-            contentDescription = null,
-            contentScale = ContentScale.Crop,
+    @Composable
+    fun BookmarkItem(article: ArticleEntity) {
+        Row(
             modifier = Modifier
-                .size(56.dp)
-                .clip(RoundedCornerShape(16.dp))
-        )
-        Column(modifier = Modifier.padding(start = 8.dp, end = 16.dp).fillMaxWidth(0.9f)) {
-            ItemText(article.title, Color.Black)
-            ItemText(article.text!!, Color(0xFFA0A0AB))
-        }
-        IconButton(
-            onClick = {
-                onDelete()
-            },
-            modifier = Modifier.size(32.dp),
+                .clickable(onClick = { articleDetails(article) })
+                .background(Color.White)
+                .fillMaxWidth()
+                .padding(vertical = 16.dp, horizontal = 24.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Icon(
-                imageVector = Icons.Outlined.BookmarkAdded,
-                tint = Color(0xFFA0A0AB),
+            AsyncImage(
+                model = if (article.url.contains("yozm.wishket")) R.drawable.yozm else article.image,
                 contentDescription = null,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .size(56.dp)
+                    .clip(RoundedCornerShape(16.dp))
+            )
+            Column(modifier = Modifier
+                .padding(start = 8.dp, end = 16.dp)
+                .fillMaxWidth(0.9f)) {
+                ItemText(article.title, Color.Black)
+                ItemText(article.text, Color(0xFFA0A0AB))
+            }
+            IconButton(
+                onClick = {
+                    deleteItem.value = article.articleId
+                    showDialog.value = true
+
+                },
+                modifier = Modifier.size(32.dp),
+            ) {
+                Icon(
+                    imageVector = Icons.Outlined.BookmarkAdded,
+                    tint = Color(0xFFA0A0AB),
+                    contentDescription = null,
+                )
+            }
+        }
+    }
+
+    @Composable
+    fun ItemText(text: String, color: Color) {
+        Text(
+            text,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+            fontSize = 14.sp,
+            fontFamily = FontFamily(
+                Font(R.font.font, FontWeight.Medium)
+            ),
+            color = color,
+            modifier = Modifier
+                .height(24.dp)
+                .wrapContentHeight(align = Alignment.CenterVertically)
+        )
+    }
+
+    @Composable
+    fun DeleteDialog() {
+        if (showDialog.value){
+            AlertDialog(
+                onDismissRequest = { showDialog.value=false },
+                title = { Text(text = "정말 삭제?") },
+                text = { Text(text = "레알루다가?") },
+                confirmButton = {
+                    Button(
+                        onClick = {
+                            deleteArticle(deleteItem.value)
+
+                        }) {
+                        Text(
+                            text = "확인"
+                        )
+                    }
+                },
+                dismissButton = {
+                    Button(
+                        onClick = { showDialog.value=false }) {
+                        Text(
+                            text = "취소"
+                        )
+                    }
+                }
             )
         }
+
     }
-}
 
-@Composable
-fun ItemText(text: String, color: Color) {
-    Text(
-        text,
-        maxLines = 1,
-        overflow = TextOverflow.Ellipsis,
-        fontSize = 14.sp,
-        fontFamily = FontFamily(
-            Font(R.font.font, FontWeight.Medium)
-        ),
-        color = color,
-        modifier = Modifier.height(24.dp).wrapContentHeight(align = Alignment.CenterVertically)
-    )
-}
+    @Preview(showBackground = true)
+    @Composable
+    fun Preview() {
+        initData()
+        var image = "https://content.surfit.io/thumbs/image/wdBn3/oRnWp/19788758706604cf43e9e4e.png/cover-center-1x.webp"
+        var articleEntity = ArticleEntity("제목", "설명", image, url ="https://content.surfit.io/thumbs/image/wdBn3/oRnWp/19788758706604cf43e9e4e.png/cover-center-1x.webp" , "25")
 
-@Composable
-fun DeleteDialog(
-    showDialog: Boolean,
-    setShowDialog: (Boolean) -> Unit,
-    onConfirm: () -> Unit
-) {
-    if (!showDialog) return
-    AlertDialog(
-        onDismissRequest = { setShowDialog(false) },
-        title = { Text(text = "정말 삭제?") },
-        text = { Text(text = "레알루다가?") },
-        confirmButton = {
-            Button(
-                onClick = {
-                    onConfirm()
-                    viewModel.succeed = {
-                        setShowDialog(false)
-                    }
-                }) {
-                Text(
-                    text = "확인"
-                )
-            }
-        },
-        dismissButton = {
-            Button(
-                onClick = { setShowDialog(false) }) {
-                Text(
-                    text = "취소"
-                )
-            }
+        for (i in 0..10) {
+            articleList.add(articleEntity)
         }
-    )
-}
+        ArticleTheme {
 
-@Preview(showBackground = true)
-@Composable
-fun Preview() {
-    ArticleTheme {
-        // A surface container using the 'background' color from the theme
-        Surface(
-            modifier = Modifier.fillMaxSize(),
-            color = MaterialTheme.colorScheme.background
-        ) {
-//            BookmarkList(articleList)
+            Surface(
+                modifier = Modifier.fillMaxSize(),
+                color = MaterialTheme.colorScheme.background
+            ) {
+                if (articleList.isNotEmpty()) {
+                    BookmarkList()
+                    DeleteDialog()
+                } else {
+                    Text("비어있음")
+                }
+            }
         }
     }
 }
