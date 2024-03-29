@@ -105,20 +105,12 @@ class BookmarkFragment : Fragment() {
             }
         }
     }
-    fun initViewModel() {
-        viewModel.succeed = { articleEntity ->
-            showDialog.value = false
-            articleList.value = articleList.value.filter { it != articleEntity }.toMutableList()
-            bookmarkSharedPreferencesHelper.saveToSharedPreferences(articleList.value)
 
-
-        }
-    }
     @Composable
     fun initData() {
 
         arrayListOf<ArticleEntity>()
-        initViewModel()
+
         articleList = rememberSaveable { mutableStateOf(mutableListOf<ArticleEntity>()) }
         showDialog = rememberSaveable { mutableStateOf(false) }
 
@@ -141,7 +133,9 @@ class BookmarkFragment : Fragment() {
 
     fun deleteArticle(articleEntity: ArticleEntity) {
         viewModel.postBookmark(articleEntity)
-
+        showDialog.value = false
+        articleList.value = articleList.value.filter { it != articleEntity }.toMutableList()
+        bookmarkSharedPreferencesHelper.saveToSharedPreferences(articleList.value)
 
     }
 

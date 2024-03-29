@@ -14,8 +14,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 class BookmarkViewModel : ViewModel() {
-    lateinit var succeed: (articleEntity: ArticleEntity) -> Unit
-    lateinit var failed: () -> Unit
+
     var article = ArrayList<ArticleEntity>()
 
     fun postBookmark(articleEntity: ArticleEntity): Job = viewModelScope.launch {
@@ -28,11 +27,7 @@ class BookmarkViewModel : ViewModel() {
         val repository: ArticleRepository =
             ArticleRepositoryImpl.getInstance(api, ioDispatcher = Dispatchers.IO)
         val serverCode = repository.postBookmark(articleEntity.articleId)
-        if (serverCode) {
-            succeed(articleEntity)
-        } else {
-            failed()
-        }
+
 
     }
 }

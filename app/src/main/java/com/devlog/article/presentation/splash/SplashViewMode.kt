@@ -1,5 +1,6 @@
 package com.devlog.article.presentation.splash
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.devlog.article.data.entity.ArticleEntity
@@ -33,6 +34,7 @@ class SplashViewMode():ViewModel() {
         val serverCode = repository.getArticle(1,page)
 
         if (serverCode!=null) {
+
             article=serverCode
             succeed()
 
