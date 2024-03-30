@@ -33,6 +33,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -111,7 +112,7 @@ fun header() {
     ) {
         Icon(
             modifier = Modifier.size(28.dp),
-            imageVector = Icons.Outlined.BookmarkAdded,
+            painter = painterResource(id = R.drawable.ic_article_24),
             tint = Color(0xFFA0A0AB),
             contentDescription = null
         )
