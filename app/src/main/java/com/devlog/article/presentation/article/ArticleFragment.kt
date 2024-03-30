@@ -3,6 +3,7 @@ package com.devlog.article.presentation.article
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,11 +18,14 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.BookmarkAdded
+import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ScrollableTabRow
@@ -31,6 +35,7 @@ import androidx.compose.material3.TabRow
 import androidx.compose.material3.TabRowDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -53,11 +58,14 @@ import androidx.compose.ui.unit.sp
 import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
 import coil.compose.AsyncImage
 import com.devlog.article.R
 import com.devlog.article.data.entity.ArticleEntity
 import com.devlog.article.data.mixpanel.MixPanelManager
 import com.devlog.article.data.preference.UserPreference
+import com.devlog.article.data.response.ArticleLogResponse
 import com.devlog.article.data.response.ArticleResponse
 import com.devlog.article.presentation.article_webview.ArticleWebViewActivity
 import com.devlog.article.presentation.ui.theme.ArticleTheme
@@ -68,6 +76,8 @@ val articles = ArrayList<ArticleEntity>()
 var page = 1
 var pageChangePoint = 15
 var userViewArticleId = arrayListOf<String>()
+var userBookmarkArticleId = arrayListOf<String>()
+var userShareArticleId = arrayListOf<String>()
 
 class ArticleFragment : Fragment() {
     lateinit var articleResponse: ArticleResponse
@@ -80,6 +90,7 @@ class ArticleFragment : Fragment() {
         viewModel = ArticleListViewModel()
         userPreference = UserPreference.getInstance(requireContext())
         processArticleResponse(articleResponse)
+
         return ComposeView(requireContext()).apply {
             setContent {
                 ArticleTheme {
@@ -164,8 +175,9 @@ fun TabScreen() {
 //        }
     }
 }
+
 @Composable
-fun TitleText(title : String){
+fun TitleText(title: String) {
     Text(
         title,
         fontSize = 16.sp,
@@ -175,6 +187,7 @@ fun TitleText(title : String){
         modifier = Modifier.height(24.dp).wrapContentHeight(align = Alignment.CenterVertically)
     )
 }
+
 @Composable
 fun ArticleList(
     articleList: ArrayList<ArticleEntity>,
@@ -212,9 +225,13 @@ fun ArticleItem(article: ArticleEntity, onClick: () -> Unit) {
                 .clip(RoundedCornerShape(4.dp))
         )
         ItemText(article.title, 0.dp)
+        if (isAdmin()) {
+            reportButton(article.articleId)
+        }
     }
 
 }
+
 
 @Composable
 fun CompanyArticleItem(article: ArticleEntity, onClick: () -> Unit) {
@@ -235,6 +252,19 @@ fun CompanyArticleItem(article: ArticleEntity, onClick: () -> Unit) {
                 .clip(RoundedCornerShape(4.dp))
         )
         ItemText(article.title, 12.dp)
+        if (isAdmin()) {
+            reportButton(article.articleId)
+        }
+    }
+}
+
+@Composable
+fun reportButton(articleId: String) {
+    Button(
+        onClick = { reportArticle(articleId) },
+        modifier = Modifier.wrapContentSize(),
+    ) {
+        Text("신고")
     }
 }
 
@@ -251,6 +281,25 @@ fun ItemText(text: String, paddingTop: Dp) {
         modifier = Modifier.height(48.dp).wrapContentHeight(align = Alignment.CenterVertically)
             .padding(start = 8.dp, top = paddingTop)
     )
+}
+
+fun addArticles() {
+    page += 1
+    pageChangePoint += 20
+    viewModel.getArticle(userPreference.getUserPagePassed(), page)
+    viewModel.succeed = {
+        viewModel.article.data.articles.forEach {
+            articles.add(
+                ArticleEntity(
+                    title = it.title,
+                    text = it.snippet!!,
+                    image = it.thumbnail!!,
+                    url = it.link,
+                    articleId = it._id
+                )
+            )
+        }
+    }
 }
 
 fun processArticleResponse(articleResponse: ArticleResponse) {
@@ -276,12 +325,22 @@ fun processArticleResponse(articleResponse: ArticleResponse) {
     userPreference.setUserPagePassed(list)
 }
 
-fun isAdmin(): Int {
-    return if (userPreference.userPermission == "admin") View.VISIBLE else View.INVISIBLE
+fun isAdmin(): Boolean {
+    return userPreference.userPermission == "admin"
 }
 
 fun isCompanyArticle(url: String): Boolean {
     return (url.contains("toss.tech"))
+}
+
+fun reportArticle(articleId: String) {
+    viewModel.postReport(articleId)
+    viewModel.reportSucceed = {
+        Log.e("test", "성공")
+    }
+    viewModel.reportFailed = {
+        Log.e("test", "실패")
+    }
 }
 
 @Preview(showBackground = true)
