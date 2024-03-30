@@ -82,7 +82,7 @@ class ArticleWebViewActivity : AppCompatActivity() {
             override fun onPageFinished(view: WebView?, url: String?) {
                 super.onPageFinished(view, url)
 
-                articleGetbody.getBody(binding.webView.url!!)
+               // articleGetbody.getBody(binding.webView.url!!)
 
             }
         }
