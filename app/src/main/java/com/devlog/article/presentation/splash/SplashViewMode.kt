@@ -14,14 +14,17 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
-class SplashViewMode():ViewModel() {
+class SplashViewMode() : ViewModel() {
     lateinit var succeed: () -> Unit
     lateinit var failed: () -> Unit
     lateinit var bookmark_succeed: () -> Unit
     lateinit var bookmark_failed: () -> Unit
+    lateinit var keyword_succeed: () -> Unit
+    lateinit var keyword_failed: () -> Unit
     lateinit var article: ArticleResponse
+    lateinit var article_keyword: ArticleResponse
     var bookmark = ArrayList<ArticleEntity>()
-    fun getArticle(page:ArrayList<String>): Job = viewModelScope.launch {
+    fun getArticle(page: ArrayList<String>): Job = viewModelScope.launch {
         val api = ApiService(
             provideProductRetrofit(
                 buildOkHttpClient(),
@@ -29,11 +32,12 @@ class SplashViewMode():ViewModel() {
             )
         )
 
-        val repository: ArticleRepository = ArticleRepositoryImpl.getInstance(api, ioDispatcher = Dispatchers.IO)
-        val serverCode = repository.getArticle(1,page)
+        val repository: ArticleRepository =
+            ArticleRepositoryImpl.getInstance(api, ioDispatcher = Dispatchers.IO)
+        val serverCode = repository.getArticle(1, page)
 
-        if (serverCode!=null) {
-            article=serverCode
+        if (serverCode != null) {
+            article = serverCode
             succeed()
 
         } else {
@@ -43,7 +47,7 @@ class SplashViewMode():ViewModel() {
 
     }
 
-    fun getBookMaker() : Job=viewModelScope.launch {
+    fun getBookMaker(): Job = viewModelScope.launch {
         val api = ApiService(
             provideProductRetrofit(
                 buildOkHttpClient(),
@@ -55,7 +59,7 @@ class SplashViewMode():ViewModel() {
         val serverCode = repository.getBookMaker()
 
         if (serverCode != null) {
-            serverCode.data.forEach{
+            serverCode.data.forEach {
                 bookmark.add(
                     ArticleEntity(
                         title = it.title,
@@ -67,6 +71,27 @@ class SplashViewMode():ViewModel() {
                 )
             }
             bookmark_succeed()
+        }
+    }
+
+    fun getArticleKeyword(keyword: Int, pass: ArrayList<String>): Job = viewModelScope.launch {
+        val api = ApiService(
+            provideProductRetrofit(
+                buildOkHttpClient(),
+                provideGsonConverterFactory()
+            )
+        )
+
+        val repository: ArticleRepository =
+            ArticleRepositoryImpl.getInstance(api, ioDispatcher = Dispatchers.IO)
+        val serverCode = repository.getArticleKeyword(keyword, 1, pass)
+
+        if (serverCode != null) {
+            article_keyword = serverCode
+            keyword_succeed()
+
+        } else {
+            keyword_failed()
         }
     }
 }

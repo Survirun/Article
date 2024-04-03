@@ -58,4 +58,19 @@ class ArticleRepositoryImpl private constructor(
         return@withContext response.isSuccessful
     }
 
+    override suspend fun getArticleKeyword(
+        keyword: Int,
+        page: Int,
+        passed: ArrayList<String>
+    ): ArticleResponse? = withContext(ioDispatcher) {
+        withContext(ioDispatcher) {
+            val response = api.getArticleKeyword(keyword,1, Passed(passed))
+            return@withContext if (response.isSuccessful) {
+                response.body()
+            } else {
+                null
+            }
+        }
+    }
+
 }
