@@ -28,7 +28,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ScrollableTabRow
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Tab
-import androidx.compose.material3.TabRowDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -68,7 +67,8 @@ import com.devlog.article.presentation.article_webview.ArticleWebViewActivity
 import com.devlog.article.presentation.ui.theme.ArticleTheme
 
 lateinit var viewModel: ArticleListViewModel
-lateinit var userPreference: UserPreference
+lateinit var pass: ArrayList<String>
+lateinit var permission: String
 val articles = mutableStateListOf<ArticleEntity>()
 var page = 1
 var pageChangePoint = 10
@@ -87,8 +87,10 @@ class ArticleFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        val userPreference = UserPreference.getInstance(requireContext())
+        pass = userPreference.getUserPagePassed()
+        permission = userPreference.userPermission
         viewModel = ArticleListViewModel()
-        userPreference = UserPreference.getInstance(requireContext())
         processArticleResponse(articleResponse)
         lifecycle.addObserver(object : LifecycleEventObserver {
             override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
@@ -132,7 +134,6 @@ class ArticleFragment : Fragment() {
 
 @Composable
 fun Main(context: Context) {
-
     fun articleDetails(articleEntity: ArticleEntity) {
         MixPanelManager.articleClick(articleEntity.title)
         userViewArticleId.add(articleEntity.articleId)
@@ -320,7 +321,7 @@ fun ItemText(text: String, paddingTop: Dp) {
 fun addArticles() {
     page += 1
     pageChangePoint += 20
-    viewModel.getArticle(userPreference.getUserPagePassed(), page)
+    viewModel.getArticle(pass, page)
     viewModel.succeed = {
         viewModel.article.data.articles.forEach {
             articles.add(
@@ -337,7 +338,7 @@ fun addArticles() {
 }
 
 fun processArticleResponse(articleResponse: ArticleResponse) {
-    val list = userPreference.getUserPagePassed()
+    val list = pass
     articleResponse.data.articles.forEach {
         list.add(it._id)
         if (it.data == null) {
@@ -356,11 +357,10 @@ fun processArticleResponse(articleResponse: ArticleResponse) {
             )
         )
     }
-    userPreference.setUserPagePassed(list)
 }
 
 fun isAdmin(): Boolean {
-    return userPreference.userPermission == "admin"
+    return permission == "admin"
 }
 
 fun isCompanyArticle(url: String): Boolean {
