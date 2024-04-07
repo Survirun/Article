@@ -20,23 +20,20 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.BookmarkAdded
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ScrollableTabRow
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Tab
-import androidx.compose.material3.TabRow
 import androidx.compose.material3.TabRowDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -55,26 +52,22 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleEventObserver
 import coil.compose.AsyncImage
 import com.devlog.article.R
 import com.devlog.article.data.entity.ArticleEntity
 import com.devlog.article.data.mixpanel.MixPanelManager
 import com.devlog.article.data.preference.UserPreference
-import com.devlog.article.data.response.ArticleLogResponse
 import com.devlog.article.data.response.ArticleResponse
 import com.devlog.article.presentation.article_webview.ArticleWebViewActivity
 import com.devlog.article.presentation.ui.theme.ArticleTheme
 
 lateinit var viewModel: ArticleListViewModel
 lateinit var userPreference: UserPreference
-val articles = ArrayList<ArticleEntity>()
+val articles = mutableStateListOf<ArticleEntity>()
 var page = 1
-var pageChangePoint = 15
+var pageChangePoint = 10
 var userViewArticleId = arrayListOf<String>()
 var userBookmarkArticleId = arrayListOf<String>()
 var userShareArticleId = arrayListOf<String>()
@@ -190,16 +183,21 @@ fun TitleText(title: String) {
 
 @Composable
 fun ArticleList(
-    articleList: ArrayList<ArticleEntity>,
+    articleList: List<ArticleEntity>,
     onClick: (i: ArticleEntity) -> Unit
 ) {
     LazyColumn {
-        items(articleList) {
-            if (isCompanyArticle(it.url)) {
-                CompanyArticleItem(it, onClick = { onClick(it) })
+        itemsIndexed(articleList) { idx, item ->
+            if (idx == pageChangePoint) {
+                LaunchedEffect(page) {
+                    addArticles()
+                }
+            }
+            if (isCompanyArticle(item.url)) {
+                CompanyArticleItem(item, onClick = { onClick(item) })
             } else {
                 ArticleItem(
-                    it, onClick = { onClick(it) }
+                    item, onClick = { onClick(item) }
                 )
             }
         }

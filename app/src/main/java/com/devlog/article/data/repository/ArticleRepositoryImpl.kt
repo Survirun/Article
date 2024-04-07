@@ -29,7 +29,7 @@ class ArticleRepositoryImpl private constructor(
 
     override suspend fun getArticle(page: Int, passed: ArrayList<String>): ArticleResponse? =
         withContext(ioDispatcher) {
-            val response = api.getArticle(1, Passed(passed))
+            val response = api.getArticle(page, Passed(passed))
             return@withContext if (response.isSuccessful) {
                 response.body()
             } else {
@@ -63,13 +63,11 @@ class ArticleRepositoryImpl private constructor(
         page: Int,
         passed: ArrayList<String>
     ): ArticleResponse? = withContext(ioDispatcher) {
-        withContext(ioDispatcher) {
-            val response = api.getArticleKeyword(keyword,1, Passed(passed))
-            return@withContext if (response.isSuccessful) {
-                response.body()
-            } else {
-                null
-            }
+        val response = api.getArticleKeyword(keyword, 1, Passed(passed))
+        return@withContext if (response.isSuccessful) {
+            response.body()
+        } else {
+            null
         }
     }
 
