@@ -54,11 +54,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.LifecycleOwner
 import coil.compose.AsyncImage
 import com.devlog.article.R
 import com.devlog.article.data.entity.ArticleEntity
 import com.devlog.article.data.mixpanel.MixPanelManager
 import com.devlog.article.data.preference.UserPreference
+import com.devlog.article.data.response.ArticleLogResponse
 import com.devlog.article.data.response.ArticleResponse
 import com.devlog.article.presentation.article_webview.ArticleWebViewActivity
 import com.devlog.article.presentation.ui.theme.ArticleTheme
@@ -71,6 +75,9 @@ var pageChangePoint = 10
 var userViewArticleId = arrayListOf<String>()
 var userBookmarkArticleId = arrayListOf<String>()
 var userShareArticleId = arrayListOf<String>()
+val viewArticleLogResponseList = arrayListOf<ArticleLogResponse>()
+val shareArticleLogResponseList = arrayListOf<ArticleLogResponse>()
+val bookmarArticleLogResponseList = arrayListOf<ArticleLogResponse>()
 
 class ArticleFragment : Fragment() {
     lateinit var articleResponse: ArticleResponse
@@ -83,6 +90,35 @@ class ArticleFragment : Fragment() {
         viewModel = ArticleListViewModel()
         userPreference = UserPreference.getInstance(requireContext())
         processArticleResponse(articleResponse)
+        lifecycle.addObserver(object : LifecycleEventObserver {
+            override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
+                when (event) {
+                    Lifecycle.Event.ON_STOP -> {
+                        userViewArticleId.forEach {
+                            viewArticleLogResponseList.add(ArticleLogResponse(it, "click"))
+                        }
+                        userShareArticleId.forEach {
+                            shareArticleLogResponseList.add(ArticleLogResponse(it, "share"))
+                        }
+                        userBookmarkArticleId.forEach {
+                            bookmarArticleLogResponseList.add(ArticleLogResponse(it, "bookmark"))
+                        }
+
+                        if (userViewArticleId.size != 0) {
+                            viewModel.postArticleLog(viewArticleLogResponseList)
+                        }
+                        if (userShareArticleId.size != 0) {
+                            viewModel.postArticleLog(shareArticleLogResponseList)
+                        }
+                        if (userBookmarkArticleId.size != 0) {
+                            viewModel.postArticleLog(bookmarArticleLogResponseList)
+                        }
+                    }
+
+                    else -> {}
+                }
+            }
+        })
 
         return ComposeView(requireContext()).apply {
             setContent {
