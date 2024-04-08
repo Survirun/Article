@@ -147,7 +147,7 @@ fun Main(context: Context) {
 
     Surface(
         modifier = Modifier.fillMaxSize(),
-        color = MaterialTheme.colorScheme.background
+        color = Color.White
     ) {
         Column {
             header()
@@ -185,7 +185,8 @@ fun TabScreen() {
             indicator = { tabPositions ->
                 TabRowDefaults.Indicator(
                     modifier = Modifier.tabIndicatorOffset(tabPositions[tabIndex]),
-                    color = Color.Black
+                    color = Color.Black,
+                    height = 1.dp
                 )
 
             },
