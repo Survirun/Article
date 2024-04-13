@@ -10,6 +10,10 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.appcompat.app.AppCompatActivity
 import androidx.browser.customtabs.CustomTabsIntent
+import androidx.core.view.isVisible
+import com.devlog.article.data.entity.naver.ApiData
+import com.devlog.article.data.entity.naver.Document
+import com.devlog.article.data.entity.naver.OptionObject
 import com.devlog.article.databinding.ActivityArticleWebViewBinding
 import com.devlog.article.utility.isProbablyKorean
 import com.devlog.article.utility.shareLink
@@ -18,11 +22,16 @@ import com.devlog.article.utility.shareLink
 class ArticleWebViewActivity : AppCompatActivity() {
     lateinit var binding: ActivityArticleWebViewBinding
     lateinit var articleWebViewModel: ArticleWebViewModel
+    lateinit var postTextSummary :()->Unit
     var body = ""
 
     var url =""
     var title=""
     lateinit var articleGetbody:ArticleGetbody
+    val resultList = mutableListOf<String>()
+    var resultAi = ""
+    val chunkSize = 1000
+    var aiCount =0
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityArticleWebViewBinding.inflate(layoutInflater)
@@ -47,18 +56,56 @@ class ArticleWebViewActivity : AppCompatActivity() {
             shareLink(url)
         }
 
+        postTextSummary={
+
+            resultList.forEach{
+                articleWebViewModel.textSummary(
+                    ApiData(
+                        document =
+                        Document(
+                            title = title,
+                            content = it
+                        ), option = OptionObject()
+                    )
+                )
+
+            }
 
 
-    }
-    private fun cutString(){
-        val maxLength = 2000
-
-        body = if (body.length > maxLength) {
-            body.substring(0, maxLength)
-        } else {
-            body
         }
+
+        articleWebViewModel.succeed ={
+            aiCount++
+            resultAi+=it
+            Log.e("fasfsadsf",it)
+            if (aiCount==resultList.size){
+                binding.textView.isVisible=true
+                binding.textView.text = resultAi
+            }
+
+        }
+
+
     }
+    fun cutString(){
+        var startIndex = 0
+        var endIndex = startIndex + chunkSize
+
+        while (startIndex < body.length) {
+            if (endIndex > body.length) {
+                endIndex = body.length
+            }
+            resultList.add(body.substring(startIndex, endIndex))
+            startIndex = endIndex
+            endIndex = startIndex + chunkSize
+        }
+        postTextSummary()
+
+
+
+    }
+
+
 
 
     private fun initWebView(){
@@ -82,7 +129,7 @@ class ArticleWebViewActivity : AppCompatActivity() {
             override fun onPageFinished(view: WebView?, url: String?) {
                 super.onPageFinished(view, url)
 
-               // articleGetbody.getBody(binding.webView.url!!)
+                articleGetbody.getBody(binding.webView.url!!)
 
             }
         }
@@ -107,13 +154,17 @@ class ArticleWebViewActivity : AppCompatActivity() {
     class MyJavascriptInterface(var activity: ArticleWebViewActivity) {
         @JavascriptInterface
         fun getHtml(html: String) {
-
             activity.body += html.replace("\n","")
+            activity.cutString()
 
 
-            Log.d("Test", "html: $html")
+
+            Log.d("Test", "html: ${activity.body}")
         }
 
 
     }
+
+
+
 }

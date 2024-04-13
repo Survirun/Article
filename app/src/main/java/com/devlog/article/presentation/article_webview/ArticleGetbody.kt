@@ -5,7 +5,9 @@ import android.webkit.WebView
 
 class ArticleGetbody(var webView: WebView) {
     fun getBody(url:String){
-
+        webView.settings.run {
+            javaScriptEnabled = true
+        }
         when{
 
             url.contains("aitimes")->{
@@ -32,6 +34,11 @@ class ArticleGetbody(var webView: WebView) {
                 webView.loadUrl("javascript:window.Android.getHtml(document.getElementsByClassName(\"news_cnt_detail_wrap\")[0].innerText)")
 
             }
+            url.contains("brunch")->{
+
+                webView.loadUrl("javascript:window.Android.getHtml(document.getElementsByClassName(\"wrap_body\")[0].innerText)")
+            }
+
 
 
 
