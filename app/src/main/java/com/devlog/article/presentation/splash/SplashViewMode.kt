@@ -1,5 +1,7 @@
 package com.devlog.article.presentation.splash
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.devlog.article.data.entity.ArticleEntity
@@ -15,15 +17,17 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 class SplashViewMode() : ViewModel() {
-    lateinit var succeed: () -> Unit
     lateinit var failed: () -> Unit
-    lateinit var bookmark_succeed: () -> Unit
-    lateinit var bookmark_failed: () -> Unit
-    lateinit var keyword_succeed: () -> Unit
     lateinit var keyword_failed: () -> Unit
     lateinit var article: ArticleResponse
-    lateinit var article_keyword: ArticleResponse
-    var bookmark = ArrayList<ArticleEntity>()
+    val bookmark = ArrayList<ArticleEntity>()
+
+    private var _profileSplashStateLiveData = MutableLiveData<SplashState>(SplashState.Uninitialized)
+    val profileSplashStateLiveData: LiveData<SplashState> = _profileSplashStateLiveData
+
+    fun fetchData()= viewModelScope.launch {
+        setState(SplashState.Loading)
+    }
     fun getArticle(page: ArrayList<String>): Job = viewModelScope.launch {
         val api = ApiService(
             provideProductRetrofit(
@@ -32,13 +36,12 @@ class SplashViewMode() : ViewModel() {
             )
         )
 
-        val repository: ArticleRepository =
-            ArticleRepositoryImpl.getInstance(api, ioDispatcher = Dispatchers.IO)
+        val repository: ArticleRepository = ArticleRepositoryImpl.getInstance(api, ioDispatcher = Dispatchers.IO)
         val serverCode = repository.getArticle(1, page)
 
         if (serverCode != null) {
             article = serverCode
-            succeed()
+
 
         } else {
             failed()
@@ -48,6 +51,7 @@ class SplashViewMode() : ViewModel() {
     }
 
     fun getBookMaker(): Job = viewModelScope.launch {
+
         val api = ApiService(
             provideProductRetrofit(
                 buildOkHttpClient(),
@@ -70,7 +74,7 @@ class SplashViewMode() : ViewModel() {
                     )
                 )
             }
-            bookmark_succeed()
+           setState(SplashState.GetBookMaker(bookmark))
         }
     }
 
@@ -87,11 +91,14 @@ class SplashViewMode() : ViewModel() {
         val serverCode = repository.getArticleKeyword(keyword, 1, pass)
 
         if (serverCode != null) {
-            article_keyword = serverCode
-            keyword_succeed()
+            setState(SplashState.GetArticle(serverCode, keyword))
 
         } else {
             keyword_failed()
         }
+    }
+
+    private fun setState(state: SplashState) {
+        _profileSplashStateLiveData.postValue(state)
     }
 }

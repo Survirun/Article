@@ -23,57 +23,78 @@ import com.devlog.article.R
 import com.devlog.article.presentation.main.MainActivity
 import com.devlog.article.data.preference.UserPreference
 import com.devlog.article.presentation.bookmark.BookmarkSharedPreferencesHelper
+import com.devlog.article.presentation.my_keywords_select.AIDevelopment
+import com.devlog.article.presentation.my_keywords_select.ITEquipment
 import com.devlog.article.presentation.my_keywords_select.MyKeywordSelectActivity
 import com.devlog.article.presentation.sign_in.SignInActivity
 import com.devlog.article.presentation.ui.theme.ArticleTheme
+import com.devlog.article.presentation.my_keywords_select.Common
+import com.devlog.article.presentation.my_keywords_select.DevelopmentCommon
+import com.devlog.article.presentation.my_keywords_select.ITNews
+import com.devlog.article.presentation.my_keywords_select.PM
+import com.devlog.article.presentation.my_keywords_select.UIUXDesign
+import com.devlog.article.presentation.my_keywords_select.WebDevelopment
+import com.devlog.article.presentation.my_keywords_select.androidDevelopment
+import com.devlog.article.presentation.my_keywords_select.iOSDevelopment
+import com.devlog.article.presentation.my_keywords_select.serverDevelopment
 
 @SuppressLint("CustomSplashScreen")
 class SplashActivity : ComponentActivity()  {
     lateinit var userPreference : UserPreference
-    lateinit var viewModel:SplashViewMode
+    var viewModel = SplashViewMode()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContent {
-            viewModel= SplashViewMode()
-            viewModel.succeed={
+        observeData()
+        viewModel.fetchData()
+        userPreference= UserPreference.getInstance(this)
+        if (signInCheck()){
+            if (keywordCheck()){
+                viewModel.getBookMaker()
+                viewModel.getArticle(userPreference.getUserPagePassed())
+            }
 
-                val intent =Intent(this, MainActivity::class.java)
-                intent.putExtra("article",viewModel.article)
-                startActivity(intent)
+        }
+
+    }
+
+    fun observeData() = viewModel.profileSplashStateLiveData.observe(this) {
+        when (it) {
+            is SplashState.Uninitialized -> initView()
+            is SplashState.Loading -> handlePostApi()
+            is SplashState.GetBookMaker ->  handleBookMakerState(it)
+            is SplashState.GetArticle ->{ handleArticleState(it)}
+        }
+    }
+
+    fun keywordCheck():Boolean{
+        if (userPreference.userKeywordCheck){
+            return  true
+        }else{
+            Handler(Looper.getMainLooper()).postDelayed({
+                startActivity(Intent(this,MyKeywordSelectActivity::class.java))
                 finish()
 
-            }
-            viewModel.failed={
 
-            }
-            viewModel.bookmark_succeed={
-                BookmarkSharedPreferencesHelper(this).saveToSharedPreferences(viewModel.bookmark)
-            }
-            viewModel.bookmark_failed={
-                Log.e("test", "왜")
-            }
-            userPreference= UserPreference.getInstance(this)
-            if ( userPreference.userSignInCheck){
-                viewModel.getBookMaker()
-                if (userPreference.userKeywordCheck){
-                    viewModel.getArticle(userPreference.getUserPagePassed())
-                }else{
-                    Handler(Looper.getMainLooper()).postDelayed({
-                        startActivity(Intent(this,MyKeywordSelectActivity::class.java))
-                        finish()
+            }, 1500)
 
+        }
+        return  false
+    }
+    fun signInCheck():Boolean {
+        if (userPreference.userSignInCheck){
+            return  true
+        }else{
+            Handler(Looper.getMainLooper()).postDelayed({
+                startActivity(Intent(this,SignInActivity::class.java))
 
-                    }, 1500)
+            }, 1500)
+        }
+        return false
+    }
 
-                }
-
-            }else{
-                Handler(Looper.getMainLooper()).postDelayed({
-                    startActivity(Intent(this,SignInActivity::class.java))
-
-                }, 1500)
-
-            }
+    fun initView(){
+        setContent{
 
             ArticleTheme {
                 // A surface container using the 'background' color from the theme
@@ -86,6 +107,73 @@ class SplashActivity : ComponentActivity()  {
             }
         }
     }
+
+    fun handlePostApi(){
+        viewModel.getBookMaker()
+        viewModel.getArticle(userPreference.getUserPagePassed())
+        for (i in 0..10){
+            viewModel.getArticleKeyword(i, arrayListOf())
+        }
+
+    }
+
+    fun handleBookMakerState(state: SplashState.GetBookMaker){
+        BookmarkSharedPreferencesHelper(this).saveToSharedPreferences(state.bookMakerList)
+
+    }
+
+    var count =0
+    var maxCount =10
+    fun handleArticleState(state: SplashState.GetArticle) {
+        count++
+        Log.e("테스트 입니다",count.toString())
+        if (count == maxCount){
+            val  intent =Intent(this, MainActivity::class.java)
+            when(state.category){
+                Common ->{
+                    intent.putExtra("article_common",state.articleResponse)
+
+                }
+                DevelopmentCommon->{
+                    intent.putExtra("article_developmentCommon",state.articleResponse)
+                }
+                ITEquipment->{
+                    intent.putExtra("article_it_equipment",state.articleResponse)
+                }
+                androidDevelopment->{
+                    intent.putExtra("article_android_development",state.articleResponse)
+                }
+                serverDevelopment->{
+                    intent.putExtra("article_server_development",state.articleResponse)
+                }
+                WebDevelopment->{
+                    intent.putExtra("article_web_development",state.articleResponse)
+                }
+                AIDevelopment->{
+                    intent.putExtra("article_ai_development",state.articleResponse)
+                }
+                UIUXDesign->{
+                    intent.putExtra("article_ui_ux_design",state.articleResponse)
+                }
+                PM->{
+                    intent.putExtra("article_pm",state.articleResponse)
+                }
+                iOSDevelopment->{
+                    intent.putExtra("article_ios",state.articleResponse)
+                }
+                ITNews->{
+                    intent.putExtra("article_it_news",state.articleResponse)
+                }
+            }
+            intent.putExtra("article",viewModel.article)
+
+           // intent.putExtra("articleKeywordList",test)
+            startActivity(intent)
+            finish()
+        }
+    }
+
+
 }
 @Composable
 fun Logo(){
