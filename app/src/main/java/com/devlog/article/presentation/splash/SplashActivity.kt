@@ -128,6 +128,7 @@ class SplashActivity : ComponentActivity()  {
         count++
         Log.e("테스트 입니다",count.toString())
         if (count == maxCount){
+            Log.e("테스트 입니다", "test"+state.category.toString())
             val  intent =Intent(this, MainActivity::class.java)
             when(state.category){
                 Common ->{

@@ -21,8 +21,8 @@ class MainActivity() : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        articleFragment.articleResponse = intent.getSerializableExtra("article") as ArticleResponse
 
+        getArticleData()
         supportFragmentManager.beginTransaction().add(R.id.containers, articleFragment).commit()
         binding.bottomNavigationview.setOnItemSelectedListener { item ->
             when (item.itemId) {
@@ -55,6 +55,22 @@ class MainActivity() : AppCompatActivity() {
     // 화면 전환 구현 메소드
     fun replaceFragment(fragment: Fragment) {
         supportFragmentManager.beginTransaction().replace(R.id.containers, fragment).commit()
+    }
+
+    private fun getArticleData(){
+        val articles = ArrayList<ArticleResponse>()
+        articles.add(intent.getSerializableExtra("article") as ArticleResponse)
+        articles.add(intent.getSerializableExtra("article_it_equipment") as ArticleResponse)
+        articles.add(intent.getSerializableExtra("article_it_news") as ArticleResponse)
+        articles.add(intent.getSerializableExtra("article_android_development") as ArticleResponse)
+        articles.add(intent.getSerializableExtra("article_ios") as ArticleResponse)
+        articles.add(intent.getSerializableExtra("article_web_development") as ArticleResponse)
+        articles.add(intent.getSerializableExtra("article_server_development") as ArticleResponse)
+        articles.add(intent.getSerializableExtra("article_ai_development") as ArticleResponse)
+        articles.add(intent.getSerializableExtra("article_ui_ux_design") as ArticleResponse)
+        articles.add(intent.getSerializableExtra("article_pm") as ArticleResponse)
+        articleFragment.articleArray = articles
+
     }
 
 }

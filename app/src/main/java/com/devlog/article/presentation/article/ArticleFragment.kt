@@ -71,9 +71,11 @@ import com.devlog.article.presentation.ui.theme.ArticleTheme
 lateinit var viewModel: ArticleListViewModel
 lateinit var pass: ArrayList<String>
 lateinit var permission: String
-val articles = mutableStateListOf<ArticleEntity>()
+val articles = mutableStateListOf<ArrayList<ArticleEntity>>()
+lateinit var currentArticles: ArrayList<ArticleEntity>
 var page = 1
 var pageChangePoint = 10
+var category = 0
 var userViewArticleId = arrayListOf<String>()
 var userBookmarkArticleId = arrayListOf<String>()
 var userShareArticleId = arrayListOf<String>()
@@ -82,7 +84,7 @@ val shareArticleLogResponseList = arrayListOf<ArticleLogResponse>()
 val bookmarArticleLogResponseList = arrayListOf<ArticleLogResponse>()
 
 class ArticleFragment : Fragment() {
-    lateinit var articleResponse: ArticleResponse
+    lateinit var articleArray: ArrayList<ArticleResponse>
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -93,7 +95,9 @@ class ArticleFragment : Fragment() {
         pass = userPreference.getUserPagePassed()
         permission = userPreference.userPermission
         viewModel = ArticleListViewModel()
-        processArticleResponse(articleResponse)
+        Log.d("test", (articleArray.size - 1).toString())
+        processArticleResponse(articleArray)
+        currentArticles = articles[category]
         lifecycle.addObserver(object : LifecycleEventObserver {
             override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
                 when (event) {
@@ -152,7 +156,7 @@ fun Main(context: Context) {
         Column {
             header()
             TabScreen()
-            ArticleList(articles, onClick = { articleDetails(it) })
+            ArticleList(currentArticles, onClick = { articleDetails(it) })
         }
     }
 }
@@ -176,8 +180,10 @@ fun header() {
 fun TabScreen() {
     var tabIndex by remember { mutableStateOf(0) }
 
-    val tabs = listOf("내 관심사", "IT 기기", "IT 소식", "Android", "Web", "BackEnd", "AI", "UIUX", "기획")
-
+    val tabs =
+        listOf("내 관심사", "IT 기기", "IT 소식", "Android", "iOS", "Web", "BackEnd", "AI", "UIUX", "기획")
+    category = tabIndex
+    currentArticles = articles[category]
     Column(modifier = Modifier.fillMaxWidth()) {
         ScrollableTabRow(
             selectedTabIndex = tabIndex,
@@ -204,15 +210,8 @@ fun TabScreen() {
                 )
             }
         }
-//        when (tabIndex) {
-//            0 -> HomeScreen()
-//            1 -> AboutScreen()
-//            2 -> SettingsScreen()
-//            3 -> MoreScreen()
-//            4 -> SomethingScreen()
-//            5 -> EverythingScreen()
-//        }
     }
+
 }
 
 @Composable
@@ -236,7 +235,7 @@ fun ArticleList(
         itemsIndexed(articleList) { idx, item ->
             if (idx == pageChangePoint) {
                 LaunchedEffect(page) {
-                    addArticles()
+//                    addArticles()
                 }
             }
             if (isCompanyArticle(item.url)) {
@@ -333,7 +332,32 @@ fun addArticles() {
     viewModel.getArticle(pass, page)
     viewModel.succeed = {
         viewModel.article.data.articles.forEach {
-            articles.add(
+//            articles.add(
+//                ArticleEntity(
+//                    title = it.title,
+//                    text = it.snippet!!,
+//                    image = it.thumbnail!!,
+//                    url = it.link,
+//                    articleId = it._id
+//                )
+//            )
+        }
+    }
+}
+
+fun processArticleResponse(articleArray: ArrayList<ArticleResponse>) {
+    val list = pass
+    articleArray.forEachIndexed { index, articleResponse ->
+        val newList = ArrayList<ArticleEntity>()
+        articleResponse.data.articles.forEach {
+            list.add(it._id)
+            if (it.data == null) {
+                it.data = ""
+            }
+            if (it.snippet == null) {
+                it.snippet = ""
+            }
+            newList.add(
                 ArticleEntity(
                     title = it.title,
                     text = it.snippet!!,
@@ -343,28 +367,7 @@ fun addArticles() {
                 )
             )
         }
-    }
-}
-
-fun processArticleResponse(articleResponse: ArticleResponse) {
-    val list = pass
-    articleResponse.data.articles.forEach {
-        list.add(it._id)
-        if (it.data == null) {
-            it.data = ""
-        }
-        if (it.snippet == null) {
-            it.snippet = ""
-        }
-        articles.add(
-            ArticleEntity(
-                title = it.title,
-                text = it.snippet!!,
-                image = it.thumbnail!!,
-                url = it.link,
-                articleId = it._id
-            )
-        )
+        articles.add(newList)
     }
 }
 
