@@ -94,7 +94,7 @@ class SplashViewMode() : ViewModel() {
             setState(SplashState.GetArticle(serverCode, keyword))
 
         } else {
-            keyword_failed()
+            setState(SplashState.GetArticleFail)
         }
     }
 

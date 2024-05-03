@@ -10,4 +10,6 @@ sealed  class SplashState {
     data class GetBookMaker(var bookMakerList:ArrayList<ArticleEntity>)  : SplashState()
 
     data class GetArticle(var articleResponse : ArticleResponse,var category: Int): SplashState()
+
+    object  GetArticleFail: SplashState()
 }

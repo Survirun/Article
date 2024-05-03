@@ -43,11 +43,13 @@ class SplashActivity : ComponentActivity()  {
     lateinit var userPreference : UserPreference
     var viewModel = SplashViewMode()
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         observeData()
         viewModel.fetchData()
         userPreference= UserPreference.getInstance(this)
+        intent =Intent(this, MainActivity::class.java)
         if (signInCheck()){
             if (keywordCheck()){
                 viewModel.getBookMaker()
@@ -64,6 +66,7 @@ class SplashActivity : ComponentActivity()  {
             is SplashState.Loading -> handlePostApi()
             is SplashState.GetBookMaker ->  handleBookMakerState(it)
             is SplashState.GetArticle ->{ handleArticleState(it)}
+            is SplashState.GetArticleFail ->{ count++}
         }
     }
 
@@ -123,52 +126,49 @@ class SplashActivity : ComponentActivity()  {
     }
 
     var count =0
-    var maxCount =10
+    var maxCount =11
     fun handleArticleState(state: SplashState.GetArticle) {
         count++
         Log.e("테스트 입니다",count.toString())
+        when(state.category){
+            Common ->{
+                intent.putExtra("article_common",state.articleResponse)
+
+            }
+            DevelopmentCommon->{
+                intent.putExtra("article_developmentCommon",state.articleResponse)
+            }
+            ITEquipment->{
+                intent.putExtra("article_it_equipment",state.articleResponse)
+            }
+            androidDevelopment->{
+                intent.putExtra("article_android_development",state.articleResponse)
+            }
+            serverDevelopment->{
+                intent.putExtra("article_server_development",state.articleResponse)
+            }
+            WebDevelopment->{
+                intent.putExtra("article_web_development",state.articleResponse)
+            }
+            AIDevelopment->{
+                intent.putExtra("article_ai_development",state.articleResponse)
+            }
+            UIUXDesign->{
+                intent.putExtra("article_ui_ux_design",state.articleResponse)
+            }
+            PM->{
+                intent.putExtra("article_pm",state.articleResponse)
+            }
+            iOSDevelopment->{
+                intent.putExtra("article_ios",state.articleResponse)
+            }
+            ITNews->{
+                intent.putExtra("article_it_news",state.articleResponse)
+            }
+        }
         if (count == maxCount){
             Log.e("테스트 입니다", "test"+state.category.toString())
-            val  intent =Intent(this, MainActivity::class.java)
-            when(state.category){
-                Common ->{
-                    intent.putExtra("article_common",state.articleResponse)
-
-                }
-                DevelopmentCommon->{
-                    intent.putExtra("article_developmentCommon",state.articleResponse)
-                }
-                ITEquipment->{
-                    intent.putExtra("article_it_equipment",state.articleResponse)
-                }
-                androidDevelopment->{
-                    intent.putExtra("article_android_development",state.articleResponse)
-                }
-                serverDevelopment->{
-                    intent.putExtra("article_server_development",state.articleResponse)
-                }
-                WebDevelopment->{
-                    intent.putExtra("article_web_development",state.articleResponse)
-                }
-                AIDevelopment->{
-                    intent.putExtra("article_ai_development",state.articleResponse)
-                }
-                UIUXDesign->{
-                    intent.putExtra("article_ui_ux_design",state.articleResponse)
-                }
-                PM->{
-                    intent.putExtra("article_pm",state.articleResponse)
-                }
-                iOSDevelopment->{
-                    intent.putExtra("article_ios",state.articleResponse)
-                }
-                ITNews->{
-                    intent.putExtra("article_it_news",state.articleResponse)
-                }
-            }
             intent.putExtra("article",viewModel.article)
-
-           // intent.putExtra("articleKeywordList",test)
             startActivity(intent)
             finish()
         }
