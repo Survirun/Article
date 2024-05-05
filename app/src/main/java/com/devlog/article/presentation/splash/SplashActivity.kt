@@ -167,7 +167,6 @@ class SplashActivity : ComponentActivity()  {
             }
         }
         if (count == maxCount){
-            Log.e("테스트 입니다", "test"+state.category.toString())
             intent.putExtra("article",viewModel.article)
             startActivity(intent)
             finish()

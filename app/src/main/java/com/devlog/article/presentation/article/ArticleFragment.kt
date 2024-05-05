@@ -1,6 +1,5 @@
 package com.devlog.article.presentation.article
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -34,7 +33,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -44,6 +42,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -71,11 +70,10 @@ import com.devlog.article.presentation.ui.theme.ArticleTheme
 lateinit var viewModel: ArticleListViewModel
 lateinit var pass: ArrayList<String>
 lateinit var permission: String
-val articles = mutableStateListOf<ArrayList<ArticleEntity>>()
-lateinit var currentArticles: ArrayList<ArticleEntity>
+val articles = ArrayList<ArrayList<ArticleEntity>>()
 var page = 1
 var pageChangePoint = 10
-var category = 0
+var category = mutableStateOf(0)
 var userViewArticleId = arrayListOf<String>()
 var userBookmarkArticleId = arrayListOf<String>()
 var userShareArticleId = arrayListOf<String>()
@@ -95,9 +93,7 @@ class ArticleFragment : Fragment() {
         pass = userPreference.getUserPagePassed()
         permission = userPreference.userPermission
         viewModel = ArticleListViewModel()
-        Log.d("test", (articleArray.size - 1).toString())
         processArticleResponse(articleArray)
-        currentArticles = articles[category]
         lifecycle.addObserver(object : LifecycleEventObserver {
             override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
                 when (event) {
@@ -131,7 +127,7 @@ class ArticleFragment : Fragment() {
         return ComposeView(requireContext()).apply {
             setContent {
                 ArticleTheme {
-                    Main(requireContext())
+                    Main()
                 }
             }
         }
@@ -139,16 +135,7 @@ class ArticleFragment : Fragment() {
 }
 
 @Composable
-fun Main(context: Context) {
-    fun articleDetails(articleEntity: ArticleEntity) {
-        MixPanelManager.articleClick(articleEntity.title)
-        userViewArticleId.add(articleEntity.articleId)
-        val intent = Intent(context, ArticleWebViewActivity::class.java)
-        intent.putExtra("url", articleEntity.url)
-        intent.putExtra("title", articleEntity.title)
-        ContextCompat.startActivity(context, intent, null)
-    }
-
+fun Main() {
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = Color.White
@@ -156,7 +143,6 @@ fun Main(context: Context) {
         Column {
             header()
             TabScreen()
-            ArticleList(currentArticles, onClick = { articleDetails(it) })
         }
     }
 }
@@ -182,8 +168,6 @@ fun TabScreen() {
 
     val tabs =
         listOf("내 관심사", "IT 기기", "IT 소식", "Android", "iOS", "Web", "BackEnd", "AI", "UIUX", "기획")
-    category = tabIndex
-    currentArticles = articles[category]
     Column(modifier = Modifier.fillMaxWidth()) {
         ScrollableTabRow(
             selectedTabIndex = tabIndex,
@@ -203,7 +187,11 @@ fun TabScreen() {
                 Tab(
                     text = { TitleText(title) },
                     selected = tabIndex == index,
-                    onClick = { tabIndex = index },
+                    onClick = {
+                        tabIndex = index
+                        category.value = index
+
+                    },
                     selectedContentColor = Color.Black,
                     unselectedContentColor = Color(0xFFA0A0AB)
 
@@ -211,7 +199,22 @@ fun TabScreen() {
             }
         }
     }
+    ArticleScreen(tabIndex)
+}
 
+@Composable
+fun ArticleScreen(tabIdx: Int) {
+    val context = LocalContext.current
+    fun articleDetails(articleEntity: ArticleEntity) {
+        MixPanelManager.articleClick(articleEntity.title)
+        userViewArticleId.add(articleEntity.articleId)
+        val intent = Intent(context, ArticleWebViewActivity::class.java)
+        intent.putExtra("url", articleEntity.url)
+        intent.putExtra("title", articleEntity.title)
+        ContextCompat.startActivity(context, intent, null)
+    }
+
+    ArticleList(articles[tabIdx], onClick = { articleDetails(it) })
 }
 
 @Composable
