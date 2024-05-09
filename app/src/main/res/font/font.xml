@@ -3,14 +3,14 @@
     <font
         android:fontStyle="normal"
         android:fontWeight="500"
-        android:font="@font/wanted_sans_medium">
+        android:font="@font/pretendard_medium">
 
     </font>
 
     <font
         android:fontStyle="normal"
         android:fontWeight="600"
-        android:font="@font/wanted_sans_bold">
+        android:font="@font/pretendard_semi_bold">
 
     </font>
 </font-family>
