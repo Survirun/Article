@@ -15,9 +15,9 @@ var pretendard = FontFamily(
     Font(R.font.pretendard_semi_bold, FontWeight.SemiBold, FontStyle.Normal),
 
 )
-var pretendardTypography  = Typography
+//var pretendardTypography  = Typography
 // Set of Material typography styles to start with
-val fontSystem = Typography(
+val Typography = Typography(
     displayLarge =TextStyle(
         fontFamily = pretendard,
         fontWeight = FontWeight.SemiBold,

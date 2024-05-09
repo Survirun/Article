@@ -11,15 +11,15 @@ val PurpleGrey40 = Color(0xFF625b71)
 val Pink40 = Color(0xFF7D5260)
 
 
-var Gray90 = Color(0xFFFFFFFF)
-var Gray80 = Color(0xFFF2F2F2)
-
-var Gray70 = Color(0xFFD4D4D4)
-var Gray60 = Color(0xFFB5B5B5)
-var Gray50 = Color(0xFF989898)
-var Gray30 = Color(0xFF5D5D5D)
-var Gray20 = Color(0xFF3B3B3B)
-var Gray10 = Color(0xFF1D1D1D)
+var Gray90 = Color(0xFF3F3F46)
+var Gray80 = Color(0xFF686874)
+var Gray70 = Color(0xFF84848F)
+var Gray60 = Color(0xFFA0A0AB)
+var Gray50 = Color(0xFFBEBEC8)
+var Gray40 = Color(0xFFDCDCEA)
+var Gray30 = Color(0xFFEEEEF0)
+var Gray20 = Color(0xFFFAFAFC)
+var Gray10 = Color(0xFFEEEEF0)
 
 
 var roundColorSelect= Color(0xFF18171D)
