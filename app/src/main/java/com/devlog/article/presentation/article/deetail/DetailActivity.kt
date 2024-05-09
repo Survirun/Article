@@ -19,7 +19,7 @@ class DetailActivity : AppCompatActivity() {
 
         val title = intent.getStringExtra("title")
         val text = intent.getStringExtra("text")
-        val image = intent.getIntExtra("image", R.drawable.test)
+        val image = intent.getIntExtra("image", R.drawable.folphin_loading_dialog)
         binding.title.text = title
         binding.text.text = text
         binding.image.setImageResource(image)
