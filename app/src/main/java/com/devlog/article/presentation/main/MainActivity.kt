@@ -59,18 +59,11 @@ class MainActivity() : AppCompatActivity() {
 
     private fun getArticleData(){
         val articles = ArrayList<ArticleResponse>()
-        articles.add(intent.getSerializableExtra("article") as ArticleResponse)
-        articles.add(intent.getSerializableExtra("article_it_equipment") as ArticleResponse)
-        articles.add(intent.getSerializableExtra("article_it_news") as ArticleResponse)
-        articles.add(intent.getSerializableExtra("article_android_development") as ArticleResponse)
-        articles.add(intent.getSerializableExtra("article_ios") as ArticleResponse)
-        articles.add(intent.getSerializableExtra("article_web_development") as ArticleResponse)
-        articles.add(intent.getSerializableExtra("article_server_development") as ArticleResponse)
-        articles.add(intent.getSerializableExtra("article_ai_development") as ArticleResponse)
-        articles.add(intent.getSerializableExtra("article_ui_ux_design") as ArticleResponse)
-        articles.add(intent.getSerializableExtra("article_pm") as ArticleResponse)
+        val keywordList = listOf("article", "article_it_equipment", "article_it_news", "article_android_development", "article_ios", "article_web_development", "article_server_development", "article_ai_development", "article_ui_ux_design", "article_pm")
+        for(keyword in keywordList){
+            articles.add(intent.getSerializableExtra(keyword) as ArticleResponse)
+        }
         articleFragment.articleArray = articles
-
     }
 
 }
