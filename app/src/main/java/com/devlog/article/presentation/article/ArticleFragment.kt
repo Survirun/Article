@@ -33,6 +33,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -71,6 +72,7 @@ lateinit var viewModel: ArticleListViewModel
 lateinit var pass: ArrayList<String>
 lateinit var permission: String
 val articles = ArrayList<ArrayList<ArticleEntity>>()
+var currentArticles = mutableStateListOf<ArticleEntity>()
 var page = 1
 var pageChangePoint = 10
 var category = mutableStateOf(0)
@@ -143,6 +145,7 @@ fun Main() {
         Column {
             header()
             TabScreen()
+            ArticleScreen()
         }
     }
 }
@@ -165,7 +168,7 @@ fun header() {
 @Composable
 fun TabScreen() {
     var tabIndex by remember { mutableStateOf(0) }
-
+    changeArticles(tabIndex)
     val tabs =
         listOf("내 관심사", "IT 기기", "IT 소식", "Android", "iOS", "Web", "BackEnd", "AI", "UIUX", "기획")
     Column(modifier = Modifier.fillMaxWidth()) {
@@ -199,12 +202,13 @@ fun TabScreen() {
             }
         }
     }
-    ArticleScreen(tabIndex)
 }
 
 @Composable
-fun ArticleScreen(tabIdx: Int) {
+fun ArticleScreen() {
+    val items by remember { mutableStateOf(currentArticles) }
     val context = LocalContext.current
+
     fun articleDetails(articleEntity: ArticleEntity) {
         MixPanelManager.articleClick(articleEntity.title)
         userViewArticleId.add(articleEntity.articleId)
@@ -214,7 +218,7 @@ fun ArticleScreen(tabIdx: Int) {
         ContextCompat.startActivity(context, intent, null)
     }
 
-    ArticleList(articles[tabIdx], onClick = { articleDetails(it) })
+    ArticleList(items, onClick = { articleDetails(it) })
 }
 
 @Composable
@@ -372,6 +376,11 @@ fun processArticleResponse(articleArray: ArrayList<ArticleResponse>) {
         }
         articles.add(newList)
     }
+}
+
+fun changeArticles(tabIndex: Int) {
+    currentArticles.clear()
+    currentArticles.addAll(articles.getOrElse(tabIndex) { arrayListOf() })
 }
 
 fun isAdmin(): Boolean {
