@@ -24,5 +24,5 @@ interface ArticleRepository {
 
     suspend fun postReport(articleId: String): Boolean
 
-
+    suspend fun getArticleKeyword(keyword : Int, page: Int, passed: ArrayList<String>) : ArticleResponse?
 }

@@ -1,6 +1,7 @@
 package com.devlog.article.presentation.splash
 
-import android.util.Log
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.devlog.article.data.entity.ArticleEntity
@@ -15,14 +16,19 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
-class SplashViewMode():ViewModel() {
-    lateinit var succeed: () -> Unit
+class SplashViewMode() : ViewModel() {
     lateinit var failed: () -> Unit
-    lateinit var bookmark_succeed: () -> Unit
-    lateinit var bookmark_failed: () -> Unit
+    lateinit var keyword_failed: () -> Unit
     lateinit var article: ArticleResponse
-    var bookmark = ArrayList<ArticleEntity>()
-    fun getArticle(page:ArrayList<String>): Job = viewModelScope.launch {
+    val bookmark = ArrayList<ArticleEntity>()
+
+    private var _profileSplashStateLiveData = MutableLiveData<SplashState>(SplashState.Uninitialized)
+    val profileSplashStateLiveData: LiveData<SplashState> = _profileSplashStateLiveData
+
+    fun fetchData()= viewModelScope.launch {
+        setState(SplashState.Loading)
+    }
+    fun getArticle(page: ArrayList<String>): Job = viewModelScope.launch {
         val api = ApiService(
             provideProductRetrofit(
                 buildOkHttpClient(),
@@ -31,12 +37,11 @@ class SplashViewMode():ViewModel() {
         )
 
         val repository: ArticleRepository = ArticleRepositoryImpl.getInstance(api, ioDispatcher = Dispatchers.IO)
-        val serverCode = repository.getArticle(1,page)
+        val serverCode = repository.getArticle(1, page)
 
-        if (serverCode!=null) {
+        if (serverCode != null) {
+            article = serverCode
 
-            article=serverCode
-            succeed()
 
         } else {
             failed()
@@ -45,7 +50,8 @@ class SplashViewMode():ViewModel() {
 
     }
 
-    fun getBookMaker() : Job=viewModelScope.launch {
+    fun getBookMaker(): Job = viewModelScope.launch {
+
         val api = ApiService(
             provideProductRetrofit(
                 buildOkHttpClient(),
@@ -57,7 +63,7 @@ class SplashViewMode():ViewModel() {
         val serverCode = repository.getBookMaker()
 
         if (serverCode != null) {
-            serverCode.data.forEach{
+            serverCode.data.forEach {
                 bookmark.add(
                     ArticleEntity(
                         title = it.title,
@@ -68,7 +74,31 @@ class SplashViewMode():ViewModel() {
                     )
                 )
             }
-            bookmark_succeed()
+           setState(SplashState.GetBookMaker(bookmark))
         }
+    }
+
+    fun getArticleKeyword(keyword: Int, pass: ArrayList<String>): Job = viewModelScope.launch {
+        val api = ApiService(
+            provideProductRetrofit(
+                buildOkHttpClient(),
+                provideGsonConverterFactory()
+            )
+        )
+
+        val repository: ArticleRepository =
+            ArticleRepositoryImpl.getInstance(api, ioDispatcher = Dispatchers.IO)
+        val serverCode = repository.getArticleKeyword(keyword, 1, pass)
+
+        if (serverCode != null) {
+            setState(SplashState.GetArticle(serverCode, keyword))
+
+        } else {
+            setState(SplashState.GetArticleFail)
+        }
+    }
+
+    private fun setState(state: SplashState) {
+        _profileSplashStateLiveData.postValue(state)
     }
 }

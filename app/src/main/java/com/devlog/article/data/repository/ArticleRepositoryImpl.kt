@@ -29,8 +29,7 @@ class ArticleRepositoryImpl private constructor(
 
     override suspend fun getArticle(page: Int, passed: ArrayList<String>): ArticleResponse? =
         withContext(ioDispatcher) {
-            val response = api.getArticle(1, Passed(passed))
-            Log.e("sdfasf",response.code().toString())
+            val response = api.getArticle(page, Passed(passed))
             return@withContext if (response.isSuccessful) {
                 response.body()
             } else {
@@ -57,6 +56,19 @@ class ArticleRepositoryImpl private constructor(
     override suspend fun postReport(articleId: String): Boolean = withContext(ioDispatcher) {
         val response = api.postReport(articleId)
         return@withContext response.isSuccessful
+    }
+
+    override suspend fun getArticleKeyword(
+        keyword: Int,
+        page: Int,
+        passed: ArrayList<String>
+    ): ArticleResponse? = withContext(ioDispatcher) {
+        val response = api.getArticleKeyword(keyword, 1, Passed(passed))
+        return@withContext if (response.isSuccessful) {
+            response.body()
+        } else {
+            null
+        }
     }
 
 }
