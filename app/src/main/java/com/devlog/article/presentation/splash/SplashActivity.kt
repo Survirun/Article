@@ -47,12 +47,13 @@ class SplashActivity : ComponentActivity()  {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         observeData()
-        viewModel.fetchData()
+
         userPreference= UserPreference.getInstance(this)
         intent =Intent(this, MainActivity::class.java)
         if (signInCheck()){
             if (keywordCheck()){
                 viewModel.getBookMaker()
+                viewModel.fetchData()
                 viewModel.getArticle(userPreference.getUserPagePassed())
             }
 
