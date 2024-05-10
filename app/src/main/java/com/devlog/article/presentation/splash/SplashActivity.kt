@@ -44,7 +44,7 @@ class SplashActivity : ComponentActivity()  {
 
             }
             viewModel.failed={
-
+                Log.e("test", "왜1")
             }
             viewModel.bookmark_succeed={
                 BookmarkSharedPreferencesHelper(this).saveToSharedPreferences(viewModel.bookmark)

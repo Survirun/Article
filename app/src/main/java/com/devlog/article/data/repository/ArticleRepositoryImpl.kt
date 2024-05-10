@@ -30,6 +30,7 @@ class ArticleRepositoryImpl private constructor(
     override suspend fun getArticle(page: Int, passed: ArrayList<String>): ArticleResponse? =
         withContext(ioDispatcher) {
             val response = api.getArticle(1, Passed(passed))
+            Log.e("sdfasf",response.code().toString())
             return@withContext if (response.isSuccessful) {
                 response.body()
             } else {
