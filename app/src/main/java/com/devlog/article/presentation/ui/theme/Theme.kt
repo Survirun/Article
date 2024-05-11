@@ -23,16 +23,16 @@ private val DarkColorScheme = darkColorScheme(
     secondary = PurpleGrey80,
     tertiary = Pink80,
     background = Color.Black,
-    onBackground = Gray90,
-    surface = Gray90
+    onBackground = Gray20,
+    surface = Gray20
 )
 
 private val LightColorScheme = lightColorScheme(
     primary = Color.Black,
     secondary = PurpleGrey40,
     tertiary = Pink40,
-    onBackground = Gray90,
-    surface = Gray90
+    onBackground = Gray20,
+    surface = Gray20
 
     /* Other default colors to override
     background = Color(0xFFFFFBFE),
@@ -58,7 +58,7 @@ fun ArticleTheme(
             if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
         }
 
-        darkTheme -> DarkColorScheme
+        darkTheme -> LightColorScheme
         else -> LightColorScheme
     }
     val view = LocalView.current

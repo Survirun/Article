@@ -76,7 +76,7 @@ fun LineView() {
         modifier = Modifier
             .fillMaxWidth(1f)
             .height(1.dp)
-            .background(Gray80)
+            .background(Gray20)
     ) {
 
     }
@@ -110,7 +110,7 @@ fun progressBar() {
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .fillMaxSize(1f)
-            .background(Gray80)
+            .background(Gray20)
 
     ) {
 
