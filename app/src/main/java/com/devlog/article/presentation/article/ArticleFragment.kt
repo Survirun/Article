@@ -33,6 +33,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -66,22 +67,20 @@ import com.devlog.article.data.preference.UserPreference
 import com.devlog.article.data.response.ArticleLogResponse
 import com.devlog.article.data.response.ArticleResponse
 import com.devlog.article.presentation.article_webview.ArticleWebViewActivity
+import com.devlog.article.presentation.splash.SplashState
 import com.devlog.article.presentation.ui.theme.ArticleTheme
 
 lateinit var viewModel: ArticleListViewModel
 lateinit var pass: ArrayList<String>
 lateinit var permission: String
 val articles = ArrayList<ArrayList<ArticleEntity>>()
-var currentArticles = mutableStateListOf<ArticleEntity>()
-var page = 1
-var pageChangePoint = 10
-var category = mutableStateOf(0)
 var userViewArticleId = arrayListOf<String>()
 var userBookmarkArticleId = arrayListOf<String>()
 var userShareArticleId = arrayListOf<String>()
 val viewArticleLogResponseList = arrayListOf<ArticleLogResponse>()
 val shareArticleLogResponseList = arrayListOf<ArticleLogResponse>()
 val bookmarArticleLogResponseList = arrayListOf<ArticleLogResponse>()
+
 
 class ArticleFragment : Fragment() {
     lateinit var articleArray: ArrayList<ArticleResponse>
@@ -135,7 +134,6 @@ class ArticleFragment : Fragment() {
         }
     }
 }
-
 @Composable
 fun Main() {
     Surface(
@@ -143,15 +141,14 @@ fun Main() {
         color = Color.White
     ) {
         Column {
-            header()
-            TabScreen()
+            Header()
             ArticleScreen()
         }
     }
 }
 
 @Composable
-fun header() {
+fun Header() {
     Row(
         modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically
@@ -166,47 +163,10 @@ fun header() {
 }
 
 @Composable
-fun TabScreen() {
-    var tabIndex by remember { mutableStateOf(0) }
-    changeArticles(tabIndex)
-    val tabs =
-        listOf("내 관심사", "IT 기기", "IT 소식", "Android", "iOS", "Web", "BackEnd", "AI", "UIUX", "기획")
-    Column(modifier = Modifier.fillMaxWidth()) {
-        ScrollableTabRow(
-            selectedTabIndex = tabIndex,
-            containerColor = Color.Transparent,
-            indicator = { tabPositions ->
-                TabRowDefaults.Indicator(
-                    modifier = Modifier.tabIndicatorOffset(tabPositions[tabIndex]),
-                    color = Color.Black,
-                    height = 1.dp
-                )
-
-            },
-            divider = {},
-            edgePadding = 20.dp
-        ) {
-            tabs.forEachIndexed { index, title ->
-                Tab(
-                    text = { TitleText(title) },
-                    selected = tabIndex == index,
-                    onClick = {
-                        tabIndex = index
-                        category.value = index
-
-                    },
-                    selectedContentColor = Color.Black,
-                    unselectedContentColor = Color(0xFFA0A0AB)
-
-                )
-            }
-        }
-    }
-}
-
-@Composable
 fun ArticleScreen() {
-    val items by remember { mutableStateOf(currentArticles) }
+    val (tabIndex, setTabIndex) = remember { mutableIntStateOf(0) }
+    val currentArticles = remember(tabIndex) { articles[tabIndex] }
+
     val context = LocalContext.current
 
     fun articleDetails(articleEntity: ArticleEntity) {
@@ -218,7 +178,64 @@ fun ArticleScreen() {
         ContextCompat.startActivity(context, intent, null)
     }
 
-    ArticleList(items, onClick = { articleDetails(it) })
+    fun addArticles() {
+//        articleTabState.page += 1
+//        articleTabState.pageChangePoint += 20
+//        viewModel.getArticleKeyword(articleTabState.page, _keyword, pass)
+//        viewModel.succeed = {
+//            viewModel.article.data.articles.forEach {
+//                val articleEntity =
+//                    ArticleEntity(
+//                        title = it.title,
+//                        text = it.snippet!!,
+//                        image = it.thumbnail!!,
+//                        url = it.link,
+//                        articleId = it._id
+//                    )
+//
+//                Log.d("test", articleEntity.toString())
+//                articles[tabIndex].articles.add(articleEntity)
+//            }
+//        }
+    }
+
+    Column(modifier = Modifier.fillMaxWidth()) {
+        TabLayout(tabIndex, setTabIndex)
+        ArticleList(
+            currentArticles,
+            onClick = { articleDetails(it) })
+    }
+}
+
+@Composable
+fun TabLayout(tabIndex: Int, onTabSelected: (Int) -> Unit) {
+    val tabs =
+        listOf("내 관심사", "IT 기기", "IT 소식", "Android", "iOS", "Web", "BackEnd", "AI", "UIUX", "기획")
+    ScrollableTabRow(
+        selectedTabIndex = tabIndex,
+        containerColor = Color.Transparent,
+        indicator = { tabPositions ->
+            TabRowDefaults.Indicator(
+                modifier = Modifier.tabIndicatorOffset(tabPositions[tabIndex]),
+                color = Color.Black,
+                height = 1.dp
+            )
+
+        },
+        divider = {},
+        edgePadding = 20.dp
+    ) {
+        tabs.forEachIndexed { index, title ->
+            Tab(
+                text = { TitleText(title) },
+                selected = tabIndex == index,
+                onClick = { onTabSelected(index) },
+                selectedContentColor = Color.Black,
+                unselectedContentColor = Color(0xFFA0A0AB)
+
+            )
+        }
+    }
 }
 
 @Composable
@@ -235,15 +252,15 @@ fun TitleText(title: String) {
 
 @Composable
 fun ArticleList(
-    articleList: List<ArticleEntity>,
+    articleList: ArrayList<ArticleEntity>,
     onClick: (i: ArticleEntity) -> Unit
 ) {
     LazyColumn {
         itemsIndexed(articleList) { idx, item ->
-            if (idx == pageChangePoint) {
-                LaunchedEffect(page) {
-//                    addArticles()
-                }
+            if (idx >= articleList.size - 1) {
+//                LaunchedEffect(articleList.page) {
+//                    loadMore(articleList)
+//                }
             }
             if (isCompanyArticle(item.url)) {
                 CompanyArticleItem(item, onClick = { onClick(item) })
@@ -333,55 +350,23 @@ fun ItemText(text: String, paddingTop: Dp) {
     )
 }
 
-fun addArticles() {
-    page += 1
-    pageChangePoint += 20
-    viewModel.getArticle(pass, page)
-    viewModel.succeed = {
-        viewModel.article.data.articles.forEach {
-//            articles.add(
-//                ArticleEntity(
-//                    title = it.title,
-//                    text = it.snippet!!,
-//                    image = it.thumbnail!!,
-//                    url = it.link,
-//                    articleId = it._id
-//                )
-//            )
-        }
-    }
-}
 
 fun processArticleResponse(articleArray: ArrayList<ArticleResponse>) {
-    val list = pass
-    articleArray.forEachIndexed { index, articleResponse ->
-        val newList = ArrayList<ArticleEntity>()
-        articleResponse.data.articles.forEach {
-            list.add(it._id)
-            if (it.data == null) {
-                it.data = ""
-            }
-            if (it.snippet == null) {
-                it.snippet = ""
-            }
-            newList.add(
-                ArticleEntity(
-                    title = it.title,
-                    text = it.snippet!!,
-                    image = it.thumbnail!!,
-                    url = it.link,
-                    articleId = it._id
-                )
+    articleArray.forEach { articleResponse ->
+        val newList = articleResponse.data.articles.map {
+            // 'let'을 사용하여 null 처리를 깔끔하게 하고, 필요한 속성만 추출하여 ArticleEntity 객체 생성
+            ArticleEntity(
+                title = it.title,
+                text = it.snippet ?: "", // '?:' 연산자로 null 체크 및 대체 값을 제공
+                image = it.thumbnail ?: "",
+                url = it.link,
+                articleId = it._id
             )
         }
-        articles.add(newList)
+        articles.add(newList as ArrayList<ArticleEntity>)
     }
 }
 
-fun changeArticles(tabIndex: Int) {
-    currentArticles.clear()
-    currentArticles.addAll(articles.getOrElse(tabIndex) { arrayListOf() })
-}
 
 fun isAdmin(): Boolean {
     return permission == "admin"
@@ -403,15 +388,15 @@ fun reportArticle(articleId: String) {
 
 @Preview(showBackground = true)
 @Composable
-fun GreetingPreview() {
+fun DefaultPreview() {
     ArticleTheme {
         Surface(
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background
         ) {
             Column {
-                header()
-                TabScreen()
+                Header()
+                ArticleScreen()
             }
         }
     }

@@ -27,7 +27,8 @@ class ArticleListViewModel : ViewModel() {
 
     lateinit var test: () -> Unit
     lateinit var test1: () -> Unit
-    fun getArticle(passed: ArrayList<String>, page : Int): Job = viewModelScope.launch {
+
+    fun getArticleKeyword(page: Int, keyword: Int, pass: ArrayList<String>): Job = viewModelScope.launch {
         val api = ApiService(
             provideProductRetrofit(
                 buildOkHttpClient(),
@@ -37,7 +38,8 @@ class ArticleListViewModel : ViewModel() {
 
         val repository: ArticleRepository =
             ArticleRepositoryImpl.getInstance(api, ioDispatcher = Dispatchers.IO)
-        val serverCode = repository.getArticle(page, passed)
+        val serverCode = repository.getArticleKeyword(keyword, page, pass)
+
         if (serverCode != null) {
             article = serverCode
             succeed()
@@ -45,8 +47,6 @@ class ArticleListViewModel : ViewModel() {
         } else {
             failed()
         }
-
-
     }
 
     fun postArticleLog(postArticleLogResponse: ArrayList<ArticleLogResponse>): Job =
@@ -85,29 +85,6 @@ class ArticleListViewModel : ViewModel() {
 
     }
 
-    fun getBookMaker(): Job = viewModelScope.launch {
-        val api = ApiService(
-            provideProductRetrofit(
-                buildOkHttpClient(),
-                provideGsonConverterFactory()
-            )
-        )
-        val repository: ArticleRepository =
-            ArticleRepositoryImpl.getInstance(api, ioDispatcher = Dispatchers.IO)
-        val serverCode = repository.getBookMaker()
-        serverCode?.data?.forEach {
-            bookmark.add(
-                ArticleEntity(
-                    title = it.title,
-                    text = it.snippet!!,
-                    image = it.thumbnail!!,
-                    url = it.link,
-                    articleId = it._id
-                )
-            )
-        }
-    }
-
     fun postReport(articleId: String): Job = viewModelScope.launch {
         val api = ApiService(
             provideProductRetrofit(
@@ -142,4 +119,5 @@ class ArticleListViewModel : ViewModel() {
             test1()
         }
     }
+
 }
