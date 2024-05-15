@@ -34,10 +34,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -67,19 +65,23 @@ import com.devlog.article.data.preference.UserPreference
 import com.devlog.article.data.response.ArticleLogResponse
 import com.devlog.article.data.response.ArticleResponse
 import com.devlog.article.presentation.article_webview.ArticleWebViewActivity
-import com.devlog.article.presentation.splash.SplashState
 import com.devlog.article.presentation.ui.theme.ArticleTheme
 
 lateinit var viewModel: ArticleListViewModel
 lateinit var pass: ArrayList<String>
 lateinit var permission: String
-val articles = ArrayList<ArrayList<ArticleEntity>>()
+val articles = ArrayList<ArticleTabState>()
 var userViewArticleId = arrayListOf<String>()
 var userBookmarkArticleId = arrayListOf<String>()
 var userShareArticleId = arrayListOf<String>()
 val viewArticleLogResponseList = arrayListOf<ArticleLogResponse>()
 val shareArticleLogResponseList = arrayListOf<ArticleLogResponse>()
 val bookmarArticleLogResponseList = arrayListOf<ArticleLogResponse>()
+
+data class ArticleTabState(
+    var articles: ArrayList<ArticleEntity> = ArrayList(),
+    var page: Int = 1
+)
 
 
 class ArticleFragment : Fragment() {
@@ -134,6 +136,7 @@ class ArticleFragment : Fragment() {
         }
     }
 }
+
 @Composable
 fun Main() {
     Surface(
@@ -162,10 +165,11 @@ fun Header() {
     }
 }
 
+
 @Composable
 fun ArticleScreen() {
-    val (tabIndex, setTabIndex) = remember { mutableIntStateOf(0) }
-    val currentArticles = remember(tabIndex) { articles[tabIndex] }
+    val (keyword, setKeyword) = remember { mutableIntStateOf(0) }
+    val currentArticles = remember(keyword) { mutableStateOf(articles[keyword]) }
 
     val context = LocalContext.current
 
@@ -178,32 +182,32 @@ fun ArticleScreen() {
         ContextCompat.startActivity(context, intent, null)
     }
 
-    fun addArticles() {
-//        articleTabState.page += 1
-//        articleTabState.pageChangePoint += 20
-//        viewModel.getArticleKeyword(articleTabState.page, _keyword, pass)
-//        viewModel.succeed = {
-//            viewModel.article.data.articles.forEach {
-//                val articleEntity =
-//                    ArticleEntity(
-//                        title = it.title,
-//                        text = it.snippet!!,
-//                        image = it.thumbnail!!,
-//                        url = it.link,
-//                        articleId = it._id
-//                    )
-//
-//                Log.d("test", articleEntity.toString())
-//                articles[tabIndex].articles.add(articleEntity)
-//            }
-//        }
+
+    fun addArticles(articleTabState: ArticleTabState) {
+        articleTabState.page += 1
+        viewModel.getArticleKeyword(articleTabState.page, keyword, pass)
+        viewModel.succeed = {
+            val newArticles = viewModel.article.data.articles.map {
+                ArticleEntity(
+                    title = it.title,
+                    text = it.snippet!!,
+                    image = it.thumbnail!!,
+                    url = it.link,
+                    articleId = it._id
+                )
+            }
+            val updatedArticles = articleTabState.articles + newArticles
+            currentArticles.value = articleTabState.copy(articles = updatedArticles as ArrayList<ArticleEntity>)
+            articles[keyword] = articleTabState.copy(articles = updatedArticles)
+        }
     }
 
     Column(modifier = Modifier.fillMaxWidth()) {
-        TabLayout(tabIndex, setTabIndex)
+        TabLayout(keyword, setKeyword)
         ArticleList(
-            currentArticles,
-            onClick = { articleDetails(it) })
+            currentArticles.value,
+            onClick = { articleDetails(it) },
+            loadMore = { addArticles(it) })
     }
 }
 
@@ -238,29 +242,19 @@ fun TabLayout(tabIndex: Int, onTabSelected: (Int) -> Unit) {
     }
 }
 
-@Composable
-fun TitleText(title: String) {
-    Text(
-        title,
-        fontSize = 16.sp,
-        fontFamily = FontFamily(
-            Font(R.font.font, FontWeight.SemiBold)
-        ),
-        modifier = Modifier.height(24.dp).wrapContentHeight(align = Alignment.CenterVertically)
-    )
-}
 
 @Composable
 fun ArticleList(
-    articleList: ArrayList<ArticleEntity>,
-    onClick: (i: ArticleEntity) -> Unit
+    articleList: ArticleTabState,
+    onClick: (i: ArticleEntity) -> Unit,
+    loadMore: (state: ArticleTabState) -> Unit
 ) {
     LazyColumn {
-        itemsIndexed(articleList) { idx, item ->
-            if (idx >= articleList.size - 1) {
-//                LaunchedEffect(articleList.page) {
-//                    loadMore(articleList)
-//                }
+        itemsIndexed(articleList.articles, key = { _, item -> item.articleId }) { idx, item ->
+            if (idx >= articleList.articles.size - 2) {
+                LaunchedEffect(articleList.page) {
+                    loadMore(articleList)
+                }
             }
             if (isCompanyArticle(item.url)) {
                 CompanyArticleItem(item, onClick = { onClick(item) })
@@ -326,6 +320,18 @@ fun CompanyArticleItem(article: ArticleEntity, onClick: () -> Unit) {
 }
 
 @Composable
+fun TitleText(title: String) {
+    Text(
+        title,
+        fontSize = 16.sp,
+        fontFamily = FontFamily(
+            Font(R.font.font, FontWeight.SemiBold)
+        ),
+        modifier = Modifier.height(24.dp).wrapContentHeight(align = Alignment.CenterVertically)
+    )
+}
+
+@Composable
 fun reportButton(articleId: String) {
     Button(
         onClick = { reportArticle(articleId) },
@@ -352,21 +358,30 @@ fun ItemText(text: String, paddingTop: Dp) {
 
 
 fun processArticleResponse(articleArray: ArrayList<ArticleResponse>) {
-    articleArray.forEach { articleResponse ->
-        val newList = articleResponse.data.articles.map {
-            // 'let'을 사용하여 null 처리를 깔끔하게 하고, 필요한 속성만 추출하여 ArticleEntity 객체 생성
-            ArticleEntity(
-                title = it.title,
-                text = it.snippet ?: "", // '?:' 연산자로 null 체크 및 대체 값을 제공
-                image = it.thumbnail ?: "",
-                url = it.link,
-                articleId = it._id
+    val list = pass
+    articleArray.forEachIndexed { index, articleResponse ->
+        val newList = ArrayList<ArticleEntity>()
+        articleResponse.data.articles.forEach {
+            list.add(it._id)
+            if (it.data == null) {
+                it.data = ""
+            }
+            if (it.snippet == null) {
+                it.snippet = ""
+            }
+            newList.add(
+                ArticleEntity(
+                    title = it.title,
+                    text = it.snippet!!,
+                    image = it.thumbnail!!,
+                    url = it.link,
+                    articleId = it._id
+                )
             )
         }
-        articles.add(newList as ArrayList<ArticleEntity>)
+        articles.add(ArticleTabState(newList))
     }
 }
-
 
 fun isAdmin(): Boolean {
     return permission == "admin"
