@@ -11,6 +11,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -70,7 +71,7 @@ import com.devlog.article.presentation.ui.theme.ArticleTheme
 lateinit var viewModel: ArticleListViewModel
 lateinit var pass: ArrayList<String>
 lateinit var permission: String
-var userSignCheck  = false
+var userSignCheck = false
 var articles = ArrayList<ArticleTabState>()
 var userViewArticleId = arrayListOf<String>()
 var userBookmarkArticleId = arrayListOf<String>()
@@ -183,7 +184,10 @@ fun ArticleScreen() {
 
     fun addArticles(articleTabState: ArticleTabState) {
         articleTabState.page += 1
-        if(userSignCheck && articleTabState.keyword == Common) viewModel.getArticle(pass, articleTabState.page)
+        if (userSignCheck && articleTabState.keyword == Common) viewModel.getArticle(
+            pass,
+            articleTabState.page
+        )
         else viewModel.getArticleKeyword(articleTabState.page, articleTabState.keyword, pass)
         viewModel.succeed = {
             val newArticles = viewModel.article.map {
@@ -208,7 +212,7 @@ fun ArticleScreen() {
     }
 
     fun maxPage() {
-        Toast.makeText(context, "끝에 도달", Toast.LENGTH_SHORT).show()
+//        Toast.makeText(context, "끝에 도달", Toast.LENGTH_SHORT).show()
     }
 
     Column(modifier = Modifier.fillMaxWidth()) {
@@ -225,7 +229,18 @@ fun ArticleScreen() {
 @Composable
 fun TabLayout(tabIndex: Int, onTabSelected: (Int) -> Unit) {
     val tabs =
-        listOf(if(userSignCheck)"내 관심사" else "공통", "IT 기기", "IT 소식", "Android", "iOS", "Web", "BackEnd", "AI", "UIUX", "기획")
+        listOf(
+            if (userSignCheck) "내 관심사" else "공통",
+            "IT 기기",
+            "IT 소식",
+            "Android",
+            "iOS",
+            "Web",
+            "BackEnd",
+            "AI",
+            "UIUX",
+            "기획"
+        )
     ScrollableTabRow(
         selectedTabIndex = tabIndex,
         containerColor = Color.Transparent,
@@ -262,7 +277,7 @@ fun ArticleList(
     loadMore: (state: ArticleTabState) -> Unit,
     maxPage: () -> Unit
 ) {
-    LazyColumn {
+    LazyColumn(modifier = Modifier.padding(horizontal = 20.dp)) {
         itemsIndexed(articleList.articles, key = { index, item -> item.articleId }) { idx, item ->
             if (idx >= articleList.articles.size - 1) {
                 if (isMaxPage(articleList)) {
@@ -291,7 +306,7 @@ fun ArticleItem(article: ArticleEntity, onClick: () -> Unit) {
             .clickable(onClick = onClick)
             .background(Color.White)
             .fillMaxWidth()
-            .padding(vertical = 16.dp, horizontal = 20.dp),
+            .padding(vertical = 16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         AsyncImage(
@@ -302,6 +317,7 @@ fun ArticleItem(article: ArticleEntity, onClick: () -> Unit) {
                 .size(56.dp)
                 .clip(RoundedCornerShape(4.dp))
         )
+        Spacer(modifier = Modifier.size(8.dp))
         ItemText(article.title, 0.dp)
         if (isAdmin()) {
             reportButton(article.articleId)
@@ -318,7 +334,7 @@ fun CompanyArticleItem(article: ArticleEntity, onClick: () -> Unit) {
             .clickable(onClick = onClick)
             .background(Color.White)
             .fillMaxWidth()
-            .padding(vertical = 16.dp, horizontal = 20.dp),
+            .padding(vertical = 16.dp),
     ) {
         AsyncImage(
             model = if (article.url.contains("yozm.wishket")) R.drawable.yozm else article.image,
@@ -329,6 +345,7 @@ fun CompanyArticleItem(article: ArticleEntity, onClick: () -> Unit) {
                 .aspectRatio(16f / 9f)
                 .clip(RoundedCornerShape(4.dp))
         )
+        Spacer(modifier = Modifier.size(12.dp))
         ItemText(article.title, 12.dp)
         if (isAdmin()) {
             reportButton(article.articleId)
@@ -337,7 +354,7 @@ fun CompanyArticleItem(article: ArticleEntity, onClick: () -> Unit) {
 }
 
 @Composable
-fun TitleText(title: String, isSelected:Boolean) {
+fun TitleText(title: String, isSelected: Boolean) {
     Text(
         title,
         fontSize = 16.sp,
@@ -368,8 +385,7 @@ fun ItemText(text: String, paddingTop: Dp) {
         fontFamily = FontFamily(
             Font(R.font.font, FontWeight.Medium)
         ),
-        modifier = Modifier.height(48.dp).wrapContentHeight(align = Alignment.CenterVertically)
-            .padding(start = 8.dp, top = paddingTop)
+        modifier = Modifier.wrapContentHeight(align = Alignment.CenterVertically)
     )
 }
 
@@ -409,6 +425,29 @@ fun reportArticle(articleId: String) {
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview() {
+    val image =
+        "https://content.surfit.io/thumbs/image/wdBn3/oRnWp/19788758706604cf43e9e4e.png/cover-center-1x.webp"
+    val articleArray = arrayListOf<ArticleEntity>()
+
+    for (i in 0..4) {
+        articleArray.add(
+            ArticleEntity(
+                "제목",
+                "설명",
+                image,
+                url = "https://content.surfit.io/thumbs/image/wdBn3/oRnWp/19788758706604cf43e9e4e.png/cover-center-1x.webp",
+                i.toString()
+            )
+        )
+    }
+    articles = arrayListOf(
+        ArticleTabState(
+            articleArray,
+            0,
+            1
+        )
+    )
+    permission = "user"
     ArticleTheme {
         Surface(
             modifier = Modifier.fillMaxSize(),
@@ -419,5 +458,22 @@ fun DefaultPreview() {
                 ArticleScreen()
             }
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun DefaultItemPreview() {
+    val image =
+        "https://content.surfit.io/thumbs/image/wdBn3/oRnWp/19788758706604cf43e9e4e.png/cover-center-1x.webp"
+    val articleEntity = ArticleEntity(
+        "제목제목제제목제목제목제목제목제목목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목",
+        "설명",
+        image,
+        url = "https://content.surfit.io/thumbs/image/wdBn3/oRnWp/19788758706604cf43e9e4e.png/cover-center-1x.webp",
+        "20"
+    )
+    ArticleTheme {
+        CompanyArticleItem(articleEntity, {})
     }
 }
