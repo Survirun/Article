@@ -11,6 +11,7 @@ import com.devlog.article.data.repository.ArticleRepository
 import com.devlog.article.data.repository.ArticleRepositoryImpl
 import com.devlog.article.data.repository.DefaultRepository
 import com.devlog.article.data.repository.UserRepository
+import com.devlog.article.data.response.Article
 import com.devlog.article.data.response.ArticleLogResponse
 import com.devlog.article.data.response.ArticleResponse
 import kotlinx.coroutines.Dispatchers
@@ -22,7 +23,7 @@ class ArticleListViewModel : ViewModel() {
     lateinit var failed: () -> Unit
     lateinit var reportSucceed: () -> Unit
     lateinit var reportFailed: () -> Unit
-    lateinit var article: ArticleResponse
+    lateinit var article: ArrayList<Article>
     lateinit var bookmark: ArrayList<ArticleEntity>
 
     lateinit var test: () -> Unit
@@ -41,7 +42,7 @@ class ArticleListViewModel : ViewModel() {
         val serverCode = repository.getArticleKeyword(keyword, page, pass)
 
         if (serverCode != null) {
-            article = serverCode
+            article = serverCode.data.articles as ArrayList<Article>
             succeed()
 
         } else {

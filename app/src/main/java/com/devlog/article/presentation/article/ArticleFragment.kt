@@ -70,7 +70,7 @@ import com.devlog.article.presentation.ui.theme.ArticleTheme
 lateinit var viewModel: ArticleListViewModel
 lateinit var pass: ArrayList<String>
 lateinit var permission: String
-val articles = ArrayList<ArticleTabState>()
+var articles = ArrayList<ArticleTabState>()
 var userViewArticleId = arrayListOf<String>()
 var userBookmarkArticleId = arrayListOf<String>()
 var userShareArticleId = arrayListOf<String>()
@@ -78,14 +78,10 @@ val viewArticleLogResponseList = arrayListOf<ArticleLogResponse>()
 val shareArticleLogResponseList = arrayListOf<ArticleLogResponse>()
 val bookmarArticleLogResponseList = arrayListOf<ArticleLogResponse>()
 
-data class ArticleTabState(
-    var articles: ArrayList<ArticleEntity> = ArrayList(),
-    var page: Int = 1
-)
 
 
 class ArticleFragment : Fragment() {
-    lateinit var articleArray: ArrayList<ArticleResponse>
+    lateinit var articleArray: ArrayList<ArticleTabState>
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -168,8 +164,8 @@ fun Header() {
 
 @Composable
 fun ArticleScreen() {
-    val (keyword, setKeyword) = remember { mutableIntStateOf(0) }
-    val currentArticles = remember(keyword) { mutableStateOf(articles[keyword]) }
+    val (tabIndex, setTabIndex) = remember { mutableIntStateOf(0) }
+    val currentArticles = remember(tabIndex) { mutableStateOf(articles[tabIndex]) }
 
     val context = LocalContext.current
 
@@ -185,9 +181,9 @@ fun ArticleScreen() {
 
     fun addArticles(articleTabState: ArticleTabState) {
         articleTabState.page += 1
-        viewModel.getArticleKeyword(articleTabState.page, keyword, pass)
+        viewModel.getArticleKeyword(articleTabState.page, articleTabState.keyword, pass)
         viewModel.succeed = {
-            val newArticles = viewModel.article.data.articles.map {
+            val newArticles = viewModel.article.map {
                 ArticleEntity(
                     title = it.title,
                     text = it.snippet!!,
@@ -198,12 +194,12 @@ fun ArticleScreen() {
             }
             val updatedArticles = articleTabState.articles + newArticles
             currentArticles.value = articleTabState.copy(articles = updatedArticles as ArrayList<ArticleEntity>)
-            articles[keyword] = articleTabState.copy(articles = updatedArticles)
+            articles[tabIndex] = articleTabState.copy(articles = updatedArticles)
         }
     }
 
     Column(modifier = Modifier.fillMaxWidth()) {
-        TabLayout(keyword, setKeyword)
+        TabLayout(tabIndex, setTabIndex)
         ArticleList(
             currentArticles.value,
             onClick = { articleDetails(it) },
@@ -250,7 +246,7 @@ fun ArticleList(
     loadMore: (state: ArticleTabState) -> Unit
 ) {
     LazyColumn {
-        itemsIndexed(articleList.articles, key = { _, item -> item.articleId }) { idx, item ->
+        itemsIndexed(articleList.articles, key = { index, item -> item.articleId}) { idx, item ->
             if (idx >= articleList.articles.size - 2) {
                 LaunchedEffect(articleList.page) {
                     loadMore(articleList)
@@ -357,30 +353,15 @@ fun ItemText(text: String, paddingTop: Dp) {
 }
 
 
-fun processArticleResponse(articleArray: ArrayList<ArticleResponse>) {
+fun processArticleResponse(articleArray: ArrayList<ArticleTabState>) {
     val list = pass
-    articleArray.forEachIndexed { index, articleResponse ->
-        val newList = ArrayList<ArticleEntity>()
-        articleResponse.data.articles.forEach {
-            list.add(it._id)
-            if (it.data == null) {
-                it.data = ""
-            }
-            if (it.snippet == null) {
-                it.snippet = ""
-            }
-            newList.add(
-                ArticleEntity(
-                    title = it.title,
-                    text = it.snippet!!,
-                    image = it.thumbnail!!,
-                    url = it.link,
-                    articleId = it._id
-                )
-            )
+    articleArray.forEach { articleTabState ->
+        Log.d("test", "${articleTabState.page} : ${articleTabState.maxPage}")
+        articleTabState.articles.forEach {
+            list.add(it.articleId)
         }
-        articles.add(ArticleTabState(newList))
     }
+    articles = articleArray
 }
 
 fun isAdmin(): Boolean {
