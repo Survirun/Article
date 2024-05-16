@@ -241,9 +241,10 @@ fun TabLayout(tabIndex: Int, onTabSelected: (Int) -> Unit) {
         edgePadding = 20.dp
     ) {
         tabs.forEachIndexed { index, title ->
+            val isSelected = tabIndex == index
             Tab(
-                text = { TitleText(title) },
-                selected = tabIndex == index,
+                text = { TitleText(title, isSelected) },
+                selected = isSelected,
                 onClick = { onTabSelected(index) },
                 selectedContentColor = Color.Black,
                 unselectedContentColor = Color(0xFFA0A0AB)
@@ -336,7 +337,7 @@ fun CompanyArticleItem(article: ArticleEntity, onClick: () -> Unit) {
 }
 
 @Composable
-fun TitleText(title: String) {
+fun TitleText(title: String, isSelected:Boolean) {
     Text(
         title,
         fontSize = 16.sp,
