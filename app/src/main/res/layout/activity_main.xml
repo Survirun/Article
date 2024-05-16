@@ -16,10 +16,12 @@
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_navigationview"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="52dp"
         android:layout_gravity="bottom"
         android:tooltipText=""
         app:backgroundTint="@color/white"
+        app:itemPaddingBottom="8dp"
+        app:itemPaddingTop="4dp"
         app:itemActiveIndicatorStyle="@color/black"
         app:itemIconTint="@color/bottom_navigation_color"
         app:itemTextAppearanceActive="@style/navLabel"
