@@ -64,6 +64,7 @@ import com.devlog.article.data.mixpanel.MixPanelManager
 import com.devlog.article.data.preference.UserPreference
 import com.devlog.article.data.response.ArticleLogResponse
 import com.devlog.article.presentation.article_webview.ArticleWebViewActivity
+import com.devlog.article.presentation.my_keywords_select.Common
 import com.devlog.article.presentation.ui.theme.ArticleTheme
 
 lateinit var viewModel: ArticleListViewModel
@@ -182,7 +183,7 @@ fun ArticleScreen() {
 
     fun addArticles(articleTabState: ArticleTabState) {
         articleTabState.page += 1
-        if(userSignCheck) viewModel.getArticle(pass, articleTabState.page)
+        if(userSignCheck && articleTabState.keyword == Common) viewModel.getArticle(pass, articleTabState.page)
         else viewModel.getArticleKeyword(articleTabState.page, articleTabState.keyword, pass)
         viewModel.succeed = {
             val newArticles = viewModel.article.map {
