@@ -6,9 +6,11 @@ import androidx.appcompat.widget.TooltipCompat
 import androidx.core.view.forEach
 import androidx.fragment.app.Fragment
 import com.devlog.article.R
+import com.devlog.article.data.entity.ArticleEntity
 import com.devlog.article.data.response.ArticleResponse
 import com.devlog.article.databinding.ActivityMainBinding
 import com.devlog.article.presentation.article.ArticleFragment
+import com.devlog.article.presentation.article.ArticleTabState
 import com.devlog.article.presentation.bookmark.BookmarkFragment
 
 
@@ -58,12 +60,31 @@ class MainActivity() : AppCompatActivity() {
     }
 
     private fun getArticleData(){
-        val articles = ArrayList<ArticleResponse>()
-        val keywordList = listOf("article", "article_it_equipment", "article_it_news", "article_android_development", "article_ios", "article_web_development", "article_server_development", "article_ai_development", "article_ui_ux_design", "article_pm")
+        val totalArticles = ArrayList<ArticleTabState>()
+        val keywordList = mapOf<String, Int>("article" to 0, "article_it_equipment" to 2, "article_it_news" to 10, "article_android_development" to 3, "article_ios" to 9, "article_web_development" to 5, "article_server_development" to 4, "article_ai_development" to 6, "article_ui_ux_design" to 7, "article_pm" to 8)
         for(keyword in keywordList){
-            articles.add(intent.getSerializableExtra(keyword) as ArticleResponse)
+            val articleResponse = intent.getSerializableExtra(keyword.key) as ArticleResponse
+            val newArticles = ArrayList<ArticleEntity>()
+            articleResponse.data.articles.forEach {
+                if (it.data == null) {
+                    it.data = ""
+                }
+                if (it.snippet == null) {
+                    it.snippet = ""
+                }
+                newArticles.add(
+                    ArticleEntity(
+                        title = it.title,
+                        text = it.snippet!!,
+                        image = it.thumbnail!!,
+                        url = it.link,
+                        articleId = it._id
+                    )
+                )
+            }
+            totalArticles.add(ArticleTabState(newArticles, keyword.value, articleResponse.data.maxPage))
         }
-        articleFragment.articleArray = articles
+        articleFragment.articleArray = totalArticles
     }
 
 }

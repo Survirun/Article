@@ -11,6 +11,7 @@ import com.devlog.article.data.repository.ArticleRepository
 import com.devlog.article.data.repository.ArticleRepositoryImpl
 import com.devlog.article.data.repository.DefaultRepository
 import com.devlog.article.data.repository.UserRepository
+import com.devlog.article.data.response.Article
 import com.devlog.article.data.response.ArticleLogResponse
 import com.devlog.article.data.response.ArticleResponse
 import kotlinx.coroutines.Dispatchers
@@ -22,12 +23,13 @@ class ArticleListViewModel : ViewModel() {
     lateinit var failed: () -> Unit
     lateinit var reportSucceed: () -> Unit
     lateinit var reportFailed: () -> Unit
-    lateinit var article: ArticleResponse
+    lateinit var article: ArrayList<Article>
     lateinit var bookmark: ArrayList<ArticleEntity>
 
     lateinit var test: () -> Unit
     lateinit var test1: () -> Unit
-    fun getArticle(passed: ArrayList<String>, page : Int): Job = viewModelScope.launch {
+
+    fun getArticleKeyword(page: Int, keyword: Int, pass: ArrayList<String>): Job = viewModelScope.launch {
         val api = ApiService(
             provideProductRetrofit(
                 buildOkHttpClient(),
@@ -37,16 +39,15 @@ class ArticleListViewModel : ViewModel() {
 
         val repository: ArticleRepository =
             ArticleRepositoryImpl.getInstance(api, ioDispatcher = Dispatchers.IO)
-        val serverCode = repository.getArticle(page, passed)
+        val serverCode = repository.getArticleKeyword(keyword, page, pass)
+
         if (serverCode != null) {
-            article = serverCode
+            article = serverCode.data.articles as ArrayList<Article>
             succeed()
 
         } else {
             failed()
         }
-
-
     }
 
     fun postArticleLog(postArticleLogResponse: ArrayList<ArticleLogResponse>): Job =
@@ -85,29 +86,6 @@ class ArticleListViewModel : ViewModel() {
 
     }
 
-    fun getBookMaker(): Job = viewModelScope.launch {
-        val api = ApiService(
-            provideProductRetrofit(
-                buildOkHttpClient(),
-                provideGsonConverterFactory()
-            )
-        )
-        val repository: ArticleRepository =
-            ArticleRepositoryImpl.getInstance(api, ioDispatcher = Dispatchers.IO)
-        val serverCode = repository.getBookMaker()
-        serverCode?.data?.forEach {
-            bookmark.add(
-                ArticleEntity(
-                    title = it.title,
-                    text = it.snippet!!,
-                    image = it.thumbnail!!,
-                    url = it.link,
-                    articleId = it._id
-                )
-            )
-        }
-    }
-
     fun postReport(articleId: String): Job = viewModelScope.launch {
         val api = ApiService(
             provideProductRetrofit(
@@ -142,4 +120,5 @@ class ArticleListViewModel : ViewModel() {
             test1()
         }
     }
+
 }

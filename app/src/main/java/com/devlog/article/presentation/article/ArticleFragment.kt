@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -32,11 +33,9 @@ import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -64,18 +63,13 @@ import com.devlog.article.data.entity.ArticleEntity
 import com.devlog.article.data.mixpanel.MixPanelManager
 import com.devlog.article.data.preference.UserPreference
 import com.devlog.article.data.response.ArticleLogResponse
-import com.devlog.article.data.response.ArticleResponse
 import com.devlog.article.presentation.article_webview.ArticleWebViewActivity
 import com.devlog.article.presentation.ui.theme.ArticleTheme
 
 lateinit var viewModel: ArticleListViewModel
 lateinit var pass: ArrayList<String>
 lateinit var permission: String
-val articles = ArrayList<ArrayList<ArticleEntity>>()
-var currentArticles = mutableStateListOf<ArticleEntity>()
-var page = 1
-var pageChangePoint = 10
-var category = mutableStateOf(0)
+var articles = ArrayList<ArticleTabState>()
 var userViewArticleId = arrayListOf<String>()
 var userBookmarkArticleId = arrayListOf<String>()
 var userShareArticleId = arrayListOf<String>()
@@ -83,8 +77,9 @@ val viewArticleLogResponseList = arrayListOf<ArticleLogResponse>()
 val shareArticleLogResponseList = arrayListOf<ArticleLogResponse>()
 val bookmarArticleLogResponseList = arrayListOf<ArticleLogResponse>()
 
+
 class ArticleFragment : Fragment() {
-    lateinit var articleArray: ArrayList<ArticleResponse>
+    lateinit var articleArray: ArrayList<ArticleTabState>
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -143,15 +138,14 @@ fun Main() {
         color = Color.White
     ) {
         Column {
-            header()
-            TabScreen()
+            Header()
             ArticleScreen()
         }
     }
 }
 
 @Composable
-fun header() {
+fun Header() {
     Row(
         modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically
@@ -165,48 +159,12 @@ fun header() {
     }
 }
 
-@Composable
-fun TabScreen() {
-    var tabIndex by remember { mutableStateOf(0) }
-    changeArticles(tabIndex)
-    val tabs =
-        listOf("내 관심사", "IT 기기", "IT 소식", "Android", "iOS", "Web", "BackEnd", "AI", "UIUX", "기획")
-    Column(modifier = Modifier.fillMaxWidth()) {
-        ScrollableTabRow(
-            selectedTabIndex = tabIndex,
-            containerColor = Color.Transparent,
-            indicator = { tabPositions ->
-                TabRowDefaults.Indicator(
-                    modifier = Modifier.tabIndicatorOffset(tabPositions[tabIndex]),
-                    color = Color.Black,
-                    height = 1.dp
-                )
-
-            },
-            divider = {},
-            edgePadding = 20.dp
-        ) {
-            tabs.forEachIndexed { index, title ->
-                Tab(
-                    text = { TitleText(title) },
-                    selected = tabIndex == index,
-                    onClick = {
-                        tabIndex = index
-                        category.value = index
-
-                    },
-                    selectedContentColor = Color.Black,
-                    unselectedContentColor = Color(0xFFA0A0AB)
-
-                )
-            }
-        }
-    }
-}
 
 @Composable
 fun ArticleScreen() {
-    val items by remember { mutableStateOf(currentArticles) }
+    val (tabIndex, setTabIndex) = remember { mutableIntStateOf(0) }
+    val currentArticles = remember(tabIndex) { mutableStateOf(articles[tabIndex]) }
+
     val context = LocalContext.current
 
     fun articleDetails(articleEntity: ArticleEntity) {
@@ -218,31 +176,95 @@ fun ArticleScreen() {
         ContextCompat.startActivity(context, intent, null)
     }
 
-    ArticleList(items, onClick = { articleDetails(it) })
+
+    fun addArticles(articleTabState: ArticleTabState) {
+        articleTabState.page += 1
+        viewModel.getArticleKeyword(articleTabState.page, articleTabState.keyword, pass)
+        viewModel.succeed = {
+            val newArticles = viewModel.article.map {
+                ArticleEntity(
+                    title = it.title,
+                    text = it.snippet!!,
+                    image = it.thumbnail!!,
+                    url = it.link,
+                    articleId = it._id
+                )
+            }
+            val uniqueNewArticles = newArticles.filterNot { newArticle ->
+                currentArticles.value.articles.any { currentArticle ->
+                    currentArticle.articleId == newArticle.articleId
+                }
+            }
+            val updatedArticles = articleTabState.articles + uniqueNewArticles
+            currentArticles.value =
+                articleTabState.copy(articles = updatedArticles as ArrayList<ArticleEntity>)
+            articles[tabIndex] = articleTabState.copy(articles = updatedArticles)
+        }
+    }
+
+    fun maxPage() {
+        Toast.makeText(context, "끝에 도달", Toast.LENGTH_SHORT).show()
+    }
+
+    Column(modifier = Modifier.fillMaxWidth()) {
+        TabLayout(tabIndex, setTabIndex)
+        ArticleList(
+            currentArticles.value,
+            onClick = { articleDetails(it) },
+            loadMore = { addArticles(it) },
+            maxPage = { maxPage() }
+        )
+    }
 }
 
 @Composable
-fun TitleText(title: String) {
-    Text(
-        title,
-        fontSize = 16.sp,
-        fontFamily = FontFamily(
-            Font(R.font.font, FontWeight.SemiBold)
-        ),
-        modifier = Modifier.height(24.dp).wrapContentHeight(align = Alignment.CenterVertically)
-    )
+fun TabLayout(tabIndex: Int, onTabSelected: (Int) -> Unit) {
+    val tabs =
+        listOf("내 관심사", "IT 기기", "IT 소식", "Android", "iOS", "Web", "BackEnd", "AI", "UIUX", "기획")
+    ScrollableTabRow(
+        selectedTabIndex = tabIndex,
+        containerColor = Color.Transparent,
+        indicator = { tabPositions ->
+            TabRowDefaults.Indicator(
+                modifier = Modifier.tabIndicatorOffset(tabPositions[tabIndex]),
+                color = Color.Black,
+                height = 1.dp
+            )
+
+        },
+        divider = {},
+        edgePadding = 20.dp
+    ) {
+        tabs.forEachIndexed { index, title ->
+            Tab(
+                text = { TitleText(title) },
+                selected = tabIndex == index,
+                onClick = { onTabSelected(index) },
+                selectedContentColor = Color.Black,
+                unselectedContentColor = Color(0xFFA0A0AB)
+
+            )
+        }
+    }
 }
+
 
 @Composable
 fun ArticleList(
-    articleList: List<ArticleEntity>,
-    onClick: (i: ArticleEntity) -> Unit
+    articleList: ArticleTabState,
+    onClick: (i: ArticleEntity) -> Unit,
+    loadMore: (state: ArticleTabState) -> Unit,
+    maxPage: () -> Unit
 ) {
     LazyColumn {
-        itemsIndexed(articleList) { idx, item ->
-            if (idx == pageChangePoint) {
-                LaunchedEffect(page) {
-//                    addArticles()
+        itemsIndexed(articleList.articles, key = { index, item -> item.articleId }) { idx, item ->
+            if (idx >= articleList.articles.size - 1) {
+                if (isMaxPage(articleList)) {
+                    maxPage()
+                } else {
+                    LaunchedEffect(articleList.page) {
+                        loadMore(articleList)
+                    }
                 }
             }
             if (isCompanyArticle(item.url)) {
@@ -309,6 +331,18 @@ fun CompanyArticleItem(article: ArticleEntity, onClick: () -> Unit) {
 }
 
 @Composable
+fun TitleText(title: String) {
+    Text(
+        title,
+        fontSize = 16.sp,
+        fontFamily = FontFamily(
+            Font(R.font.font, FontWeight.SemiBold)
+        ),
+        modifier = Modifier.height(24.dp).wrapContentHeight(align = Alignment.CenterVertically)
+    )
+}
+
+@Composable
 fun reportButton(articleId: String) {
     Button(
         onClick = { reportArticle(articleId) },
@@ -333,54 +367,19 @@ fun ItemText(text: String, paddingTop: Dp) {
     )
 }
 
-fun addArticles() {
-    page += 1
-    pageChangePoint += 20
-    viewModel.getArticle(pass, page)
-    viewModel.succeed = {
-        viewModel.article.data.articles.forEach {
-//            articles.add(
-//                ArticleEntity(
-//                    title = it.title,
-//                    text = it.snippet!!,
-//                    image = it.thumbnail!!,
-//                    url = it.link,
-//                    articleId = it._id
-//                )
-//            )
-        }
-    }
-}
 
-fun processArticleResponse(articleArray: ArrayList<ArticleResponse>) {
+fun processArticleResponse(articleArray: ArrayList<ArticleTabState>) {
     val list = pass
-    articleArray.forEachIndexed { index, articleResponse ->
-        val newList = ArrayList<ArticleEntity>()
-        articleResponse.data.articles.forEach {
-            list.add(it._id)
-            if (it.data == null) {
-                it.data = ""
-            }
-            if (it.snippet == null) {
-                it.snippet = ""
-            }
-            newList.add(
-                ArticleEntity(
-                    title = it.title,
-                    text = it.snippet!!,
-                    image = it.thumbnail!!,
-                    url = it.link,
-                    articleId = it._id
-                )
-            )
+    articleArray.forEach { articleTabState ->
+        articleTabState.articles.forEach {
+            list.add(it.articleId)
         }
-        articles.add(newList)
     }
+    articles = articleArray
 }
 
-fun changeArticles(tabIndex: Int) {
-    currentArticles.clear()
-    currentArticles.addAll(articles.getOrElse(tabIndex) { arrayListOf() })
+fun isMaxPage(articleList: ArticleTabState): Boolean {
+    return articleList.page == articleList.maxPage
 }
 
 fun isAdmin(): Boolean {
@@ -403,15 +402,15 @@ fun reportArticle(articleId: String) {
 
 @Preview(showBackground = true)
 @Composable
-fun GreetingPreview() {
+fun DefaultPreview() {
     ArticleTheme {
         Surface(
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background
         ) {
             Column {
-                header()
-                TabScreen()
+                Header()
+                ArticleScreen()
             }
         }
     }
