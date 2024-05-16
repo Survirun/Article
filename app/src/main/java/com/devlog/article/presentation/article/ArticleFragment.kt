@@ -190,7 +190,12 @@ fun ArticleScreen() {
                     articleId = it._id
                 )
             }
-            val updatedArticles = articleTabState.articles + newArticles
+            val uniqueNewArticles = newArticles.filterNot { newArticle ->
+                currentArticles.value.articles.any { currentArticle ->
+                    currentArticle.articleId == newArticle.articleId
+                }
+            }
+            val updatedArticles = articleTabState.articles + uniqueNewArticles
             currentArticles.value =
                 articleTabState.copy(articles = updatedArticles as ArrayList<ArticleEntity>)
             articles[tabIndex] = articleTabState.copy(articles = updatedArticles)
