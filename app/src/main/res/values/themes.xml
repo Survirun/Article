@@ -41,4 +41,10 @@
         <item name="android:insetRight">0dp</item>
         <item name="rippleColor">@color/GrayButtonClick</item>
     </style>
+
+    <style name="navLabel">
+        <item name="fontFamily">@font/pretendard_medium</item>
+        <item name="android:textSize">12sp</item>
+    </style>
+
 </resources>
