@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -32,7 +33,6 @@ import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -63,7 +63,6 @@ import com.devlog.article.data.entity.ArticleEntity
 import com.devlog.article.data.mixpanel.MixPanelManager
 import com.devlog.article.data.preference.UserPreference
 import com.devlog.article.data.response.ArticleLogResponse
-import com.devlog.article.data.response.ArticleResponse
 import com.devlog.article.presentation.article_webview.ArticleWebViewActivity
 import com.devlog.article.presentation.ui.theme.ArticleTheme
 
@@ -77,7 +76,6 @@ var userShareArticleId = arrayListOf<String>()
 val viewArticleLogResponseList = arrayListOf<ArticleLogResponse>()
 val shareArticleLogResponseList = arrayListOf<ArticleLogResponse>()
 val bookmarArticleLogResponseList = arrayListOf<ArticleLogResponse>()
-
 
 
 class ArticleFragment : Fragment() {
@@ -193,9 +191,14 @@ fun ArticleScreen() {
                 )
             }
             val updatedArticles = articleTabState.articles + newArticles
-            currentArticles.value = articleTabState.copy(articles = updatedArticles as ArrayList<ArticleEntity>)
+            currentArticles.value =
+                articleTabState.copy(articles = updatedArticles as ArrayList<ArticleEntity>)
             articles[tabIndex] = articleTabState.copy(articles = updatedArticles)
         }
+    }
+
+    fun maxPage() {
+        Toast.makeText(context, "끝에 도달", Toast.LENGTH_SHORT).show()
     }
 
     Column(modifier = Modifier.fillMaxWidth()) {
@@ -203,7 +206,9 @@ fun ArticleScreen() {
         ArticleList(
             currentArticles.value,
             onClick = { articleDetails(it) },
-            loadMore = { addArticles(it) })
+            loadMore = { addArticles(it) },
+            maxPage = { maxPage() }
+        )
     }
 }
 
@@ -243,13 +248,18 @@ fun TabLayout(tabIndex: Int, onTabSelected: (Int) -> Unit) {
 fun ArticleList(
     articleList: ArticleTabState,
     onClick: (i: ArticleEntity) -> Unit,
-    loadMore: (state: ArticleTabState) -> Unit
+    loadMore: (state: ArticleTabState) -> Unit,
+    maxPage: () -> Unit
 ) {
     LazyColumn {
-        itemsIndexed(articleList.articles, key = { index, item -> item.articleId}) { idx, item ->
-            if (idx >= articleList.articles.size - 2) {
-                LaunchedEffect(articleList.page) {
-                    loadMore(articleList)
+        itemsIndexed(articleList.articles, key = { index, item -> item.articleId }) { idx, item ->
+            if (idx >= articleList.articles.size - 1) {
+                if (isMaxPage(articleList)) {
+                    maxPage()
+                } else {
+                    LaunchedEffect(articleList.page) {
+                        loadMore(articleList)
+                    }
                 }
             }
             if (isCompanyArticle(item.url)) {
@@ -356,12 +366,15 @@ fun ItemText(text: String, paddingTop: Dp) {
 fun processArticleResponse(articleArray: ArrayList<ArticleTabState>) {
     val list = pass
     articleArray.forEach { articleTabState ->
-        Log.d("test", "${articleTabState.page} : ${articleTabState.maxPage}")
         articleTabState.articles.forEach {
             list.add(it.articleId)
         }
     }
     articles = articleArray
+}
+
+fun isMaxPage(articleList: ArticleTabState): Boolean {
+    return articleList.page == articleList.maxPage
 }
 
 fun isAdmin(): Boolean {
