@@ -7,21 +7,34 @@ import androidx.core.view.forEach
 import androidx.fragment.app.Fragment
 import com.devlog.article.R
 import com.devlog.article.data.entity.ArticleEntity
+import com.devlog.article.data.preference.UserPreference
 import com.devlog.article.data.response.ArticleResponse
 import com.devlog.article.databinding.ActivityMainBinding
 import com.devlog.article.presentation.article.ArticleFragment
 import com.devlog.article.presentation.article.ArticleTabState
 import com.devlog.article.presentation.bookmark.BookmarkFragment
+import com.devlog.article.presentation.my_keywords_select.AIDevelopment
+import com.devlog.article.presentation.my_keywords_select.Common
+import com.devlog.article.presentation.my_keywords_select.ITEquipment
+import com.devlog.article.presentation.my_keywords_select.ITNews
+import com.devlog.article.presentation.my_keywords_select.PM
+import com.devlog.article.presentation.my_keywords_select.UIUXDesign
+import com.devlog.article.presentation.my_keywords_select.WebDevelopment
+import com.devlog.article.presentation.my_keywords_select.androidDevelopment
+import com.devlog.article.presentation.my_keywords_select.iOSDevelopment
+import com.devlog.article.presentation.my_keywords_select.serverDevelopment
 
 
 class MainActivity() : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private var articleFragment = ArticleFragment()
+    lateinit var userPreference: UserPreference
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        userPreference = UserPreference.getInstance(this)
 
 
         getArticleData()
@@ -59,10 +72,22 @@ class MainActivity() : AppCompatActivity() {
         supportFragmentManager.beginTransaction().replace(R.id.containers, fragment).commit()
     }
 
-    private fun getArticleData(){
+    private fun getArticleData() {
         val totalArticles = ArrayList<ArticleTabState>()
-        val keywordList = mapOf<String, Int>("article" to 0, "article_it_equipment" to 2, "article_it_news" to 10, "article_android_development" to 3, "article_ios" to 9, "article_web_development" to 5, "article_server_development" to 4, "article_ai_development" to 6, "article_ui_ux_design" to 7, "article_pm" to 8)
-        for(keyword in keywordList){
+        val firstKey = if (userPreference.userSignInCheck) "article" else "article_common"
+        val keywordList = mapOf(
+            firstKey to Common,
+            "article_it_equipment" to ITEquipment,
+            "article_it_news" to ITNews,
+            "article_android_development" to androidDevelopment,
+            "article_ios" to iOSDevelopment,
+            "article_web_development" to WebDevelopment,
+            "article_server_development" to serverDevelopment,
+            "article_ai_development" to AIDevelopment,
+            "article_ui_ux_design" to UIUXDesign,
+            "article_pm" to PM
+        )
+        for (keyword in keywordList) {
             val articleResponse = intent.getSerializableExtra(keyword.key) as ArticleResponse
             val newArticles = ArrayList<ArticleEntity>()
             articleResponse.data.articles.forEach {
@@ -82,7 +107,13 @@ class MainActivity() : AppCompatActivity() {
                     )
                 )
             }
-            totalArticles.add(ArticleTabState(newArticles, keyword.value, articleResponse.data.maxPage))
+            totalArticles.add(
+                ArticleTabState(
+                    newArticles,
+                    keyword.value,
+                    articleResponse.data.maxPage
+                )
+            )
         }
         articleFragment.articleArray = totalArticles
     }

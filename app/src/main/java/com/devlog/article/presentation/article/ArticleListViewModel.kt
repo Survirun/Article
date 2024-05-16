@@ -1,5 +1,6 @@
 package com.devlog.article.presentation.article
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.devlog.article.data.entity.ArticleEntity
@@ -29,6 +30,27 @@ class ArticleListViewModel : ViewModel() {
     lateinit var test: () -> Unit
     lateinit var test1: () -> Unit
 
+    fun getArticle(passed: ArrayList<String>, page : Int): Job = viewModelScope.launch {
+        val api = ApiService(
+            provideProductRetrofit(
+                buildOkHttpClient(),
+                provideGsonConverterFactory()
+            )
+        )
+
+        val repository: ArticleRepository =
+            ArticleRepositoryImpl.getInstance(api, ioDispatcher = Dispatchers.IO)
+        val serverCode = repository.getArticle(page, passed)
+        if (serverCode != null) {
+            article = serverCode.data.articles as ArrayList<Article>
+            succeed()
+
+        } else {
+            failed()
+        }
+
+
+    }
     fun getArticleKeyword(page: Int, keyword: Int, pass: ArrayList<String>): Job = viewModelScope.launch {
         val api = ApiService(
             provideProductRetrofit(

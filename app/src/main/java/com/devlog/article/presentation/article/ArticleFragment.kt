@@ -69,6 +69,7 @@ import com.devlog.article.presentation.ui.theme.ArticleTheme
 lateinit var viewModel: ArticleListViewModel
 lateinit var pass: ArrayList<String>
 lateinit var permission: String
+var userSignCheck  = false
 var articles = ArrayList<ArticleTabState>()
 var userViewArticleId = arrayListOf<String>()
 var userBookmarkArticleId = arrayListOf<String>()
@@ -89,7 +90,9 @@ class ArticleFragment : Fragment() {
         val userPreference = UserPreference.getInstance(requireContext())
         pass = userPreference.getUserPagePassed()
         permission = userPreference.userPermission
+        userSignCheck = userPreference.userSignInCheck
         viewModel = ArticleListViewModel()
+
         processArticleResponse(articleArray)
         lifecycle.addObserver(object : LifecycleEventObserver {
             override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
@@ -179,7 +182,8 @@ fun ArticleScreen() {
 
     fun addArticles(articleTabState: ArticleTabState) {
         articleTabState.page += 1
-        viewModel.getArticleKeyword(articleTabState.page, articleTabState.keyword, pass)
+        if(userSignCheck) viewModel.getArticle(pass, articleTabState.page)
+        else viewModel.getArticleKeyword(articleTabState.page, articleTabState.keyword, pass)
         viewModel.succeed = {
             val newArticles = viewModel.article.map {
                 ArticleEntity(
@@ -220,7 +224,7 @@ fun ArticleScreen() {
 @Composable
 fun TabLayout(tabIndex: Int, onTabSelected: (Int) -> Unit) {
     val tabs =
-        listOf("내 관심사", "IT 기기", "IT 소식", "Android", "iOS", "Web", "BackEnd", "AI", "UIUX", "기획")
+        listOf(if(userSignCheck)"내 관심사" else "공통", "IT 기기", "IT 소식", "Android", "iOS", "Web", "BackEnd", "AI", "UIUX", "기획")
     ScrollableTabRow(
         selectedTabIndex = tabIndex,
         containerColor = Color.Transparent,
