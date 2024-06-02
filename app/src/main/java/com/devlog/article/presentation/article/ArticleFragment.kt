@@ -196,7 +196,9 @@ fun ArticleScreen() {
                     text = it.snippet!!,
                     image = it.thumbnail!!,
                     url = it.link,
-                    articleId = it._id
+                    articleId = it._id,
+                    type = it.type
+
                 )
             }
             val uniqueNewArticles = newArticles.filterNot { newArticle ->
@@ -288,7 +290,7 @@ fun ArticleList(
                     }
                 }
             }
-            if (isCompanyArticle(item.url)) {
+            if (item.type==2) {
                 CompanyArticleItem(item, onClick = { onClick(item) })
             } else {
                 ArticleItem(
@@ -436,7 +438,8 @@ fun DefaultPreview() {
                 "설명",
                 image,
                 url = "https://content.surfit.io/thumbs/image/wdBn3/oRnWp/19788758706604cf43e9e4e.png/cover-center-1x.webp",
-                i.toString()
+                i.toString(),
+                0
             )
         )
     }
@@ -471,7 +474,8 @@ fun DefaultItemPreview() {
         "설명",
         image,
         url = "https://content.surfit.io/thumbs/image/wdBn3/oRnWp/19788758706604cf43e9e4e.png/cover-center-1x.webp",
-        "20"
+        "20",
+        0
     )
     ArticleTheme {
         CompanyArticleItem(articleEntity, {})

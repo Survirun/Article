@@ -18,7 +18,8 @@ data class Article(
     val title: String,
     val cx: Int,
     val _id : String,
-    var weight : Double?
+    var weight : Double?,
+    var type:Int
 ): Serializable  {
 
 }

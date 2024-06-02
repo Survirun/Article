@@ -103,7 +103,8 @@ class MainActivity() : AppCompatActivity() {
                         text = it.snippet!!,
                         image = it.thumbnail!!,
                         url = it.link,
-                        articleId = it._id
+                        articleId = it._id,
+                        type = it.type
                     )
                 )
             }

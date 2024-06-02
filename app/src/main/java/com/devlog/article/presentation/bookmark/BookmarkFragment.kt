@@ -248,7 +248,8 @@ class BookmarkFragment : Fragment() {
             "설명",
             image,
             url = "https://content.surfit.io/thumbs/image/wdBn3/oRnWp/19788758706604cf43e9e4e.png/cover-center-1x.webp",
-            "25"
+            "25",
+            0
         )
 
         for (i in 0..10) {
@@ -282,7 +283,8 @@ class BookmarkFragment : Fragment() {
             "설명",
             image,
             url = "https://content.surfit.io/thumbs/image/wdBn3/oRnWp/19788758706604cf43e9e4e.png/cover-center-1x.webp",
-            "25"
+            "25",
+            0
         )
 
         BookmarkItem(articleEntity)
