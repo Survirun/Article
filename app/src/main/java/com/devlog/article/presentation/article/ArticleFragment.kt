@@ -36,6 +36,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.State
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.currentCompositionLocalContext
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -73,13 +75,9 @@ import com.devlog.article.presentation.article_webview.ArticleWebViewActivity
 import com.devlog.article.presentation.ui.theme.ArticleTheme
 
 
-lateinit var pass: ArrayList<String>
+
 
 var userViewArticleId = arrayListOf<String>()
-
-
-
-
 
 val LocalViewModel = staticCompositionLocalOf<ArticleListViewModel> { error("MainViewModel not provided") }
 class ArticleFragment : Fragment() {
@@ -92,7 +90,6 @@ class ArticleFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         val userPreference = UserPreference.getInstance(requireContext())
-        pass = userPreference.getUserPagePassed()
 
 
         viewModel = ArticleListViewModel()
@@ -201,43 +198,14 @@ fun articleDetails(articleEntity: ArticleEntity,context:Context) {
 @Composable
 fun ArticleScreen(viewModel: ArticleListViewModel) {
     val (tabIndex, setTabIndex) = remember { mutableIntStateOf(0) }
-    val currentArticles = remember(tabIndex) { mutableStateOf(viewModel.getArticles(tabIndex)) }
+
 
 
 
     fun addArticles(articleTabState: ArticleTabState) {
         articleTabState.page += 1
-//        if (viewModel.userSignCheck && articleTabState.keyword == Common){
-//            viewModel.getArticleApi(
-//                pass,
-//                articleTabState.page
-//            )
-//        }
-//        else{
-//            viewModel.getArticleKeyword(articleTabState.page, articleTabState.keyword, pass)
-//        }
-//        viewModel.succeed = {
-//            val newArticles = viewModel.article.map {
-//                ArticleEntity(
-//                    title = it.title,
-//                    text = it.snippet!!,
-//                    image = it.thumbnail!!,
-//                    url = it.link,
-//                    articleId = it._id,
-//                    type = it.type
-//
-//                )
-//            }
-//            val uniqueNewArticles = newArticles.filterNot { newArticle ->
-//                currentArticles.value.articles.any { currentArticle ->
-//                    currentArticle.articleId == newArticle.articleId
-//                }
-//            }
-//            val updatedArticles = articleTabState.articles + uniqueNewArticles
-//            currentArticles.value =
-//                articleTabState.copy(articles = updatedArticles as ArrayList<ArticleEntity>)
-//            articles[tabIndex] = articleTabState.copy(articles = updatedArticles)
-//        }
+        viewModel.processIntent(ArticleIntent.LoadArticles(0,articleTabState.page, ""))
+
     }
 
     fun maxPage() {
@@ -249,7 +217,7 @@ fun ArticleScreen(viewModel: ArticleListViewModel) {
         TabLayout(tabIndex, setTabIndex)
 
         ArticleList(
-            LocalViewModel.current.getArticles(tabIndex).value!!,
+            LocalViewModel.current.getArticles(tabIndex).collectAsState(),
             onClick = { articleDetails(it,context) },
             loadMore = { addArticles(it) },
             maxPage = { maxPage() }
@@ -303,19 +271,19 @@ fun TabLayout(tabIndex: Int, onTabSelected: (Int) -> Unit) {
 
 @Composable
 fun ArticleList(
-    articleList: ArticleTabState,
+    articleList: State<ArticleTabState>,
     onClick: (i: ArticleEntity) -> Unit,
     loadMore: (state: ArticleTabState) -> Unit,
     maxPage: () -> Unit
 ) {
     LazyColumn(modifier = Modifier.padding(horizontal = 20.dp)) {
-        itemsIndexed(articleList.articles, key = { index, item -> item.articleId }) { idx, item ->
-            if (idx >= articleList.articles.size - 1) {
-                if (isMaxPage(articleList)) {
+        itemsIndexed(articleList.value.articles, key = { index, item -> item.articleId }) { idx, item ->
+            if (idx >= articleList.value.articles.size - 1) {
+                if (isMaxPage(articleList.value)) {
                     maxPage()
                 } else {
-                    LaunchedEffect(articleList.page) {
-                        loadMore(articleList)
+                    LaunchedEffect(articleList.value.page) {
+                        loadMore(articleList.value)
                     }
                 }
             }

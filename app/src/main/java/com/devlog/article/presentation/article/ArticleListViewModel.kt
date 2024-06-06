@@ -16,9 +16,11 @@ import com.devlog.article.data.repository.DefaultRepository
 import com.devlog.article.data.repository.UserRepository
 import com.devlog.article.data.response.Article
 import com.devlog.article.data.response.ArticleLogResponse
-import com.devlog.article.data.response.ArticleResponse
+import com.devlog.article.presentation.my_keywords_select.MyInterestsArticle
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 class ArticleListViewModel : ViewModel() {
@@ -34,20 +36,22 @@ class ArticleListViewModel : ViewModel() {
     lateinit var test: () -> Unit
     lateinit var test1: () -> Unit
 
+    var articleTabState =ArticleTabState(ArrayList(),0,0,0)
+
     private val _articleLiveDataMap = mapOf(
-        "my_interests_article" to MutableLiveData<ArticleTabState>(),
-        "article_it_equipment" to MutableLiveData<ArticleTabState>(),
-        "article_it_news" to MutableLiveData<ArticleTabState>(),
-        "article_android_development" to MutableLiveData<ArticleTabState>(),
-        "article_ios" to MutableLiveData<ArticleTabState>(),
-        "article_web_development" to MutableLiveData<ArticleTabState>(),
-        "article_server_development" to MutableLiveData<ArticleTabState>(),
-        "article_ai_development" to MutableLiveData<ArticleTabState>(),
-        "article_ui_ux_design" to MutableLiveData<ArticleTabState>(),
-        "article_pm" to MutableLiveData<ArticleTabState>()
+        "my_interests_article" to MutableStateFlow<ArticleTabState>(articleTabState),
+        "article_it_equipment" to MutableStateFlow<ArticleTabState>(articleTabState),
+        "article_it_news" to MutableStateFlow<ArticleTabState>(articleTabState),
+        "article_android_development" to MutableStateFlow<ArticleTabState>(articleTabState),
+        "article_ios" to MutableStateFlow<ArticleTabState>(articleTabState),
+        "article_web_development" to MutableStateFlow<ArticleTabState>(articleTabState),
+        "article_server_development" to MutableStateFlow<ArticleTabState>(articleTabState),
+        "article_ai_development" to MutableStateFlow<ArticleTabState>(articleTabState),
+        "article_ui_ux_design" to MutableStateFlow<ArticleTabState>(articleTabState),
+        "article_pm" to MutableStateFlow<ArticleTabState>(articleTabState)
     )
 
-    val articleLiveDataMap: Map<String, LiveData<ArticleTabState>> = _articleLiveDataMap
+    val articleLiveDataMap: Map<String, StateFlow<ArticleTabState>> = _articleLiveDataMap
 
     fun updateArticles(type: String, articles:ArticleTabState) {
         _articleLiveDataMap[type]?.value = articles
@@ -55,10 +59,10 @@ class ArticleListViewModel : ViewModel() {
     }
 
 
-    fun getArticles(type: String): LiveData<ArticleTabState> {
+    fun getArticles(type: String): StateFlow<ArticleTabState> {
         return articleLiveDataMap[type]!!
     }
-    fun getArticles(num: Int): LiveData<ArticleTabState> {
+    fun getArticles(num: Int): StateFlow<ArticleTabState> {
         val keyword = when (num) {
             0 -> "my_interests_article"
             1 -> "article_it_equipment"
@@ -74,6 +78,20 @@ class ArticleListViewModel : ViewModel() {
         }
         return  articleLiveDataMap[keyword] !!
     }
+    fun processIntent(intent: ArticleIntent) {
+        when (intent) {
+
+            is ArticleIntent.LoadArticles ->{
+                if (intent.keyword==MyInterestsArticle){
+
+                    getArticleApi(arrayListOf<String>(),intent.page)
+                }else{
+                    getArticleKeyword(intent.page,intent.keyword, arrayListOf())
+                }
+            }
+        }
+    }
+
     fun getArticleApi(passed: ArrayList<String>, page : Int): Job = viewModelScope.launch {
         val api = ApiService(
             provideProductRetrofit(
@@ -87,7 +105,28 @@ class ArticleListViewModel : ViewModel() {
         val serverCode = repository.getArticle(page, passed)
         if (serverCode != null) {
             article = serverCode.data.articles as ArrayList<Article>
-            succeed()
+            val newArticles = article.map {
+                ArticleEntity(
+                    title = it.title,
+                    text = it.snippet!!,
+                    image = it.thumbnail!!,
+                    url = it.link,
+                    articleId = it._id,
+                    type = it.type
+
+                )
+            }
+            val uniqueNewArticles = newArticles.filterNot { newArticle ->
+                getArticles(0).value!!.articles.any { currentArticle ->
+                    currentArticle.articleId == newArticle.articleId
+                }
+            }
+            val updatedArticles =    getArticles(0).value!!.articles + uniqueNewArticles
+            //getArticles(0).value!!.articles = articleTabState.copy(articles = updatedArticles as ArrayList<ArticleEntity>)
+            updateArticles("my_interests_article",getArticles(0).value!!.copy(articles = updatedArticles as ArrayList<ArticleEntity>))
+
+           // articles[tabIndex] = articleTabState.copy(articles = updatedArticles)
+
 
         } else {
             failed()
