@@ -1,5 +1,6 @@
 package com.devlog.article.presentation.article
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -33,10 +34,13 @@ import androidx.compose.material3.TabRowDefaults
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.currentCompositionLocalContext
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -58,6 +62,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.ViewModel
 import coil.compose.AsyncImage
 import com.devlog.article.R
 import com.devlog.article.data.entity.ArticleEntity
@@ -68,21 +73,19 @@ import com.devlog.article.presentation.article_webview.ArticleWebViewActivity
 import com.devlog.article.presentation.my_keywords_select.Common
 import com.devlog.article.presentation.ui.theme.ArticleTheme
 
-lateinit var viewModel: ArticleListViewModel
+
 lateinit var pass: ArrayList<String>
-lateinit var permission: String
-var userSignCheck = false
 var articles = ArrayList<ArticleTabState>()
 var userViewArticleId = arrayListOf<String>()
-var userBookmarkArticleId = arrayListOf<String>()
-var userShareArticleId = arrayListOf<String>()
-val viewArticleLogResponseList = arrayListOf<ArticleLogResponse>()
-val shareArticleLogResponseList = arrayListOf<ArticleLogResponse>()
-val bookmarArticleLogResponseList = arrayListOf<ArticleLogResponse>()
 
 
+
+
+
+val LocalViewModel = staticCompositionLocalOf<ArticleListViewModel> { error("MainViewModel not provided") }
 class ArticleFragment : Fragment() {
     lateinit var articleArray: ArrayList<ArticleTabState>
+    lateinit var viewModel: ArticleListViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -91,11 +94,29 @@ class ArticleFragment : Fragment() {
     ): View {
         val userPreference = UserPreference.getInstance(requireContext())
         pass = userPreference.getUserPagePassed()
-        permission = userPreference.userPermission
-        userSignCheck = userPreference.userSignInCheck
-        viewModel = ArticleListViewModel()
 
+
+        viewModel = ArticleListViewModel()
+        viewModel.userSignCheck = userPreference.userSignInCheck
+        viewModel.permission = userPreference.userPermission
         processArticleResponse(articleArray)
+
+        onStateChanged()
+        return ComposeView(requireContext()).apply {
+            setContent {
+                ArticleTheme {
+                    Main(viewModel)
+                }
+            }
+        }
+    }
+
+    fun onStateChanged(){
+        var userBookmarkArticleId = arrayListOf<String>()
+        val bookmarArticleLogResponseList = arrayListOf<ArticleLogResponse>()
+        val viewArticleLogResponseList = arrayListOf<ArticleLogResponse>()
+        val shareArticleLogResponseList = arrayListOf<ArticleLogResponse>()
+        var userShareArticleId = arrayListOf<String>()
         lifecycle.addObserver(object : LifecycleEventObserver {
             override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
                 when (event) {
@@ -126,25 +147,21 @@ class ArticleFragment : Fragment() {
             }
         })
 
-        return ComposeView(requireContext()).apply {
-            setContent {
-                ArticleTheme {
-                    Main()
-                }
-            }
-        }
+
     }
 }
 
 @Composable
-fun Main() {
-    Surface(
-        modifier = Modifier.fillMaxSize(),
-        color = Color.White
-    ) {
-        Column {
-            Header()
-            ArticleScreen()
+fun Main(viewModel: ArticleListViewModel) {
+    CompositionLocalProvider(LocalViewModel provides viewModel) {
+        Surface(
+            modifier = Modifier.fillMaxSize(),
+            color = Color.White
+        ) {
+            Column {
+                Header()
+                ArticleScreen(viewModel)
+            }
         }
     }
 }
@@ -164,31 +181,33 @@ fun Header() {
     }
 }
 
+fun articleDetails(articleEntity: ArticleEntity,context:Context) {
+    MixPanelManager.articleClick(articleEntity.title)
+    userViewArticleId.add(articleEntity.articleId)
+    val intent = Intent(context, ArticleWebViewActivity::class.java)
+    intent.putExtra("url", articleEntity.url)
+    intent.putExtra("title", articleEntity.title)
+    ContextCompat.startActivity(context, intent, null)
+}
 
 @Composable
-fun ArticleScreen() {
+fun ArticleScreen(viewModel: ArticleListViewModel) {
     val (tabIndex, setTabIndex) = remember { mutableIntStateOf(0) }
     val currentArticles = remember(tabIndex) { mutableStateOf(articles[tabIndex]) }
 
-    val context = LocalContext.current
-
-    fun articleDetails(articleEntity: ArticleEntity) {
-        MixPanelManager.articleClick(articleEntity.title)
-        userViewArticleId.add(articleEntity.articleId)
-        val intent = Intent(context, ArticleWebViewActivity::class.java)
-        intent.putExtra("url", articleEntity.url)
-        intent.putExtra("title", articleEntity.title)
-        ContextCompat.startActivity(context, intent, null)
-    }
 
 
     fun addArticles(articleTabState: ArticleTabState) {
         articleTabState.page += 1
-        if (userSignCheck && articleTabState.keyword == Common) viewModel.getArticle(
-            pass,
-            articleTabState.page
-        )
-        else viewModel.getArticleKeyword(articleTabState.page, articleTabState.keyword, pass)
+        if (viewModel.userSignCheck && articleTabState.keyword == Common){
+            viewModel.getArticle(
+                pass,
+                articleTabState.page
+            )
+        }
+        else{
+            viewModel.getArticleKeyword(articleTabState.page, articleTabState.keyword, pass)
+        }
         viewModel.succeed = {
             val newArticles = viewModel.article.map {
                 ArticleEntity(
@@ -218,10 +237,11 @@ fun ArticleScreen() {
     }
 
     Column(modifier = Modifier.fillMaxWidth()) {
+        val context = LocalContext.current
         TabLayout(tabIndex, setTabIndex)
         ArticleList(
             currentArticles.value,
-            onClick = { articleDetails(it) },
+            onClick = { articleDetails(it,context) },
             loadMore = { addArticles(it) },
             maxPage = { maxPage() }
         )
@@ -232,7 +252,7 @@ fun ArticleScreen() {
 fun TabLayout(tabIndex: Int, onTabSelected: (Int) -> Unit) {
     val tabs =
         listOf(
-            if (userSignCheck) "내 관심사" else "공통",
+            if (LocalViewModel.current.userSignCheck) "내 관심사" else "공통",
             "IT 기기",
             "IT 소식",
             "Android",
@@ -321,7 +341,7 @@ fun ArticleItem(article: ArticleEntity, onClick: () -> Unit) {
         )
         Spacer(modifier = Modifier.size(8.dp))
         ItemText(article.title, 0.dp)
-        if (isAdmin()) {
+        if (isAdmin(LocalViewModel.current.permission)) {
             reportButton(article.articleId)
         }
     }
@@ -349,7 +369,7 @@ fun CompanyArticleItem(article: ArticleEntity, onClick: () -> Unit) {
         )
         Spacer(modifier = Modifier.size(12.dp))
         ItemText(article.title, 12.dp)
-        if (isAdmin()) {
+        if (isAdmin(LocalViewModel.current.permission)) {
             reportButton(article.articleId)
         }
     }
@@ -369,8 +389,9 @@ fun TitleText(title: String, isSelected: Boolean) {
 
 @Composable
 fun reportButton(articleId: String) {
+    val viewModel = LocalViewModel.current
     Button(
-        onClick = { reportArticle(articleId) },
+        onClick = { reportArticle(viewModel,articleId) },
         modifier = Modifier.wrapContentSize(),
     ) {
         Text("신고")
@@ -406,15 +427,13 @@ fun isMaxPage(articleList: ArticleTabState): Boolean {
     return articleList.page == articleList.maxPage
 }
 
-fun isAdmin(): Boolean {
+fun isAdmin(permission:String): Boolean {
     return permission == "admin"
 }
 
-fun isCompanyArticle(url: String): Boolean {
-    return (url.contains("toss.tech"))
-}
 
-fun reportArticle(articleId: String) {
+
+fun reportArticle(viewModel: ArticleListViewModel,articleId: String) {
     viewModel.postReport(articleId)
     viewModel.reportSucceed = {
         Log.e("test", "성공")
@@ -422,62 +441,6 @@ fun reportArticle(articleId: String) {
     viewModel.reportFailed = {
         Log.e("test", "실패")
     }
+
 }
 
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    val image =
-        "https://content.surfit.io/thumbs/image/wdBn3/oRnWp/19788758706604cf43e9e4e.png/cover-center-1x.webp"
-    val articleArray = arrayListOf<ArticleEntity>()
-
-    for (i in 0..4) {
-        articleArray.add(
-            ArticleEntity(
-                "제목",
-                "설명",
-                image,
-                url = "https://content.surfit.io/thumbs/image/wdBn3/oRnWp/19788758706604cf43e9e4e.png/cover-center-1x.webp",
-                i.toString(),
-                0
-            )
-        )
-    }
-    articles = arrayListOf(
-        ArticleTabState(
-            articleArray,
-            0,
-            1
-        )
-    )
-    permission = "user"
-    ArticleTheme {
-        Surface(
-            modifier = Modifier.fillMaxSize(),
-            color = MaterialTheme.colorScheme.background
-        ) {
-            Column {
-                Header()
-                ArticleScreen()
-            }
-        }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun DefaultItemPreview() {
-    val image =
-        "https://content.surfit.io/thumbs/image/wdBn3/oRnWp/19788758706604cf43e9e4e.png/cover-center-1x.webp"
-    val articleEntity = ArticleEntity(
-        "제목제목제제목제목제목제목제목제목목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목",
-        "설명",
-        image,
-        url = "https://content.surfit.io/thumbs/image/wdBn3/oRnWp/19788758706604cf43e9e4e.png/cover-center-1x.webp",
-        "20",
-        0
-    )
-    ArticleTheme {
-        CompanyArticleItem(articleEntity, {})
-    }
-}

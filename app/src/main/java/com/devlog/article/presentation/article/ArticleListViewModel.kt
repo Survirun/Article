@@ -20,6 +20,8 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 class ArticleListViewModel : ViewModel() {
+    var userSignCheck =true
+    var permission =""
     lateinit var succeed: () -> Unit
     lateinit var failed: () -> Unit
     lateinit var reportSucceed: () -> Unit
