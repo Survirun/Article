@@ -70,12 +70,11 @@ import com.devlog.article.data.mixpanel.MixPanelManager
 import com.devlog.article.data.preference.UserPreference
 import com.devlog.article.data.response.ArticleLogResponse
 import com.devlog.article.presentation.article_webview.ArticleWebViewActivity
-import com.devlog.article.presentation.my_keywords_select.Common
 import com.devlog.article.presentation.ui.theme.ArticleTheme
 
 
 lateinit var pass: ArrayList<String>
-var articles = ArrayList<ArticleTabState>()
+
 var userViewArticleId = arrayListOf<String>()
 
 
@@ -84,7 +83,7 @@ var userViewArticleId = arrayListOf<String>()
 
 val LocalViewModel = staticCompositionLocalOf<ArticleListViewModel> { error("MainViewModel not provided") }
 class ArticleFragment : Fragment() {
-    lateinit var articleArray: ArrayList<ArticleTabState>
+    lateinit var articleArray: MutableMap<String,ArticleTabState>
     lateinit var viewModel: ArticleListViewModel
 
     override fun onCreateView(
@@ -99,7 +98,8 @@ class ArticleFragment : Fragment() {
         viewModel = ArticleListViewModel()
         viewModel.userSignCheck = userPreference.userSignInCheck
         viewModel.permission = userPreference.userPermission
-        processArticleResponse(articleArray)
+        initDate()
+
 
         onStateChanged()
         return ComposeView(requireContext()).apply {
@@ -108,6 +108,13 @@ class ArticleFragment : Fragment() {
                     Main(viewModel)
                 }
             }
+        }
+    }
+    fun initDate(){
+
+        articleArray.forEach{
+            Log.e("fsfsafd",it.key)
+            viewModel.updateArticles(it.key,it.value)
         }
     }
 
@@ -160,6 +167,7 @@ fun Main(viewModel: ArticleListViewModel) {
         ) {
             Column {
                 Header()
+                LocalViewModel.current.userSignCheck
                 ArticleScreen(viewModel)
             }
         }
@@ -193,43 +201,43 @@ fun articleDetails(articleEntity: ArticleEntity,context:Context) {
 @Composable
 fun ArticleScreen(viewModel: ArticleListViewModel) {
     val (tabIndex, setTabIndex) = remember { mutableIntStateOf(0) }
-    val currentArticles = remember(tabIndex) { mutableStateOf(articles[tabIndex]) }
+    val currentArticles = remember(tabIndex) { mutableStateOf(viewModel.getArticles(tabIndex)) }
 
 
 
     fun addArticles(articleTabState: ArticleTabState) {
         articleTabState.page += 1
-        if (viewModel.userSignCheck && articleTabState.keyword == Common){
-            viewModel.getArticle(
-                pass,
-                articleTabState.page
-            )
-        }
-        else{
-            viewModel.getArticleKeyword(articleTabState.page, articleTabState.keyword, pass)
-        }
-        viewModel.succeed = {
-            val newArticles = viewModel.article.map {
-                ArticleEntity(
-                    title = it.title,
-                    text = it.snippet!!,
-                    image = it.thumbnail!!,
-                    url = it.link,
-                    articleId = it._id,
-                    type = it.type
-
-                )
-            }
-            val uniqueNewArticles = newArticles.filterNot { newArticle ->
-                currentArticles.value.articles.any { currentArticle ->
-                    currentArticle.articleId == newArticle.articleId
-                }
-            }
-            val updatedArticles = articleTabState.articles + uniqueNewArticles
-            currentArticles.value =
-                articleTabState.copy(articles = updatedArticles as ArrayList<ArticleEntity>)
-            articles[tabIndex] = articleTabState.copy(articles = updatedArticles)
-        }
+//        if (viewModel.userSignCheck && articleTabState.keyword == Common){
+//            viewModel.getArticleApi(
+//                pass,
+//                articleTabState.page
+//            )
+//        }
+//        else{
+//            viewModel.getArticleKeyword(articleTabState.page, articleTabState.keyword, pass)
+//        }
+//        viewModel.succeed = {
+//            val newArticles = viewModel.article.map {
+//                ArticleEntity(
+//                    title = it.title,
+//                    text = it.snippet!!,
+//                    image = it.thumbnail!!,
+//                    url = it.link,
+//                    articleId = it._id,
+//                    type = it.type
+//
+//                )
+//            }
+//            val uniqueNewArticles = newArticles.filterNot { newArticle ->
+//                currentArticles.value.articles.any { currentArticle ->
+//                    currentArticle.articleId == newArticle.articleId
+//                }
+//            }
+//            val updatedArticles = articleTabState.articles + uniqueNewArticles
+//            currentArticles.value =
+//                articleTabState.copy(articles = updatedArticles as ArrayList<ArticleEntity>)
+//            articles[tabIndex] = articleTabState.copy(articles = updatedArticles)
+//        }
     }
 
     fun maxPage() {
@@ -239,8 +247,9 @@ fun ArticleScreen(viewModel: ArticleListViewModel) {
     Column(modifier = Modifier.fillMaxWidth()) {
         val context = LocalContext.current
         TabLayout(tabIndex, setTabIndex)
+
         ArticleList(
-            currentArticles.value,
+            LocalViewModel.current.getArticles(tabIndex).value!!,
             onClick = { articleDetails(it,context) },
             loadMore = { addArticles(it) },
             maxPage = { maxPage() }
@@ -252,7 +261,7 @@ fun ArticleScreen(viewModel: ArticleListViewModel) {
 fun TabLayout(tabIndex: Int, onTabSelected: (Int) -> Unit) {
     val tabs =
         listOf(
-            if (LocalViewModel.current.userSignCheck) "내 관심사" else "공통",
+            "내 관심사",
             "IT 기기",
             "IT 소식",
             "Android",
@@ -413,15 +422,6 @@ fun ItemText(text: String, paddingTop: Dp) {
 }
 
 
-fun processArticleResponse(articleArray: ArrayList<ArticleTabState>) {
-    val list = pass
-    articleArray.forEach { articleTabState ->
-        articleTabState.articles.forEach {
-            list.add(it.articleId)
-        }
-    }
-    articles = articleArray
-}
 
 fun isMaxPage(articleList: ArticleTabState): Boolean {
     return articleList.page == articleList.maxPage

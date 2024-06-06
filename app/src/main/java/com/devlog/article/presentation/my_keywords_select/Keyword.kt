@@ -1,6 +1,6 @@
 package com.devlog.article.presentation.my_keywords_select
 
-var Common =0
+var MyInterestsArticle =0
 var DevelopmentCommon =1
 var ITEquipment = 2
 var androidDevelopment =3

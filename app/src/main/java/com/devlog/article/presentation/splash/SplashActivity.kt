@@ -28,15 +28,16 @@ import com.devlog.article.presentation.my_keywords_select.ITEquipment
 import com.devlog.article.presentation.my_keywords_select.MyKeywordSelectActivity
 import com.devlog.article.presentation.sign_in.SignInActivity
 import com.devlog.article.presentation.ui.theme.ArticleTheme
-import com.devlog.article.presentation.my_keywords_select.Common
 import com.devlog.article.presentation.my_keywords_select.DevelopmentCommon
 import com.devlog.article.presentation.my_keywords_select.ITNews
+import com.devlog.article.presentation.my_keywords_select.MyInterestsArticle
 import com.devlog.article.presentation.my_keywords_select.PM
 import com.devlog.article.presentation.my_keywords_select.UIUXDesign
 import com.devlog.article.presentation.my_keywords_select.WebDevelopment
 import com.devlog.article.presentation.my_keywords_select.androidDevelopment
 import com.devlog.article.presentation.my_keywords_select.iOSDevelopment
 import com.devlog.article.presentation.my_keywords_select.serverDevelopment
+import com.google.android.gms.common.internal.service.Common
 
 @SuppressLint("CustomSplashScreen")
 class SplashActivity : ComponentActivity()  {
@@ -132,7 +133,7 @@ class SplashActivity : ComponentActivity()  {
         count++
         Log.e("테스트 입니다",count.toString())
         when(state.category){
-            Common ->{
+            0 ->{
                 intent.putExtra("article_common",state.articleResponse)
 
             }
@@ -168,7 +169,7 @@ class SplashActivity : ComponentActivity()  {
             }
         }
         if (count == maxCount){
-            intent.putExtra("article",viewModel.article)
+            intent.putExtra("my_interests_article" ,viewModel.article)
             startActivity(intent)
             finish()
         }

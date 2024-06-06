@@ -14,9 +14,9 @@ import com.devlog.article.presentation.article.ArticleFragment
 import com.devlog.article.presentation.article.ArticleTabState
 import com.devlog.article.presentation.bookmark.BookmarkFragment
 import com.devlog.article.presentation.my_keywords_select.AIDevelopment
-import com.devlog.article.presentation.my_keywords_select.Common
 import com.devlog.article.presentation.my_keywords_select.ITEquipment
 import com.devlog.article.presentation.my_keywords_select.ITNews
+import com.devlog.article.presentation.my_keywords_select.MyInterestsArticle
 import com.devlog.article.presentation.my_keywords_select.PM
 import com.devlog.article.presentation.my_keywords_select.UIUXDesign
 import com.devlog.article.presentation.my_keywords_select.WebDevelopment
@@ -73,10 +73,11 @@ class MainActivity() : AppCompatActivity() {
     }
 
     private fun getArticleData() {
-        val totalArticles = ArrayList<ArticleTabState>()
-        val firstKey = if (userPreference.userSignInCheck) "article" else "article_common"
+        val articlesMap = mutableMapOf<String, ArticleTabState>()
+
+
         val keywordList = mapOf(
-            firstKey to Common,
+            "my_interests_article"  to MyInterestsArticle,
             "article_it_equipment" to ITEquipment,
             "article_it_news" to ITNews,
             "article_android_development" to androidDevelopment,
@@ -108,15 +109,9 @@ class MainActivity() : AppCompatActivity() {
                     )
                 )
             }
-            totalArticles.add(
-                ArticleTabState(
-                    newArticles,
-                    keyword.value,
-                    articleResponse.data.maxPage
-                )
-            )
+            articlesMap[keyword.key] =ArticleTabState(newArticles, keyword.value, articleResponse.data.maxPage)
         }
-        articleFragment.articleArray = totalArticles
+        articleFragment.articleArray = articlesMap
     }
 
 }
