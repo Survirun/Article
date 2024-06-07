@@ -204,7 +204,7 @@ fun ArticleScreen(viewModel: ArticleListViewModel) {
 
     fun addArticles(articleTabState: ArticleTabState) {
         articleTabState.page += 1
-        viewModel.processIntent(ArticleIntent.LoadArticles(0,articleTabState.page, ""))
+        viewModel.processIntent(ArticleIntent.LoadArticles(articleTabState.keyword,articleTabState.page, ""))
 
     }
 
@@ -217,7 +217,7 @@ fun ArticleScreen(viewModel: ArticleListViewModel) {
         TabLayout(tabIndex, setTabIndex)
 
         ArticleList(
-            LocalViewModel.current.getArticles(tabIndex).collectAsState(),
+            LocalViewModel.current.keywordCodeTabToKeywordMap(tabIndex).collectAsState(),
             onClick = { articleDetails(it,context) },
             loadMore = { addArticles(it) },
             maxPage = { maxPage() }

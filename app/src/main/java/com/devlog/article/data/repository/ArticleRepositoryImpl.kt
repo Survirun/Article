@@ -63,7 +63,7 @@ class ArticleRepositoryImpl private constructor(
         page: Int,
         passed: ArrayList<String>
     ): ArticleResponse? = withContext(ioDispatcher) {
-        val response = api.getArticleKeyword(keyword, 1, Passed(passed))
+        val response = api.getArticleKeyword(keyword, page, Passed(passed))
         return@withContext if (response.isSuccessful) {
             response.body()
         } else {

@@ -16,7 +16,16 @@ import com.devlog.article.data.repository.DefaultRepository
 import com.devlog.article.data.repository.UserRepository
 import com.devlog.article.data.response.Article
 import com.devlog.article.data.response.ArticleLogResponse
+import com.devlog.article.presentation.my_keywords_select.AIDevelopment
+import com.devlog.article.presentation.my_keywords_select.ITEquipment
+import com.devlog.article.presentation.my_keywords_select.ITNews
 import com.devlog.article.presentation.my_keywords_select.MyInterestsArticle
+import com.devlog.article.presentation.my_keywords_select.PM
+import com.devlog.article.presentation.my_keywords_select.UIUXDesign
+import com.devlog.article.presentation.my_keywords_select.WebDevelopment
+import com.devlog.article.presentation.my_keywords_select.androidDevelopment
+import com.devlog.article.presentation.my_keywords_select.iOSDevelopment
+import com.devlog.article.presentation.my_keywords_select.serverDevelopment
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -62,7 +71,26 @@ class ArticleListViewModel : ViewModel() {
     fun getArticles(type: String): StateFlow<ArticleTabState> {
         return articleLiveDataMap[type]!!
     }
-    fun getArticles(num: Int): StateFlow<ArticleTabState> {
+    //키워드 코드를 Map 키로 바꿈
+    fun keywordCodeToKeywordMap(num: Int): String{
+        val keyword = when (num) {
+            MyInterestsArticle -> "my_interests_article"
+            ITEquipment -> "article_it_equipment"
+            ITNews-> "article_it_news"
+            androidDevelopment -> "article_android_development"
+            iOSDevelopment -> "article_ios"
+            WebDevelopment -> "article_web_development"
+            serverDevelopment-> "article_server_development"
+            AIDevelopment -> "article_ai_development"
+            UIUXDesign -> "article_ui_ux_design"
+            PM -> "article_pm"
+            else -> ""
+        }
+        Log.e("polaris",keyword)
+        return  keyword
+    }
+    //탭 순서대로 Map 키로 바꿈
+    fun keywordCodeTabToKeywordMap(num: Int): StateFlow<ArticleTabState> {
         val keyword = when (num) {
             0 -> "my_interests_article"
             1 -> "article_it_equipment"
@@ -78,6 +106,7 @@ class ArticleListViewModel : ViewModel() {
         }
         return  articleLiveDataMap[keyword] !!
     }
+
     fun processIntent(intent: ArticleIntent) {
         when (intent) {
 
@@ -86,6 +115,7 @@ class ArticleListViewModel : ViewModel() {
 
                     getArticleApi(arrayListOf<String>(),intent.page)
                 }else{
+                    Log.e("페이지",intent.page.toString())
                     getArticleKeyword(intent.page,intent.keyword, arrayListOf())
                 }
             }
@@ -116,16 +146,14 @@ class ArticleListViewModel : ViewModel() {
 
                 )
             }
+            val 키워드 ="my_interests_article"
             val uniqueNewArticles = newArticles.filterNot { newArticle ->
-                getArticles(0).value!!.articles.any { currentArticle ->
+                articleLiveDataMap[ 키워드]!!.value.articles.any { currentArticle ->
                     currentArticle.articleId == newArticle.articleId
                 }
             }
-            val updatedArticles =    getArticles(0).value!!.articles + uniqueNewArticles
-            //getArticles(0).value!!.articles = articleTabState.copy(articles = updatedArticles as ArrayList<ArticleEntity>)
-            updateArticles("my_interests_article",getArticles(0).value!!.copy(articles = updatedArticles as ArrayList<ArticleEntity>))
-
-           // articles[tabIndex] = articleTabState.copy(articles = updatedArticles)
+            val updatedArticles =  articleLiveDataMap[ 키워드]!!.value.articles + uniqueNewArticles
+            updateArticles("my_interests_article", articleLiveDataMap[키워드]!!.value.copy(articles = updatedArticles as ArrayList<ArticleEntity>))
 
 
         } else {
@@ -147,8 +175,32 @@ class ArticleListViewModel : ViewModel() {
         val serverCode = repository.getArticleKeyword(keyword, page, pass)
 
         if (serverCode != null) {
+            var 현재키워드 = keywordCodeToKeywordMap(keyword)
             article = serverCode.data.articles as ArrayList<Article>
-            succeed()
+            Log.e("polaris$page",article.toString())
+            val newArticles = article.map {
+                ArticleEntity(
+                    title = it.title,
+                    text = it.snippet!!,
+                    image = it.thumbnail!!,
+                    url = it.link,
+                    articleId = it._id,
+                    type = it.type
+
+                )
+            }
+            newArticles.forEach {
+                Log.e("polaris_article_it_news",it.toString())
+            }
+
+            val uniqueNewArticles = newArticles.filterNot { newArticle ->
+                articleLiveDataMap[ 현재키워드]!!.value.articles.any { currentArticle ->
+                    currentArticle.articleId == newArticle.articleId
+                }
+            }
+            val updatedArticles =  articleLiveDataMap[ 현재키워드]!!.value.articles + uniqueNewArticles
+            updateArticles(현재키워드, articleLiveDataMap[ 현재키워드]!!.value.copy(articles = updatedArticles as ArrayList<ArticleEntity>))
+
 
         } else {
             failed()
