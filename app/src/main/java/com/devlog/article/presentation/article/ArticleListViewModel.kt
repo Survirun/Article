@@ -64,10 +64,10 @@ class ArticleListViewModel : ViewModel() {
 
     fun updateArticles(type: String, articles:ArticleTabState) {
         _articleLiveDataMap[type]?.value = articles
-        Log.e(type,getArticles(type).value.toString())
+
     }
 
-
+    //type을 넣어 아티클 가져오기 디버깅용
     fun getArticles(type: String): StateFlow<ArticleTabState> {
         return articleLiveDataMap[type]!!
     }
@@ -86,7 +86,7 @@ class ArticleListViewModel : ViewModel() {
             PM -> "article_pm"
             else -> ""
         }
-        Log.e("polaris",keyword)
+
         return  keyword
     }
     //탭 순서대로 Map 키로 바꿈
@@ -115,7 +115,6 @@ class ArticleListViewModel : ViewModel() {
 
                     getArticleApi(arrayListOf<String>(),intent.page)
                 }else{
-                    Log.e("페이지",intent.page.toString())
                     getArticleKeyword(intent.page,intent.keyword, arrayListOf())
                 }
             }
@@ -177,7 +176,7 @@ class ArticleListViewModel : ViewModel() {
         if (serverCode != null) {
             var 현재키워드 = keywordCodeToKeywordMap(keyword)
             article = serverCode.data.articles as ArrayList<Article>
-            Log.e("polaris$page",article.toString())
+
             val newArticles = article.map {
                 ArticleEntity(
                     title = it.title,
@@ -189,9 +188,7 @@ class ArticleListViewModel : ViewModel() {
 
                 )
             }
-            newArticles.forEach {
-                Log.e("polaris_article_it_news",it.toString())
-            }
+
 
             val uniqueNewArticles = newArticles.filterNot { newArticle ->
                 articleLiveDataMap[ 현재키워드]!!.value.articles.any { currentArticle ->
