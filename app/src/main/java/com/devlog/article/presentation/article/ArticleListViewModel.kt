@@ -35,7 +35,6 @@ import kotlinx.coroutines.launch
 class ArticleListViewModel : ViewModel() {
     var userSignCheck =true
     var permission =""
-    lateinit var succeed: () -> Unit
     lateinit var failed: () -> Unit
     lateinit var reportSucceed: () -> Unit
     lateinit var reportFailed: () -> Unit
@@ -70,6 +69,20 @@ class ArticleListViewModel : ViewModel() {
     //type을 넣어 아티클 가져오기 디버깅용
     fun getArticles(type: String): StateFlow<ArticleTabState> {
         return articleLiveDataMap[type]!!
+    }
+
+    fun processIntent(intent: ArticleIntent) {
+        when (intent) {
+
+            is ArticleIntent.LoadArticles ->{
+                if (intent.keyword==MyInterestsArticle){
+
+                    getArticleApi(arrayListOf<String>(),intent.page)
+                }else{
+                    getArticleKeyword(intent.page,intent.keyword, arrayListOf())
+                }
+            }
+        }
     }
     //키워드 코드를 Map 키로 바꿈
     fun keywordCodeToKeywordMap(num: Int): String{
@@ -107,18 +120,30 @@ class ArticleListViewModel : ViewModel() {
         return  articleLiveDataMap[keyword] !!
     }
 
-    fun processIntent(intent: ArticleIntent) {
-        when (intent) {
 
-            is ArticleIntent.LoadArticles ->{
-                if (intent.keyword==MyInterestsArticle){
 
-                    getArticleApi(arrayListOf<String>(),intent.page)
-                }else{
-                    getArticleKeyword(intent.page,intent.keyword, arrayListOf())
-                }
+    fun updateArticle(article:ArrayList<Article>,keyword:String){
+        val newArticles = article.map {
+            ArticleEntity(
+                title = it.title,
+                text = it.snippet!!,
+                image = it.thumbnail!!,
+                url = it.link,
+                articleId = it._id,
+                type = it.type
+
+            )
+        }
+
+        val uniqueNewArticles = newArticles.filterNot { newArticle ->
+            articleLiveDataMap[keyword]!!.value.articles.any { currentArticle ->
+                currentArticle.articleId == newArticle.articleId
             }
         }
+        val updatedArticles =  articleLiveDataMap[keyword]!!.value.articles + uniqueNewArticles
+        updateArticles(keyword, articleLiveDataMap[keyword]!!.value.copy(articles = updatedArticles as ArrayList<ArticleEntity>))
+
+
     }
 
     fun getArticleApi(passed: ArrayList<String>, page : Int): Job = viewModelScope.launch {
@@ -134,26 +159,10 @@ class ArticleListViewModel : ViewModel() {
         val serverCode = repository.getArticle(page, passed)
         if (serverCode != null) {
             article = serverCode.data.articles as ArrayList<Article>
-            val newArticles = article.map {
-                ArticleEntity(
-                    title = it.title,
-                    text = it.snippet!!,
-                    image = it.thumbnail!!,
-                    url = it.link,
-                    articleId = it._id,
-                    type = it.type
+            val keyword = keywordCodeToKeywordMap(0)
 
-                )
-            }
-            val 키워드 ="my_interests_article"
-            val uniqueNewArticles = newArticles.filterNot { newArticle ->
-                articleLiveDataMap[ 키워드]!!.value.articles.any { currentArticle ->
-                    currentArticle.articleId == newArticle.articleId
-                }
-            }
-            val updatedArticles =  articleLiveDataMap[ 키워드]!!.value.articles + uniqueNewArticles
-            updateArticles("my_interests_article", articleLiveDataMap[키워드]!!.value.copy(articles = updatedArticles as ArrayList<ArticleEntity>))
 
+           updateArticle(article,keyword)
 
         } else {
             failed()
@@ -174,29 +183,10 @@ class ArticleListViewModel : ViewModel() {
         val serverCode = repository.getArticleKeyword(keyword, page, pass)
 
         if (serverCode != null) {
-            var 현재키워드 = keywordCodeToKeywordMap(keyword)
+            val keyword = keywordCodeToKeywordMap(keyword)
             article = serverCode.data.articles as ArrayList<Article>
 
-            val newArticles = article.map {
-                ArticleEntity(
-                    title = it.title,
-                    text = it.snippet!!,
-                    image = it.thumbnail!!,
-                    url = it.link,
-                    articleId = it._id,
-                    type = it.type
-
-                )
-            }
-
-
-            val uniqueNewArticles = newArticles.filterNot { newArticle ->
-                articleLiveDataMap[ 현재키워드]!!.value.articles.any { currentArticle ->
-                    currentArticle.articleId == newArticle.articleId
-                }
-            }
-            val updatedArticles =  articleLiveDataMap[ 현재키워드]!!.value.articles + uniqueNewArticles
-            updateArticles(현재키워드, articleLiveDataMap[ 현재키워드]!!.value.copy(articles = updatedArticles as ArrayList<ArticleEntity>))
+            updateArticle(article,keyword)
 
 
         } else {
@@ -215,10 +205,6 @@ class ArticleListViewModel : ViewModel() {
             val repository: ArticleRepository =
                 ArticleRepositoryImpl.getInstance(api, ioDispatcher = Dispatchers.IO)
             val serverCode = repository.postArticleLog(postArticleLogResponse)
-            if (serverCode != null) {
-
-            } else {
-            }
 
         }
 
