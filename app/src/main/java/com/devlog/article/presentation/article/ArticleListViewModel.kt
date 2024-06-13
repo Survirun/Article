@@ -17,6 +17,7 @@ import com.devlog.article.data.repository.UserRepository
 import com.devlog.article.data.response.Article
 import com.devlog.article.data.response.ArticleLogResponse
 import com.devlog.article.presentation.my_keywords_select.AIDevelopment
+import com.devlog.article.presentation.my_keywords_select.DEVCOMMON
 import com.devlog.article.presentation.my_keywords_select.ITEquipment
 import com.devlog.article.presentation.my_keywords_select.ITNews
 import com.devlog.article.presentation.my_keywords_select.MyInterestsArticle
@@ -48,7 +49,7 @@ class ArticleListViewModel : ViewModel() {
 
     private val _articleLiveDataMap = mapOf(
         "my_interests_article" to MutableStateFlow<ArticleTabState>(articleTabState),
-        "article_it_equipment" to MutableStateFlow<ArticleTabState>(articleTabState),
+        "article_dev_common" to MutableStateFlow<ArticleTabState>(articleTabState),
         "article_it_news" to MutableStateFlow<ArticleTabState>(articleTabState),
         "article_android_development" to MutableStateFlow<ArticleTabState>(articleTabState),
         "article_ios" to MutableStateFlow<ArticleTabState>(articleTabState),
@@ -88,7 +89,7 @@ class ArticleListViewModel : ViewModel() {
     fun keywordCodeToKeywordMap(num: Int): String{
         val keyword = when (num) {
             MyInterestsArticle -> "my_interests_article"
-            ITEquipment -> "article_it_equipment"
+            DEVCOMMON -> "article_dev_common"
             ITNews-> "article_it_news"
             androidDevelopment -> "article_android_development"
             iOSDevelopment -> "article_ios"
@@ -106,7 +107,7 @@ class ArticleListViewModel : ViewModel() {
     fun keywordCodeTabToKeywordMap(num: Int): StateFlow<ArticleTabState> {
         val keyword = when (num) {
             0 -> "my_interests_article"
-            1 -> "article_it_equipment"
+            1 -> "article_dev_common"
             2 -> "article_it_news"
             3 -> "article_android_development"
             4 -> "article_ios"
@@ -127,7 +128,7 @@ class ArticleListViewModel : ViewModel() {
             ArticleEntity(
                 title = it.title,
                 text = it.snippet!!,
-                image = it.thumbnail!!,
+                image = it.thumbnail,
                 url = it.link,
                 articleId = it._id,
                 type = it.type

@@ -24,6 +24,7 @@ import com.devlog.article.presentation.main.MainActivity
 import com.devlog.article.data.preference.UserPreference
 import com.devlog.article.presentation.bookmark.BookmarkSharedPreferencesHelper
 import com.devlog.article.presentation.my_keywords_select.AIDevelopment
+import com.devlog.article.presentation.my_keywords_select.DEVCOMMON
 import com.devlog.article.presentation.my_keywords_select.ITEquipment
 import com.devlog.article.presentation.my_keywords_select.MyKeywordSelectActivity
 import com.devlog.article.presentation.sign_in.SignInActivity
@@ -116,7 +117,7 @@ class SplashActivity : ComponentActivity()  {
     fun handlePostApi(){
         viewModel.getBookMaker()
         viewModel.getArticle(userPreference.getUserPagePassed())
-        for (i in 0..10){
+        for (i in 0..maxCount-1){
             viewModel.getArticleKeyword(i, arrayListOf())
         }
 
@@ -128,10 +129,11 @@ class SplashActivity : ComponentActivity()  {
     }
 
     var count =0
-    var maxCount =11
+    var maxCount =13
     fun handleArticleState(state: SplashState.GetArticle) {
         count++
         Log.e("테스트 입니다",count.toString())
+        Log.e("테스트 입니다category",state.category.toString())
         when(state.category){
             0 ->{
                 intent.putExtra("article_common",state.articleResponse)
@@ -140,8 +142,8 @@ class SplashActivity : ComponentActivity()  {
             DevelopmentCommon->{
                 intent.putExtra("article_developmentCommon",state.articleResponse)
             }
-            ITEquipment->{
-                intent.putExtra("article_it_equipment",state.articleResponse)
+            DEVCOMMON->{
+                intent.putExtra("article_dev_common",state.articleResponse)
             }
             androidDevelopment->{
                 intent.putExtra("article_android_development",state.articleResponse)
@@ -150,6 +152,7 @@ class SplashActivity : ComponentActivity()  {
                 intent.putExtra("article_server_development",state.articleResponse)
             }
             WebDevelopment->{
+                Log.e("테스트 입니다???????",count.toString())
                 intent.putExtra("article_web_development",state.articleResponse)
             }
             AIDevelopment->{

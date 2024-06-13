@@ -107,9 +107,7 @@ class ArticleAdapter() : RecyclerView.Adapter<ArticleAdapter.ArticleViewHolder>(
 
     }
 
-    fun getImage(position: Int) : Any{
-        return if(articleList[position].url.contains("yozm.wishket")) R.drawable.yozm else articleList[position].image
-    }
+
     override fun getItemCount(): Int = articleList.size
 
     fun setProductList(productList: List<ArticleEntity>, productItemClickListener: (link:ArticleEntity) -> Unit={ } ,articleShareClickListener:(link:ArticleEntity)->Unit ={} ,articleBookmarkClickListener:(link:ArticleEntity)->Unit ={}, articleReportClickListener:(articleId:String)->Unit={}, isVisibility : Int){

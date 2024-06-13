@@ -230,7 +230,7 @@ fun TabLayout(tabIndex: Int, onTabSelected: (Int) -> Unit) {
     val tabs =
         listOf(
             "내 관심사",
-            "IT 기기",
+            "개발 공통",
             "IT 소식",
             "Android",
             "iOS",

@@ -1,6 +1,7 @@
 package com.devlog.article.presentation.main
 
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.TooltipCompat
 import androidx.core.view.forEach
@@ -14,6 +15,7 @@ import com.devlog.article.presentation.article.ArticleFragment
 import com.devlog.article.presentation.article.ArticleTabState
 import com.devlog.article.presentation.bookmark.BookmarkFragment
 import com.devlog.article.presentation.my_keywords_select.AIDevelopment
+import com.devlog.article.presentation.my_keywords_select.DEVCOMMON
 import com.devlog.article.presentation.my_keywords_select.ITEquipment
 import com.devlog.article.presentation.my_keywords_select.ITNews
 import com.devlog.article.presentation.my_keywords_select.MyInterestsArticle
@@ -23,6 +25,7 @@ import com.devlog.article.presentation.my_keywords_select.WebDevelopment
 import com.devlog.article.presentation.my_keywords_select.androidDevelopment
 import com.devlog.article.presentation.my_keywords_select.iOSDevelopment
 import com.devlog.article.presentation.my_keywords_select.serverDevelopment
+import com.devlog.article.presentation.splash.Logo
 
 
 class MainActivity() : AppCompatActivity() {
@@ -78,7 +81,7 @@ class MainActivity() : AppCompatActivity() {
 
         val keywordList = mapOf(
             "my_interests_article"  to MyInterestsArticle,
-            "article_it_equipment" to ITEquipment,
+            "article_dev_common" to DEVCOMMON,
             "article_it_news" to ITNews,
             "article_android_development" to androidDevelopment,
             "article_ios" to iOSDevelopment,
@@ -89,6 +92,8 @@ class MainActivity() : AppCompatActivity() {
             "article_pm" to PM
         )
         for (keyword in keywordList) {
+            Log.d("키워드 리스트",keyword.key)
+            Log.d("키워드 리스트",keyword.value.toString())
             val articleResponse = intent.getSerializableExtra(keyword.key) as ArticleResponse
             val newArticles = ArrayList<ArticleEntity>()
             articleResponse.data.articles.forEach {
@@ -102,7 +107,7 @@ class MainActivity() : AppCompatActivity() {
                     ArticleEntity(
                         title = it.title,
                         text = it.snippet!!,
-                        image = it.thumbnail!!,
+                        image = it.thumbnail,
                         url = it.link,
                         articleId = it._id,
                         type = it.type
