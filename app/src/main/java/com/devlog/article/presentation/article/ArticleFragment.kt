@@ -299,7 +299,7 @@ fun ArticleList(
     loadMore: (state: ArticleTabState) -> Unit,
     maxPage: () -> Unit
 ) {
-    LazyColumn(modifier = Modifier.padding(horizontal = 20.dp)) {
+    LazyColumn {
         itemsIndexed(articleList.articles, key = { index, item -> item.articleId }) { idx, item ->
             if (idx >= articleList.articles.size - 1) {
                 if (isMaxPage(articleList)) {
@@ -328,7 +328,7 @@ fun ArticleItem(article: ArticleEntity, onClick: () -> Unit) {
             .clickable(onClick = onClick)
             .background(Color.White)
             .fillMaxWidth()
-            .padding(vertical = 16.dp),
+            .padding(vertical = 16.dp, horizontal = 20.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         AsyncImage(
@@ -340,7 +340,7 @@ fun ArticleItem(article: ArticleEntity, onClick: () -> Unit) {
                 .clip(RoundedCornerShape(4.dp))
         )
         Spacer(modifier = Modifier.size(8.dp))
-        ItemText(article.title, 0.dp)
+        ItemText(article.title)
         if (isAdmin(LocalViewModel.current.permission)) {
             reportButton(article.articleId)
         }
@@ -356,7 +356,7 @@ fun CompanyArticleItem(article: ArticleEntity, onClick: () -> Unit) {
             .clickable(onClick = onClick)
             .background(Color.White)
             .fillMaxWidth()
-            .padding(vertical = 16.dp),
+            .padding(vertical = 16.dp, horizontal = 20.dp),
     ) {
         AsyncImage(
             model = if (article.url.contains("yozm.wishket")) R.drawable.yozm else article.image,
@@ -367,8 +367,8 @@ fun CompanyArticleItem(article: ArticleEntity, onClick: () -> Unit) {
                 .aspectRatio(16f / 9f)
                 .clip(RoundedCornerShape(4.dp))
         )
-        Spacer(modifier = Modifier.size(12.dp))
-        ItemText(article.title, 12.dp)
+        Spacer(modifier = Modifier.size(8.dp))
+        ItemText(article.title)
         if (isAdmin(LocalViewModel.current.permission)) {
             reportButton(article.articleId)
         }
@@ -399,7 +399,7 @@ fun reportButton(articleId: String) {
 }
 
 @Composable
-fun ItemText(text: String, paddingTop: Dp) {
+fun ItemText(text: String) {
     Text(
         text,
         maxLines = 2,
