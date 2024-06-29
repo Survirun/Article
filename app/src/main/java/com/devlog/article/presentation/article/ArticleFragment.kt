@@ -10,6 +10,8 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -49,6 +51,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -56,6 +59,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.max
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -72,6 +76,8 @@ import com.devlog.article.data.response.ArticleLogResponse
 import com.devlog.article.presentation.article_webview.ArticleWebViewActivity
 import com.devlog.article.presentation.my_keywords_select.Common
 import com.devlog.article.presentation.ui.theme.ArticleTheme
+import com.devlog.article.presentation.ui.theme.Gray60
+import com.devlog.article.presentation.ui.theme.Gray70
 
 
 lateinit var pass: ArrayList<String>
@@ -280,7 +286,7 @@ fun TabLayout(tabIndex: Int, onTabSelected: (Int) -> Unit) {
         tabs.forEachIndexed { index, title ->
             val isSelected = tabIndex == index
             Tab(
-                text = { TitleText(title, isSelected) },
+                text = { TabText(title, isSelected) },
                 selected = isSelected,
                 onClick = { onTabSelected(index) },
                 selectedContentColor = Color.Black,
@@ -331,16 +337,17 @@ fun ArticleItem(article: ArticleEntity, onClick: () -> Unit) {
             .padding(vertical = 16.dp, horizontal = 20.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
+        ArticleText(article,
+            modifier = Modifier.weight(1f).height(80.dp))
+        Spacer(modifier = Modifier.size(12.dp))
         AsyncImage(
             model = if (article.url.contains("yozm.wishket")) R.drawable.yozm else article.image,
             contentDescription = null,
             contentScale = ContentScale.Crop,
             modifier = Modifier
-                .size(56.dp)
+                .size(81.dp)
                 .clip(RoundedCornerShape(4.dp))
         )
-        Spacer(modifier = Modifier.size(8.dp))
-        ItemText(article.title)
         if (isAdmin(LocalViewModel.current.permission)) {
             reportButton(article.articleId)
         }
@@ -368,7 +375,7 @@ fun CompanyArticleItem(article: ArticleEntity, onClick: () -> Unit) {
                 .clip(RoundedCornerShape(4.dp))
         )
         Spacer(modifier = Modifier.size(8.dp))
-        ItemText(article.title)
+        ArticleText(article)
         if (isAdmin(LocalViewModel.current.permission)) {
             reportButton(article.articleId)
         }
@@ -376,7 +383,7 @@ fun CompanyArticleItem(article: ArticleEntity, onClick: () -> Unit) {
 }
 
 @Composable
-fun TitleText(title: String, isSelected: Boolean) {
+fun TabText(title: String, isSelected: Boolean) {
     Text(
         title,
         fontSize = 16.sp,
@@ -399,7 +406,45 @@ fun reportButton(articleId: String) {
 }
 
 @Composable
-fun ItemText(text: String) {
+fun ArticleText(article: ArticleEntity, modifier: Modifier = Modifier){
+    val commonTextStyle = TextStyle(
+        fontSize = 14.sp,
+        lineHeight = 24.sp,
+        fontFamily = FontFamily(Font(R.font.font, FontWeight.Medium))
+    )
+
+    Column (modifier = modifier, verticalArrangement = Arrangement.SpaceBetween){
+        TitleText(article.title)
+        Spacer(modifier = Modifier.size(8.dp))
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            AsyncImage(
+                model = if (article.url.contains("yozm.wishket")) R.drawable.yozm else article.image,
+                contentDescription = null,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .size(16.dp)
+                    .clip(RoundedCornerShape(8.dp))
+            )
+            Spacer(modifier = Modifier.size(4.dp))
+            Text(
+                text = "브런치스토리",
+                style = commonTextStyle.copy(color = Gray70),
+                modifier = Modifier.weight(1f)
+            )
+            Spacer(modifier = Modifier.size(8.dp))
+            Text(
+                text = "2024.02.20",
+                style = commonTextStyle.copy(color = Gray60)
+            )
+        }
+    }
+}
+
+@Composable
+fun TitleText(text: String) {
     Text(
         text,
         maxLines = 2,
@@ -408,6 +453,7 @@ fun ItemText(text: String) {
         fontFamily = FontFamily(
             Font(R.font.font, FontWeight.Medium)
         ),
+        lineHeight = 24.sp,
         modifier = Modifier.wrapContentHeight(align = Alignment.CenterVertically)
     )
 }
