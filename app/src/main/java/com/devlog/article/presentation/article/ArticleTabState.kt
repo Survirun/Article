@@ -1,9 +1,9 @@
 package com.devlog.article.presentation.article
 
-import com.devlog.article.data.entity.ArticleEntity
+import com.devlog.article.data.response.Article
 
 data class ArticleTabState(
-    var articles: ArrayList<ArticleEntity> = ArrayList(),
+    var articles: ArrayList<Article> = ArrayList(),
     val keyword : Int,
     val maxPage : Int,
     var page: Int = 1

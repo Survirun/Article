@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import com.devlog.article.R
 import com.devlog.article.data.entity.ArticleEntity
 import com.devlog.article.data.preference.UserPreference
+import com.devlog.article.data.response.Article
 import com.devlog.article.data.response.ArticleResponse
 import com.devlog.article.databinding.ActivityMainBinding
 import com.devlog.article.presentation.article.ArticleFragment
@@ -89,25 +90,26 @@ class MainActivity() : AppCompatActivity() {
         )
         for (keyword in keywordList) {
             val articleResponse = intent.getSerializableExtra(keyword.key) as ArticleResponse
-            val newArticles = ArrayList<ArticleEntity>()
-            articleResponse.data.articles.forEach {
-                if (it.date == null) {
-                    it.date = ""
-                }
-                if (it.snippet == null) {
-                    it.snippet = ""
-                }
-                newArticles.add(
-                    ArticleEntity(
-                        title = it.title,
-                        text = it.snippet!!,
-                        image = it.thumbnail!!,
-                        url = it.link,
-                        articleId = it._id,
-                        type = it.type
-                    )
-                )
-            }
+//            val newArticles = ArrayList<ArticleEntity>()
+//            articleResponse.data.articles.forEach {
+//                if (it.date == null) {
+//                    it.date = ""
+//                }
+//                if (it.snippet == null) {
+//                    it.snippet = ""
+//                }
+//                newArticles.add(
+//                    ArticleEntity(
+//                        title = it.title,
+//                        text = it.snippet!!,
+//                        image = it.thumbnail!!,
+//                        url = it.link,
+//                        articleId = it._id,
+//                        type = it.type
+//                    )
+//                )
+//            }
+            val newArticles = articleResponse.data.articles as ArrayList<Article>
             totalArticles.add(
                 ArticleTabState(
                     newArticles,

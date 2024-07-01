@@ -69,9 +69,9 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModel
 import coil.compose.AsyncImage
 import com.devlog.article.R
-import com.devlog.article.data.entity.ArticleEntity
 import com.devlog.article.data.mixpanel.MixPanelManager
 import com.devlog.article.data.preference.UserPreference
+import com.devlog.article.data.response.Article
 import com.devlog.article.data.response.ArticleLogResponse
 import com.devlog.article.presentation.article_webview.ArticleWebViewActivity
 import com.devlog.article.presentation.my_keywords_select.Common
@@ -187,12 +187,12 @@ fun Header() {
     }
 }
 
-fun articleDetails(articleEntity: ArticleEntity,context:Context) {
-    MixPanelManager.articleClick(articleEntity.title)
-    userViewArticleId.add(articleEntity.articleId)
+fun articleDetails(article: Article,context:Context) {
+    MixPanelManager.articleClick(article.title)
+    userViewArticleId.add(article._id)
     val intent = Intent(context, ArticleWebViewActivity::class.java)
-    intent.putExtra("url", articleEntity.url)
-    intent.putExtra("title", articleEntity.title)
+    intent.putExtra("url", article.link)
+    intent.putExtra("title", article.title)
     ContextCompat.startActivity(context, intent, null)
 }
 
@@ -215,25 +215,26 @@ fun ArticleScreen(viewModel: ArticleListViewModel) {
             viewModel.getArticleKeyword(articleTabState.page, articleTabState.keyword, pass)
         }
         viewModel.succeed = {
-            val newArticles = viewModel.article.map {
-                ArticleEntity(
-                    title = it.title,
-                    text = it.snippet!!,
-                    image = it.thumbnail!!,
-                    url = it.link,
-                    articleId = it._id,
-                    type = it.type
-
-                )
-            }
+//            val newArticles = viewModel.article.map {
+//                ArticleEntity(
+//                    title = it.title,
+//                    text = it.snippet!!,
+//                    image = it.thumbnail!!,
+//                    url = it.link,
+//                    articleId = it._id,
+//                    type = it.type
+//
+//                )
+//            }
+            val newArticles = viewModel.article
             val uniqueNewArticles = newArticles.filterNot { newArticle ->
                 currentArticles.value.articles.any { currentArticle ->
-                    currentArticle.articleId == newArticle.articleId
+                    currentArticle._id == newArticle._id
                 }
             }
             val updatedArticles = articleTabState.articles + uniqueNewArticles
             currentArticles.value =
-                articleTabState.copy(articles = updatedArticles as ArrayList<ArticleEntity>)
+                articleTabState.copy(articles = updatedArticles as ArrayList<Article>)
             articles[tabIndex] = articleTabState.copy(articles = updatedArticles)
         }
     }
@@ -301,12 +302,12 @@ fun TabLayout(tabIndex: Int, onTabSelected: (Int) -> Unit) {
 @Composable
 fun ArticleList(
     articleList: ArticleTabState,
-    onClick: (i: ArticleEntity) -> Unit,
+    onClick: (i: Article) -> Unit,
     loadMore: (state: ArticleTabState) -> Unit,
     maxPage: () -> Unit
 ) {
     LazyColumn {
-        itemsIndexed(articleList.articles, key = { index, item -> item.articleId }) { idx, item ->
+        itemsIndexed(articleList.articles, key = { index, item -> item._id }) { idx, item ->
             if (idx >= articleList.articles.size - 1) {
                 if (isMaxPage(articleList)) {
                     maxPage()
@@ -328,7 +329,7 @@ fun ArticleList(
 }
 
 @Composable
-fun ArticleItem(article: ArticleEntity, onClick: () -> Unit) {
+fun ArticleItem(article: Article, onClick: () -> Unit) {
     Row(
         modifier = Modifier
             .clickable(onClick = onClick)
@@ -341,7 +342,7 @@ fun ArticleItem(article: ArticleEntity, onClick: () -> Unit) {
             modifier = Modifier.weight(1f).height(80.dp))
         Spacer(modifier = Modifier.size(12.dp))
         AsyncImage(
-            model = if (article.url.contains("yozm.wishket")) R.drawable.yozm else article.image,
+            model = if (article.link.contains("yozm.wishket")) R.drawable.yozm else article.thumbnail,
             contentDescription = null,
             contentScale = ContentScale.Crop,
             modifier = Modifier
@@ -349,7 +350,7 @@ fun ArticleItem(article: ArticleEntity, onClick: () -> Unit) {
                 .clip(RoundedCornerShape(4.dp))
         )
         if (isAdmin(LocalViewModel.current.permission)) {
-            reportButton(article.articleId)
+            reportButton(article._id)
         }
     }
 
@@ -357,7 +358,7 @@ fun ArticleItem(article: ArticleEntity, onClick: () -> Unit) {
 
 
 @Composable
-fun CompanyArticleItem(article: ArticleEntity, onClick: () -> Unit) {
+fun CompanyArticleItem(article: Article, onClick: () -> Unit) {
     Column(
         modifier = Modifier
             .clickable(onClick = onClick)
@@ -366,7 +367,7 @@ fun CompanyArticleItem(article: ArticleEntity, onClick: () -> Unit) {
             .padding(vertical = 16.dp, horizontal = 20.dp),
     ) {
         AsyncImage(
-            model = if (article.url.contains("yozm.wishket")) R.drawable.yozm else article.image,
+            model = if (article.link.contains("yozm.wishket")) R.drawable.yozm else article.thumbnail,
             contentDescription = null,
             contentScale = ContentScale.Crop,
             modifier = Modifier
@@ -377,7 +378,7 @@ fun CompanyArticleItem(article: ArticleEntity, onClick: () -> Unit) {
         Spacer(modifier = Modifier.size(8.dp))
         ArticleText(article)
         if (isAdmin(LocalViewModel.current.permission)) {
-            reportButton(article.articleId)
+            reportButton(article._id)
         }
     }
 }
@@ -406,7 +407,7 @@ fun reportButton(articleId: String) {
 }
 
 @Composable
-fun ArticleText(article: ArticleEntity, modifier: Modifier = Modifier){
+fun ArticleText(article: Article, modifier: Modifier = Modifier){
     val commonTextStyle = TextStyle(
         fontSize = 14.sp,
         lineHeight = 24.sp,
@@ -421,7 +422,7 @@ fun ArticleText(article: ArticleEntity, modifier: Modifier = Modifier){
             verticalAlignment = Alignment.CenterVertically
         ) {
             AsyncImage(
-                model = if (article.url.contains("yozm.wishket")) R.drawable.yozm else article.image,
+                model = if (article.link.contains("yozm.wishket")) R.drawable.yozm else article.thumbnail,
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
@@ -430,13 +431,13 @@ fun ArticleText(article: ArticleEntity, modifier: Modifier = Modifier){
             )
             Spacer(modifier = Modifier.size(4.dp))
             Text(
-                text = "브런치스토리",
+                text = article.sitename,
                 style = commonTextStyle.copy(color = Gray70),
                 modifier = Modifier.weight(1f)
             )
             Spacer(modifier = Modifier.size(8.dp))
             Text(
-                text = "2024.02.20",
+                text = article.date!!,
                 style = commonTextStyle.copy(color = Gray60)
             )
         }
@@ -463,7 +464,7 @@ fun processArticleResponse(articleArray: ArrayList<ArticleTabState>) {
     val list = pass
     articleArray.forEach { articleTabState ->
         articleTabState.articles.forEach {
-            list.add(it.articleId)
+            list.add(it._id)
         }
     }
     articles = articleArray
