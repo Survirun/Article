@@ -9,7 +9,7 @@ data class ArticleResponse(val status: Boolean, val data:Data): Serializable {
 data class Data(val page:Int,val maxPage:Int,val articles: List<Article>): Serializable
 data class Article(
     var snippet: String?,
-    var data: String?,
+    var date: String?,
     var thumbnail: String?,
     val keywords: ArrayList<String>,
     val displayLink: String,

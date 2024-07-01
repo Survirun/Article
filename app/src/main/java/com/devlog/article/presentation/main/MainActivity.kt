@@ -91,8 +91,8 @@ class MainActivity() : AppCompatActivity() {
             val articleResponse = intent.getSerializableExtra(keyword.key) as ArticleResponse
             val newArticles = ArrayList<ArticleEntity>()
             articleResponse.data.articles.forEach {
-                if (it.data == null) {
-                    it.data = ""
+                if (it.date == null) {
+                    it.date = ""
                 }
                 if (it.snippet == null) {
                     it.snippet = ""
