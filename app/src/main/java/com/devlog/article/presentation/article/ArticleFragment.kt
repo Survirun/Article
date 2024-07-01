@@ -422,7 +422,7 @@ fun ArticleText(article: Article, modifier: Modifier = Modifier){
             verticalAlignment = Alignment.CenterVertically
         ) {
             AsyncImage(
-                model = if (article.link.contains("yozm.wishket")) R.drawable.yozm else article.thumbnail,
+                model = "http://www.google.com/s2/favicons?domain=${article.link}",
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
