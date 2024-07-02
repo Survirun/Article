@@ -446,7 +446,7 @@ fun ArticleText(article: Article, modifier: Modifier = Modifier) {
             )
             Spacer(modifier = Modifier.size(8.dp))
             Text(
-                text = article.date ?: "",
+                text = article.date?.toDotDateFormat() ?: "",
                 style = commonTextStyle.copy(color = Gray60)
             )
         }
@@ -499,3 +499,6 @@ fun reportArticle(viewModel: ArticleListViewModel, articleId: String) {
 
 }
 
+fun String.toDotDateFormat(): String {
+    return this.replace("-", ".")
+}
