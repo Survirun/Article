@@ -7,11 +7,9 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -28,7 +26,6 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ScrollableTabRow
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Tab
@@ -38,10 +35,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.currentCompositionLocalContext
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -56,18 +54,15 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.max
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.ViewModel
 import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.devlog.article.R
 import com.devlog.article.data.mixpanel.MixPanelManager
 import com.devlog.article.data.preference.UserPreference
@@ -78,6 +73,7 @@ import com.devlog.article.presentation.my_keywords_select.Common
 import com.devlog.article.presentation.ui.theme.ArticleTheme
 import com.devlog.article.presentation.ui.theme.Gray60
 import com.devlog.article.presentation.ui.theme.Gray70
+import java.net.URI
 
 
 lateinit var pass: ArrayList<String>
@@ -85,10 +81,9 @@ var articles = ArrayList<ArticleTabState>()
 var userViewArticleId = arrayListOf<String>()
 
 
+val LocalViewModel =
+    staticCompositionLocalOf<ArticleListViewModel> { error("MainViewModel not provided") }
 
-
-
-val LocalViewModel = staticCompositionLocalOf<ArticleListViewModel> { error("MainViewModel not provided") }
 class ArticleFragment : Fragment() {
     lateinit var articleArray: ArrayList<ArticleTabState>
     lateinit var viewModel: ArticleListViewModel
@@ -117,7 +112,7 @@ class ArticleFragment : Fragment() {
         }
     }
 
-    fun onStateChanged(){
+    fun onStateChanged() {
         var userBookmarkArticleId = arrayListOf<String>()
         val bookmarArticleLogResponseList = arrayListOf<ArticleLogResponse>()
         val viewArticleLogResponseList = arrayListOf<ArticleLogResponse>()
@@ -187,7 +182,7 @@ fun Header() {
     }
 }
 
-fun articleDetails(article: Article,context:Context) {
+fun articleDetails(article: Article, context: Context) {
     MixPanelManager.articleClick(article.title)
     userViewArticleId.add(article._id)
     val intent = Intent(context, ArticleWebViewActivity::class.java)
@@ -202,16 +197,14 @@ fun ArticleScreen(viewModel: ArticleListViewModel) {
     val currentArticles = remember(tabIndex) { mutableStateOf(articles[tabIndex]) }
 
 
-
     fun addArticles(articleTabState: ArticleTabState) {
         articleTabState.page += 1
-        if (viewModel.userSignCheck && articleTabState.keyword == Common){
+        if (viewModel.userSignCheck && articleTabState.keyword == Common) {
             viewModel.getArticle(
                 pass,
                 articleTabState.page
             )
-        }
-        else{
+        } else {
             viewModel.getArticleKeyword(articleTabState.page, articleTabState.keyword, pass)
         }
         viewModel.succeed = {
@@ -248,7 +241,7 @@ fun ArticleScreen(viewModel: ArticleListViewModel) {
         TabLayout(tabIndex, setTabIndex)
         ArticleList(
             currentArticles.value,
-            onClick = { articleDetails(it,context) },
+            onClick = { articleDetails(it, context) },
             loadMore = { addArticles(it) },
             maxPage = { maxPage() }
         )
@@ -317,7 +310,7 @@ fun ArticleList(
                     }
                 }
             }
-            if (item.type==2) {
+            if (item.type == 2) {
                 CompanyArticleItem(item, onClick = { onClick(item) })
             } else {
                 ArticleItem(
@@ -338,8 +331,10 @@ fun ArticleItem(article: Article, onClick: () -> Unit) {
             .padding(vertical = 16.dp, horizontal = 20.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        ArticleText(article,
-            modifier = Modifier.weight(1f).height(80.dp))
+        ArticleText(
+            article,
+            modifier = Modifier.weight(1f).height(80.dp)
+        )
         Spacer(modifier = Modifier.size(12.dp))
         AsyncImage(
             model = if (article.link.contains("yozm.wishket")) R.drawable.yozm else article.thumbnail,
@@ -399,7 +394,7 @@ fun TabText(title: String, isSelected: Boolean) {
 fun reportButton(articleId: String) {
     val viewModel = LocalViewModel.current
     Button(
-        onClick = { reportArticle(viewModel,articleId) },
+        onClick = { reportArticle(viewModel, articleId) },
         modifier = Modifier.wrapContentSize(),
     ) {
         Text("신고")
@@ -407,14 +402,21 @@ fun reportButton(articleId: String) {
 }
 
 @Composable
-fun ArticleText(article: Article, modifier: Modifier = Modifier){
+fun ArticleText(article: Article, modifier: Modifier = Modifier) {
     val commonTextStyle = TextStyle(
         fontSize = 14.sp,
         lineHeight = 24.sp,
         fontFamily = FontFamily(Font(R.font.font, FontWeight.Medium))
     )
 
-    Column (modifier = modifier, verticalArrangement = Arrangement.SpaceBetween){
+    val uri = URI(article.link)
+    val faviconUrl = "https://${uri.host}/favicon.ico"
+    val googleFaviconUrl = "http://www.google.com/s2/favicons?domain=${uri.host}"
+
+    var faviconSource by remember { mutableStateOf(faviconUrl) }
+
+    Log.d("test", article.title + " : " + article.cx.toString())
+    Column(modifier = modifier, verticalArrangement = Arrangement.SpaceBetween) {
         TitleText(article.title)
         Spacer(modifier = Modifier.size(8.dp))
         Row(
@@ -422,7 +424,14 @@ fun ArticleText(article: Article, modifier: Modifier = Modifier){
             verticalAlignment = Alignment.CenterVertically
         ) {
             AsyncImage(
-                model = "http://www.google.com/s2/favicons?domain=${article.link}",
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data(faviconSource)
+                    .listener(
+                        onError = { _, _ ->
+                            faviconSource = googleFaviconUrl
+                        }
+                    )
+                    .build(),
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
@@ -437,7 +446,7 @@ fun ArticleText(article: Article, modifier: Modifier = Modifier){
             )
             Spacer(modifier = Modifier.size(8.dp))
             Text(
-                text = article.date!!,
+                text = article.date ?: "",
                 style = commonTextStyle.copy(color = Gray60)
             )
         }
@@ -474,13 +483,12 @@ fun isMaxPage(articleList: ArticleTabState): Boolean {
     return articleList.page == articleList.maxPage
 }
 
-fun isAdmin(permission:String): Boolean {
+fun isAdmin(permission: String): Boolean {
     return permission == "admin"
 }
 
 
-
-fun reportArticle(viewModel: ArticleListViewModel,articleId: String) {
+fun reportArticle(viewModel: ArticleListViewModel, articleId: String) {
     viewModel.postReport(articleId)
     viewModel.reportSucceed = {
         Log.e("test", "성공")
