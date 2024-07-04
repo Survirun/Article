@@ -415,7 +415,6 @@ fun ArticleText(article: Article, modifier: Modifier = Modifier) {
 
     var faviconSource by remember { mutableStateOf(faviconUrl) }
 
-    Log.d("test", article.title + " : " + article.cx.toString())
     Column(modifier = modifier, verticalArrangement = Arrangement.SpaceBetween) {
         TitleText(article.title)
         Spacer(modifier = Modifier.size(8.dp))
