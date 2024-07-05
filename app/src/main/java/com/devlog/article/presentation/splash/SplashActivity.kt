@@ -37,6 +37,9 @@ import com.devlog.article.presentation.my_keywords_select.WebDevelopment
 import com.devlog.article.presentation.my_keywords_select.androidDevelopment
 import com.devlog.article.presentation.my_keywords_select.iOSDevelopment
 import com.devlog.article.presentation.my_keywords_select.serverDevelopment
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @SuppressLint("CustomSplashScreen")
 class SplashActivity : ComponentActivity()  {
@@ -66,7 +69,15 @@ class SplashActivity : ComponentActivity()  {
             is SplashState.Uninitialized -> initView()
             is SplashState.Loading -> handlePostApi()
             is SplashState.GetBookMaker ->  handleBookMakerState(it)
-            is SplashState.GetArticle ->{ handleArticleState(it)}
+            is SplashState.GetArticle ->{
+                Log.e("polaris",count.toString())
+                CoroutineScope(Dispatchers.IO).launch {
+                    Log.e("polaris1",count.toString())
+                    handleArticleState(it)
+                }
+
+
+            }
             is SplashState.GetArticleFail ->{ count++}
         }
     }
@@ -167,6 +178,7 @@ class SplashActivity : ComponentActivity()  {
                 intent.putExtra("article_it_news",state.articleResponse)
             }
         }
+
         if (count == maxCount){
             intent.putExtra("article",viewModel.article)
             startActivity(intent)

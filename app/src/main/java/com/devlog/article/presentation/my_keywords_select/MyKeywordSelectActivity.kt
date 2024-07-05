@@ -36,6 +36,7 @@ import androidx.compose.ui.unit.sp
 import com.devlog.article.R
 import com.devlog.article.presentation.main.MainActivity
 import com.devlog.article.data.preference.UserPreference
+import com.devlog.article.presentation.splash.SplashActivity
 import com.devlog.article.presentation.ui.theme.ArticleTheme
 import com.devlog.article.presentation.ui.theme.BaseColumn
 import com.devlog.article.presentation.ui.theme.HeaderView
@@ -51,7 +52,7 @@ class MyKeywordSelectActivity : ComponentActivity() {
         userPreference=UserPreference.getInstance(this)
         viewModel.succeedGetArticle={
             userPreference.userKeywordCheck=true
-            val intent =Intent(this, MainActivity::class.java)
+            val intent =Intent(this, SplashActivity::class.java)
             intent.putExtra("article",viewModel.article)
             startActivity(intent)
             finish()

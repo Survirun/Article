@@ -14,13 +14,19 @@ import com.devlog.article.data.repository.ArticleRepositoryImpl
 import com.devlog.article.data.response.ArticleResponse
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.util.concurrent.ConcurrentLinkedQueue
 
 class SplashViewMode() : ViewModel() {
     lateinit var failed: () -> Unit
     lateinit var keyword_failed: () -> Unit
     lateinit var article: ArticleResponse
     val bookmark = ArrayList<ArticleEntity>()
+    private val stateQueue: ConcurrentLinkedQueue<SplashState> = ConcurrentLinkedQueue()
+    private var isProcessing = false
+    private val maxCount = 11
+    private var count = 0
 
     private var _profileSplashStateLiveData = MutableLiveData<SplashState>(SplashState.Uninitialized)
     val profileSplashStateLiveData: LiveData<SplashState> = _profileSplashStateLiveData
@@ -92,13 +98,36 @@ class SplashViewMode() : ViewModel() {
         val serverCode = repository.getArticleKeyword(keyword, 1, pass)
 
         if (serverCode != null) {
-            setState(SplashState.GetArticle(serverCode, keyword))
+            count++
+            enqueueState(SplashState.GetArticle(serverCode, keyword))
 
         } else {
-            setState(SplashState.GetArticleFail)
+            enqueueState(SplashState.GetArticleFail)
         }
     }
 
+
+    private fun enqueueState(state: SplashState) {
+        stateQueue.add(state)
+        processQueue()
+    }
+
+    @Synchronized
+    private fun processQueue() {
+        if (isProcessing) return
+        isProcessing = true
+
+        viewModelScope.launch {
+            while (stateQueue.isNotEmpty()) {
+                val state = stateQueue.poll()
+                state?.let {
+                    _profileSplashStateLiveData.postValue(it)
+                    delay(100)  // 각 상태 변화 간격 조정
+                }
+            }
+            isProcessing = false
+        }
+    }
     private fun setState(state: SplashState) {
         _profileSplashStateLiveData.postValue(state)
     }
