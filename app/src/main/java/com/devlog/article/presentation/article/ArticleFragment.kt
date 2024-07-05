@@ -252,9 +252,9 @@ fun ArticleScreen(viewModel: ArticleListViewModel) {
 fun TabLayout(tabIndex: Int, onTabSelected: (Int) -> Unit) {
     val tabs =
         listOf(
-            if (LocalViewModel.current.userSignCheck) "내 관심사" else "공통",
-            "IT 기기",
-            "IT 소식",
+            "내 관심사",
+            "개발 공통",
+            "개발 공통",
             "Android",
             "iOS",
             "Web",

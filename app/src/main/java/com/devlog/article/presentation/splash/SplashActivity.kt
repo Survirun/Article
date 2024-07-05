@@ -29,6 +29,7 @@ import com.devlog.article.presentation.my_keywords_select.MyKeywordSelectActivit
 import com.devlog.article.presentation.sign_in.SignInActivity
 import com.devlog.article.presentation.ui.theme.ArticleTheme
 import com.devlog.article.presentation.my_keywords_select.Common
+import com.devlog.article.presentation.my_keywords_select.DEVCOMMON
 import com.devlog.article.presentation.my_keywords_select.DevelopmentCommon
 import com.devlog.article.presentation.my_keywords_select.ITNews
 import com.devlog.article.presentation.my_keywords_select.PM
@@ -122,12 +123,15 @@ class SplashActivity : ComponentActivity()  {
             }
         }
     }
-
+    var getApiKeywordList = arrayListOf(0,1,3,4,5,6,7,8,9,10,12)
     fun handlePostApi(){
         viewModel.getBookMaker()
         viewModel.getArticle(userPreference.getUserPagePassed())
+        getApiKeywordList.forEach {
+            viewModel.getArticleKeyword(it, arrayListOf())
+        }
         for (i in 0..10){
-            viewModel.getArticleKeyword(i, arrayListOf())
+
         }
 
     }
@@ -150,8 +154,8 @@ class SplashActivity : ComponentActivity()  {
             DevelopmentCommon->{
                 intent.putExtra("article_developmentCommon",state.articleResponse)
             }
-            ITEquipment->{
-                intent.putExtra("article_it_equipment",state.articleResponse)
+            DEVCOMMON ->{
+                intent.putExtra("article_dev_common",state.articleResponse)
             }
             androidDevelopment->{
                 intent.putExtra("article_android_development",state.articleResponse)

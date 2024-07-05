@@ -16,7 +16,7 @@ import com.devlog.article.presentation.article.ArticleTabState
 import com.devlog.article.presentation.bookmark.BookmarkFragment
 import com.devlog.article.presentation.my_keywords_select.AIDevelopment
 import com.devlog.article.presentation.my_keywords_select.Common
-import com.devlog.article.presentation.my_keywords_select.ITEquipment
+import com.devlog.article.presentation.my_keywords_select.DEVCOMMON
 import com.devlog.article.presentation.my_keywords_select.ITNews
 import com.devlog.article.presentation.my_keywords_select.PM
 import com.devlog.article.presentation.my_keywords_select.UIUXDesign
@@ -78,7 +78,7 @@ class MainActivity() : AppCompatActivity() {
         val firstKey = if (userPreference.userSignInCheck) "article" else "article_common"
         val keywordList = mapOf(
             firstKey to Common,
-            "article_it_equipment" to ITEquipment,
+            "article_dev_common" to DEVCOMMON,
             "article_it_news" to ITNews,
             "article_android_development" to androidDevelopment,
             "article_ios" to iOSDevelopment,

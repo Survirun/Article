@@ -11,3 +11,5 @@ var UIUXDesign =7
 var PM = 8
 var iOSDevelopment=9
 var ITNews=10
+
+var DEVCOMMON = 12

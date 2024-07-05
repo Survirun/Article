@@ -33,8 +33,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.devlog.article.R
-import com.devlog.article.presentation.main.MainActivity
 import com.devlog.article.data.preference.UserPreference
 import com.devlog.article.presentation.splash.SplashActivity
 import com.devlog.article.presentation.ui.theme.ArticleTheme
@@ -70,7 +68,6 @@ class MyKeywordSelectActivity : ComponentActivity() {
                 mutableStateOf(0)
             }
             keywordList = listOf(
-                KeywordSelectData("IT기기 💻", remember { mutableStateOf(false) },ITEquipment),
                 KeywordSelectData("IT 소식 📢", remember { mutableStateOf(false) },ITNews),
                 KeywordSelectData("Android 개발 📱", remember { mutableStateOf(false) },androidDevelopment),
                 KeywordSelectData("iOS 개발 🍎", remember { mutableStateOf(false) },iOSDevelopment),
@@ -127,7 +124,6 @@ class MyKeywordSelectActivity : ComponentActivity() {
             mutableStateOf(0)
         }
         keywordList = listOf(
-            KeywordSelectData("IT기기 💻", remember { mutableStateOf(false) },ITEquipment),
             KeywordSelectData("IT 소식 📢", remember { mutableStateOf(false) },10),
             KeywordSelectData("Android 개발 📱", remember { mutableStateOf(false) },androidDevelopment),
             KeywordSelectData("iOS 개발 🍎", remember { mutableStateOf(false) },9),
