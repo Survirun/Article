@@ -175,8 +175,8 @@ fun Header() {
     ) {
         Icon(
             modifier = Modifier.size(28.dp),
-            painter = painterResource(id = R.drawable.ic_article_24),
-            tint = Color(0xFFA0A0AB),
+            painter = painterResource(id = R.drawable.ic_launcher_app_logo_foreground),
+            tint = Color(0xFF000000),
             contentDescription = null
         )
     }
