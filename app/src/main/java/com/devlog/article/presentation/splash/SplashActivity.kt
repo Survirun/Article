@@ -192,7 +192,7 @@ class SplashActivity : ComponentActivity()  {
 fun Logo(){
     Row(verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center){
-        Image(painter = painterResource(id = R.drawable.article_logo), contentDescription = null,)
+        Image(painter = painterResource(id = R.drawable.ic_launcher_app_logo_foreground), contentDescription = null,)
     }
 }
 
