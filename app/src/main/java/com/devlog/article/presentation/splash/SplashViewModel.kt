@@ -1,5 +1,8 @@
 package com.devlog.article.presentation.splash
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -18,7 +21,18 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.concurrent.ConcurrentLinkedQueue
 
-class SplashViewMode() : ViewModel() {
+class SplashViewModel() : ViewModel() {
+
+    var isApiFinished by mutableStateOf(false)
+
+
+    init {
+        // Simulate API call
+        viewModelScope.launch {
+
+            isApiFinished = false
+        }
+    }
     lateinit var failed: () -> Unit
     lateinit var keyword_failed: () -> Unit
     lateinit var article: ArticleResponse
@@ -28,7 +42,7 @@ class SplashViewMode() : ViewModel() {
     private val maxCount = 11
     private var count = 0
 
-    private var _profileSplashStateLiveData = MutableLiveData<SplashState>(SplashState.Uninitialized)
+    private var _profileSplashStateLiveData = MutableLiveData<SplashState>(SplashState.Loading)
     val profileSplashStateLiveData: LiveData<SplashState> = _profileSplashStateLiveData
 
     fun fetchData()= viewModelScope.launch {
@@ -122,7 +136,7 @@ class SplashViewMode() : ViewModel() {
                 val state = stateQueue.poll()
                 state?.let {
                     _profileSplashStateLiveData.postValue(it)
-                    delay(100)  // 각 상태 변화 간격 조정
+                    delay(150)  // 각 상태 변화 간격 조정
                 }
             }
             isProcessing = false
