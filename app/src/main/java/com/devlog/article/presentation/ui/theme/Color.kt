@@ -24,3 +24,4 @@ var Gray10 = Color(0xFFEEEEF0)
 
 var roundColorSelect= Color(0xFF18171D)
 var roundColor= Color(0xFFEEEEF0)
+ var splashBackground = Color(0xFF17161D)

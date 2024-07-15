@@ -29,6 +29,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -64,6 +65,7 @@ import com.devlog.article.presentation.my_keywords_select.WebDevelopment
 import com.devlog.article.presentation.my_keywords_select.androidDevelopment
 import com.devlog.article.presentation.my_keywords_select.iOSDevelopment
 import com.devlog.article.presentation.my_keywords_select.serverDevelopment
+import com.devlog.article.presentation.ui.theme.SplashTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Delay
 import kotlinx.coroutines.Dispatchers
@@ -86,12 +88,13 @@ class SplashActivity : ComponentActivity() {
         window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION)
         setContent {
 
-            ArticleTheme {
+            SplashTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
+                    window.statusBarColor = Color.Black.toArgb()
                     SplashScreen(viewModel)
                 }
             }
@@ -274,6 +277,7 @@ fun SplashScreen(viewModel: SplashViewModel = SplashViewModel()) {
             .background(backgroundColor)
     ) {
         if (showTransition) {
+            (context as SplashActivity).window.statusBarColor = Color.White.toArgb()
             LottieAnimation(
                 composition = transitionComposition,
                 progress = { transitionProgress },

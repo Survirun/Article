@@ -136,7 +136,7 @@ class SplashViewModel() : ViewModel() {
                 val state = stateQueue.poll()
                 state?.let {
                     _profileSplashStateLiveData.postValue(it)
-                    delay(150)  // 각 상태 변화 간격 조정
+                    delay(180)  // 각 상태 변화 간격 조정
                 }
             }
             isProcessing = false
