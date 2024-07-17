@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -19,12 +20,14 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ScrollableTabRow
 import androidx.compose.material3.Surface
@@ -53,6 +56,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -72,6 +76,7 @@ import com.devlog.article.data.response.ArticleLogResponse
 import com.devlog.article.presentation.article_webview.ArticleWebViewActivity
 import com.devlog.article.presentation.my_keywords_select.Common
 import com.devlog.article.presentation.ui.theme.ArticleTheme
+import com.devlog.article.presentation.ui.theme.Gray30
 import com.devlog.article.presentation.ui.theme.Gray60
 import com.devlog.article.presentation.ui.theme.Gray70
 import java.net.URI
@@ -271,23 +276,33 @@ fun TabLayout(tabIndex: Int, onTabSelected: (Int) -> Unit) {
             TabRowDefaults.Indicator(
                 modifier = Modifier.tabIndicatorOffset(tabPositions[tabIndex]),
                 color = Color.Black,
-                height = 1.dp
+                height = 1.5.dp
             )
 
         },
-        divider = {},
-        edgePadding = 20.dp
+        divider = {
+            Divider(
+                color = Gray30,
+                thickness = 1.5.dp
+            )},
+        edgePadding = 20.dp,
     ) {
         tabs.forEachIndexed { index, title ->
             val isSelected = tabIndex == index
             Tab(
-                text = { TabText(title, isSelected) },
+                modifier = Modifier.padding(0.dp).width(72.dp),
                 selected = isSelected,
                 onClick = { onTabSelected(index) },
                 selectedContentColor = Color.Black,
                 unselectedContentColor = Color(0xFFA0A0AB)
 
-            )
+            ){
+                Box(
+                    modifier = Modifier.width(72.dp).padding(0.dp, 12.dp),
+                ) {
+                    TabText(title, isSelected)
+                }
+            }
         }
     }
 }
@@ -387,7 +402,8 @@ fun TabText(title: String, isSelected: Boolean) {
         fontFamily = FontFamily(
             Font(R.font.font, FontWeight.SemiBold)
         ),
-        modifier = Modifier.height(24.dp).wrapContentHeight(align = Alignment.CenterVertically)
+        textAlign = TextAlign.Center,
+        modifier = Modifier.fillMaxWidth().height(24.dp).wrapContentHeight(align = Alignment.CenterVertically)
     )
 }
 
