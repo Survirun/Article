@@ -176,11 +176,11 @@ fun Main(viewModel: ArticleListViewModel) {
 @Composable
 fun Header() {
     Row(
-        modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 8.dp),
+        modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 12.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
-            modifier = Modifier.size(28.dp),
+            modifier = Modifier.size(20.dp),
             painter = painterResource(id = R.drawable.ic_launcher_app_logo_foreground),
             tint = Color(0xFF000000),
             contentDescription = null
