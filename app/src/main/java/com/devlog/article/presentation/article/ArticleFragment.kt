@@ -7,6 +7,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -26,6 +27,7 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
@@ -61,6 +63,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.app.ActivityCompat.finishAffinity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
@@ -107,7 +110,18 @@ class ArticleFragment : Fragment() {
         viewModel.userSignCheck = userPreference.userSignInCheck
         viewModel.permission = userPreference.userPermission
         processArticleResponse(articleArray)
+        viewModel.test={
+            userPreference.userName=""
+            userPreference.userUid=""
+            userPreference.userSignInCheck=false
+            userPreference.userKeywordCheck=false
+            Toast.makeText(context,"앱 계정이 삭제 되었습니다", Toast.LENGTH_SHORT).show()
+            finishAffinity(requireActivity())
 
+        }
+        viewModel.test1 ={
+            Toast.makeText(context,"잠시 후 다시 시도해주세요", Toast.LENGTH_SHORT).show()
+        }
         onStateChanged()
         return ComposeView(requireContext()).apply {
             setContent {
@@ -158,30 +172,46 @@ class ArticleFragment : Fragment() {
     }
 }
 
+
+
 @Composable
 fun Main(viewModel: ArticleListViewModel) {
+    var showDialog by remember { mutableStateOf(false) }
+
     CompositionLocalProvider(LocalViewModel provides viewModel) {
         Surface(
             modifier = Modifier.fillMaxSize(),
             color = Color.White
         ) {
             Column {
-                Header()
-                ArticleScreen(viewModel)
+                Header( onShowDialogChange = { showDialog = it })
+                ArticleScreen(viewModel, showDialog = showDialog, onShowDialogChange = { showDialog = it })
             }
         }
     }
 }
 
 @Composable
-fun Header() {
+fun Header( onShowDialogChange: (Boolean) -> Unit) {
     Row(
-        modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 12.dp),
-        verticalAlignment = Alignment.CenterVertically
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 20.dp, vertical = 12.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween // Row 내 아이템을 양쪽 끝으로 배치
     ) {
         Icon(
             modifier = Modifier.size(20.dp),
             painter = painterResource(id = R.drawable.ic_launcher_app_logo_foreground),
+            tint = Color(0xFF000000),
+            contentDescription = null
+        )
+        Spacer(modifier = Modifier.weight(1f)) // 빈 공간을 채우기 위해 Spacer 사용
+        Icon(
+            modifier = Modifier.size(20.dp).clickable {
+                onShowDialogChange(true)
+            },
+            painter = painterResource(id = R.drawable.baseline_settings_24),
             tint = Color(0xFF000000),
             contentDescription = null
         )
@@ -198,10 +228,24 @@ fun articleDetails(article: Article, context: Context) {
 }
 
 @Composable
-fun ArticleScreen(viewModel: ArticleListViewModel) {
-    val (tabIndex, setTabIndex) = remember { mutableIntStateOf(0) }
+fun ArticleScreen(viewModel: ArticleListViewModel, showDialog: Boolean, onShowDialogChange: (Boolean) -> Unit) {
+    val (tabIndex, setTabIndex) = remember { mutableStateOf(0) }
     val currentArticles = remember(tabIndex) { mutableStateOf(articles[tabIndex]) }
 
+    if (showDialog) {
+        AlertDialog(
+            onDismissRequest = { onShowDialogChange(false) },
+            title = { Text(text = "계정을 삭제 하시겠습니까?") },
+            text = { Text("계정이 삭제됩니다.") },
+            confirmButton = {
+                Button(onClick = {
+                    viewModel.deleteUser()
+                    onShowDialogChange(false) }) {
+                    Text("확인")
+                }
+            }
+        )
+    }
 
     fun addArticles(articleTabState: ArticleTabState) {
         articleTabState.page += 1
@@ -214,17 +258,6 @@ fun ArticleScreen(viewModel: ArticleListViewModel) {
             viewModel.getArticleKeyword(articleTabState.page, articleTabState.keyword, pass)
         }
         viewModel.succeed = {
-//            val newArticles = viewModel.article.map {
-//                ArticleEntity(
-//                    title = it.title,
-//                    text = it.snippet!!,
-//                    image = it.thumbnail!!,
-//                    url = it.link,
-//                    articleId = it._id,
-//                    type = it.type
-//
-//                )
-//            }
             val newArticles = viewModel.article
             val uniqueNewArticles = newArticles.filterNot { newArticle ->
                 currentArticles.value.articles.any { currentArticle ->
@@ -529,7 +562,7 @@ fun DefaultPreview() {
         color = Color.White
     ) {
         Column {
-            Header()
+            Header(){}
             Column(modifier = Modifier.fillMaxWidth()) {
                 TabLayout(tabIndex, setTabIndex)
             }
