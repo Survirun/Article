@@ -54,6 +54,7 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
@@ -500,4 +501,23 @@ fun reportArticle(viewModel: ArticleListViewModel, articleId: String) {
 
 fun String.toDotDateFormat(): String {
     return this.replace("-", ".")
+}
+
+@Preview(showBackground = true)
+@Composable
+fun DefaultPreview() {
+
+    val (tabIndex, setTabIndex) = remember { mutableIntStateOf(0) }
+    Surface(
+        modifier = Modifier.fillMaxSize(),
+        color = Color.White
+    ) {
+        Column {
+            Header()
+            Column(modifier = Modifier.fillMaxWidth()) {
+                TabLayout(tabIndex, setTabIndex)
+            }
+        }
+    }
+
 }
