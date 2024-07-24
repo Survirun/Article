@@ -64,7 +64,7 @@ class SplashViewModel() : ViewModel() {
 
 
         } else {
-            failed()
+
         }
 
 
