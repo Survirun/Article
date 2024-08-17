@@ -292,7 +292,7 @@ fun TabLayout(tabIndex: Int, onTabSelected: (Int) -> Unit) {
     val tabs =
         listOf(
             "내 관심사",
-            "개발 공통",
+            "IT 뉴스",
             "개발 공통",
             "Android",
             "iOS",
@@ -353,7 +353,9 @@ fun ArticleList(
             if (idx >= articleList.articles.size - 1) {
                 if (isMaxPage(articleList)) {
                     maxPage()
+                    Log.d("poalris","max")
                 } else {
+                    Log.d("poalris","min")
                     LaunchedEffect(articleList.page) {
                         loadMore(articleList)
                     }
