@@ -24,8 +24,9 @@ import com.devlog.article.presentation.my_keywords_select.WebDevelopment
 import com.devlog.article.presentation.my_keywords_select.androidDevelopment
 import com.devlog.article.presentation.my_keywords_select.iOSDevelopment
 import com.devlog.article.presentation.my_keywords_select.serverDevelopment
+import dagger.hilt.android.AndroidEntryPoint
 
-
+@AndroidEntryPoint
 class MainActivity() : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private var articleFragment = ArticleFragment()
@@ -36,8 +37,6 @@ class MainActivity() : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         userPreference = UserPreference.getInstance(this)
-
-
         getArticleData()
         supportFragmentManager.beginTransaction().add(R.id.containers, articleFragment).commit()
         binding.bottomNavigationview.setOnItemSelectedListener { item ->
@@ -89,6 +88,7 @@ class MainActivity() : AppCompatActivity() {
             "article_pm" to PM
         )
         for (keyword in keywordList) {
+
             val articleResponse = intent.getSerializableExtra(keyword.key) as ArticleResponse
 //            val newArticles = ArrayList<ArticleEntity>()
 //            articleResponse.data.articles.forEach {

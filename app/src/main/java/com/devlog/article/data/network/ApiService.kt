@@ -8,6 +8,10 @@ import com.devlog.article.data.response.ArticleResponse
 import com.devlog.article.data.response.BookmarkResponse
 import com.devlog.article.data.response.DefaultResponse
 import com.devlog.article.data.response.UserInfoEntity
+import com.skydoves.sandwich.ApiResponse
+import dagger.Module
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -58,5 +62,5 @@ interface ApiService {
         @Path("keyword") keyword: Int,
         @Query("page") page: Int,
         @Body passed: Passed
-    ) : Response<ArticleResponse>
+    ) : ApiResponse<ArticleResponse>
 }

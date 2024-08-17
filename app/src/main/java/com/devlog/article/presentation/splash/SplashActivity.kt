@@ -12,6 +12,7 @@ import android.view.WindowManager
 import android.window.SplashScreenView
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -34,6 +35,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.content.ContextCompat.startActivity
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.airbnb.lottie.LottieComposition
@@ -66,6 +68,7 @@ import com.devlog.article.presentation.my_keywords_select.androidDevelopment
 import com.devlog.article.presentation.my_keywords_select.iOSDevelopment
 import com.devlog.article.presentation.my_keywords_select.serverDevelopment
 import com.devlog.article.presentation.ui.theme.SplashTheme
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Delay
 import kotlinx.coroutines.Dispatchers
@@ -74,9 +77,10 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @SuppressLint("CustomSplashScreen")
+@AndroidEntryPoint
 class SplashActivity : ComponentActivity() {
     lateinit var userPreference: UserPreference
-    var viewModel = SplashViewModel()
+    val viewModel : SplashViewModel by viewModels()
     lateinit var intentCustom: Intent
     var getApiKeywordList = arrayListOf(0, 1, 3, 4, 5, 6, 7, 8, 9, 10, 12)
 
@@ -120,9 +124,7 @@ class SplashActivity : ComponentActivity() {
             is SplashState.Loading -> handlePostApi()
             is SplashState.GetBookMaker -> handleBookMakerState(it)
             is SplashState.GetArticle -> {
-                Log.e("polaris", count.toString())
                 CoroutineScope(Dispatchers.IO).launch {
-                    Log.e("polaris1", count.toString())
                     handleArticleState(it)
                 }
 
@@ -241,7 +243,7 @@ class SplashActivity : ComponentActivity() {
 }
 
 @Composable
-fun SplashScreen(viewModel: SplashViewModel = SplashViewModel()) {
+fun SplashScreen(viewModel: SplashViewModel) {
     var showTransition by remember { mutableStateOf(false) }
     val spinningComposition by rememberLottieComposition(LottieCompositionSpec.Asset("splash_spinning.json"))
     val transitionComposition by rememberLottieComposition(LottieCompositionSpec.Asset("splash_transition.json"))
@@ -256,7 +258,6 @@ fun SplashScreen(viewModel: SplashViewModel = SplashViewModel()) {
 
     LaunchedEffect(viewModel.isApiFinished) {
         if (viewModel.isApiFinished) {
-            Log.e("polaris", viewModel.isApiFinished.toString())
             backgroundColor = (Color(0xFFFFFFFF))
             showTransition = true
             viewModel.viewModelScope.launch(Dispatchers.Main) {
@@ -308,7 +309,8 @@ fun composeStartActivity(context: android.content.Context) {
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview() {
-    SplashScreen()
+
+   // SplashScreen()
 }
 
 @Composable

@@ -5,7 +5,9 @@ import android.content.Context
 import android.util.Log
 import com.devlog.article.data.mixpanel.MixPanelManager
 import com.devlog.article.data.preference.UserPreference
+import dagger.hilt.android.HiltAndroidApp
 
+@HiltAndroidApp
 class ArticleApplication : Application() {
 
     companion object {

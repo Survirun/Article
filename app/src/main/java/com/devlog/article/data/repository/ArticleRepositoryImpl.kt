@@ -4,10 +4,13 @@ import android.annotation.SuppressLint
 import android.util.Log
 import com.devlog.article.data.entity.ArticleLogEntity
 import com.devlog.article.data.entity.Passed
+
 import com.devlog.article.data.network.ApiService
+import com.devlog.article.data.request.ArticleKeywordRequest
 import com.devlog.article.data.response.ArticleLogResponse
 import com.devlog.article.data.response.ArticleResponse
 import com.devlog.article.data.response.BookmarkResponse
+import com.skydoves.sandwich.ApiResponse
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import java.util.ArrayList
@@ -59,16 +62,10 @@ class ArticleRepositoryImpl private constructor(
     }
 
     override suspend fun getArticleKeyword(
-        keyword: Int,
-        page: Int,
-        passed: ArrayList<String>
-    ): ArticleResponse? = withContext(ioDispatcher) {
-        val response = api.getArticleKeyword(keyword, page, Passed(passed))
-        return@withContext if (response.isSuccessful) {
-            response.body()
-        } else {
-            null
-        }
+        articleKeywordRequest : ArticleKeywordRequest
+    ): ApiResponse<ArticleResponse> = withContext(ioDispatcher) {
+        val response = api.getArticleKeyword(articleKeywordRequest.keyword, articleKeywordRequest.page, Passed(articleKeywordRequest.passed))
+        return@withContext response
     }
 
 }

@@ -63,17 +63,25 @@ fun ArticleTheme(
     }
     val view = LocalView.current
 
-
-
+    val context = LocalContext.current
     if (!view.isInEditMode) {
         SideEffect {
-            val window = (view.context as Activity).window
-            if (darkTheme)   window.statusBarColor =Color.Black.toArgb()
+            if (context is Activity) {
+                val window = context.window
+                if (darkTheme) {
+                    window.statusBarColor = Color.Black.toArgb()
+                } else {
+                    window.statusBarColor = Color.White.toArgb()
+                }
 
-            else window.statusBarColor = Color.White.toArgb()
+                WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightStatusBars = !darkTheme
+            } else {
+                // context가 Activity가 아닐 때 처리 (예: Fragment, Application context)
+            }
 
 
-            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = darkTheme
+
+
         }
     }
 

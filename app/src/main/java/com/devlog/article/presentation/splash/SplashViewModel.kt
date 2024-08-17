@@ -1,5 +1,6 @@
 package com.devlog.article.presentation.splash
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -14,15 +15,26 @@ import com.devlog.article.data.network.provideGsonConverterFactory
 import com.devlog.article.data.network.provideProductRetrofit
 import com.devlog.article.data.repository.ArticleRepository
 import com.devlog.article.data.repository.ArticleRepositoryImpl
+import com.devlog.article.data.request.ArticleKeywordRequest
 import com.devlog.article.data.response.ArticleResponse
+import com.devlog.article.domain.usecase.GetArticleKeywordUseCase
+import com.devlog.article.utility.UtilManager.toJson
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.concurrent.ConcurrentLinkedQueue
+import javax.inject.Inject
 
-class SplashViewModel() : ViewModel() {
-
+@HiltViewModel
+class SplashViewModel@Inject constructor(
+    private val getArticleKeywordUseCase : GetArticleKeywordUseCase
+) : ViewModel() {
+    private val coroutineExceptionHandler = CoroutineExceptionHandler { _, throwable ->
+        throwable.printStackTrace() // throwable = SocketException or HttpException or UnknownHostException or else
+    }
     var isApiFinished by mutableStateOf(false)
 
 
@@ -48,7 +60,7 @@ class SplashViewModel() : ViewModel() {
     fun fetchData()= viewModelScope.launch {
         setState(SplashState.Loading)
     }
-    fun getArticle(page: ArrayList<String>): Job = viewModelScope.launch {
+    fun getArticle(page: ArrayList<String>): Job = viewModelScope.launch(coroutineExceptionHandler) {
         val api = ApiService(
             provideProductRetrofit(
                 buildOkHttpClient(),
@@ -70,7 +82,7 @@ class SplashViewModel() : ViewModel() {
 
     }
 
-    fun getBookMaker(): Job = viewModelScope.launch {
+    fun getBookMaker(): Job = viewModelScope.launch(coroutineExceptionHandler) {
 
         val api = ApiService(
             provideProductRetrofit(
@@ -99,25 +111,26 @@ class SplashViewModel() : ViewModel() {
         }
     }
 
-    fun getArticleKeyword(keyword: Int, pass: ArrayList<String>): Job = viewModelScope.launch {
-        val api = ApiService(
-            provideProductRetrofit(
-                buildOkHttpClient(),
-                provideGsonConverterFactory()
-            )
-        )
+    fun getArticleKeyword(keyword: Int, pass: ArrayList<String>): Job = viewModelScope.launch(coroutineExceptionHandler) {
+        val articleKeywordRequest= ArticleKeywordRequest(keyword,1,pass)
 
-        val repository: ArticleRepository =
-            ArticleRepositoryImpl.getInstance(api, ioDispatcher = Dispatchers.IO)
-        val serverCode = repository.getArticleKeyword(keyword, 1, pass)
 
-        if (serverCode != null) {
+        getArticleKeywordUseCase.execute(
+            articleKeywordRequest,
+            onComplete = {},
+            onError = {
+                enqueueState(SplashState.GetArticleFail)
+            },
+            onException = {
+                enqueueState(SplashState.GetArticleFail)
+            }
+        ).collect {
             count++
-            enqueueState(SplashState.GetArticle(serverCode, keyword))
+            enqueueState(SplashState.GetArticle(it, keyword))
 
-        } else {
-            enqueueState(SplashState.GetArticleFail)
         }
+
+
     }
 
 

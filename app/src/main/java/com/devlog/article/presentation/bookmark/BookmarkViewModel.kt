@@ -7,6 +7,9 @@ import com.devlog.article.data.network.ApiService
 import com.devlog.article.data.network.buildOkHttpClient
 import com.devlog.article.data.network.provideGsonConverterFactory
 import com.devlog.article.data.network.provideProductRetrofit
+import com.devlog.article.data.network.buildOkHttpClient
+import com.devlog.article.data.network.provideGsonConverterFactory
+import com.devlog.article.data.network.provideProductRetrofit
 import com.devlog.article.data.repository.ArticleRepository
 import com.devlog.article.data.repository.ArticleRepositoryImpl
 import kotlinx.coroutines.Dispatchers

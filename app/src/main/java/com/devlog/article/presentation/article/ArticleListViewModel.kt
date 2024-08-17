@@ -8,18 +8,29 @@ import com.devlog.article.data.network.ApiService
 import com.devlog.article.data.network.buildOkHttpClient
 import com.devlog.article.data.network.provideGsonConverterFactory
 import com.devlog.article.data.network.provideProductRetrofit
+
+
 import com.devlog.article.data.repository.ArticleRepository
 import com.devlog.article.data.repository.ArticleRepositoryImpl
 import com.devlog.article.data.repository.DefaultRepository
 import com.devlog.article.data.repository.UserRepository
+import com.devlog.article.data.request.ArticleKeywordRequest
 import com.devlog.article.data.response.Article
 import com.devlog.article.data.response.ArticleLogResponse
 import com.devlog.article.data.response.ArticleResponse
+import com.devlog.article.domain.usecase.GetArticleKeywordUseCase
+import com.devlog.article.utility.UtilManager.toJson
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import javax.inject.Inject
+@HiltViewModel
+class ArticleListViewModel@Inject constructor(
+    private val getArticleKeywordUseCase : GetArticleKeywordUseCase
+): ViewModel(
 
-class ArticleListViewModel : ViewModel() {
+) {
     var userSignCheck =true
     var permission =""
     lateinit var succeed: () -> Unit
@@ -54,6 +65,21 @@ class ArticleListViewModel : ViewModel() {
 
     }
     fun getArticleKeyword(page: Int, keyword: Int, pass: ArrayList<String>): Job = viewModelScope.launch {
+        val articleKeywordRequest= ArticleKeywordRequest(page,keyword,pass)
+        getArticleKeywordUseCase.execute(
+            articleKeywordRequest,
+            onComplete = {},
+            onError = {
+                failed()
+            },
+            onException = {
+                failed()
+            }
+        ).collect {
+           Log.d("박태규", "getAppTechInfo : ${it.toJson()}")
+            succeed()
+
+        }
         val api = ApiService(
             provideProductRetrofit(
                 buildOkHttpClient(),
@@ -61,17 +87,17 @@ class ArticleListViewModel : ViewModel() {
             )
         )
 
-        val repository: ArticleRepository =
-            ArticleRepositoryImpl.getInstance(api, ioDispatcher = Dispatchers.IO)
-        val serverCode = repository.getArticleKeyword(keyword, page, pass)
-
-        if (serverCode != null) {
-            article = serverCode.data.articles as ArrayList<Article>
-            succeed()
-
-        } else {
-            failed()
-        }
+//        val repository: ArticleRepository =
+//            ArticleRepositoryImpl.getInstance(api, ioDispatcher = Dispatchers.IO)
+//        val serverCode = repository.getArticleKeyword(keyword, page, pass)
+//
+//        if (serverCode != null) {
+//            article = serverCode.data.articles as ArrayList<Article>
+//            succeed()
+//
+//        } else {
+//            failed()
+//        }
     }
 
     fun postArticleLog(postArticleLogResponse: ArrayList<ArticleLogResponse>): Job =

@@ -66,6 +66,7 @@ import androidx.compose.ui.unit.sp
 import androidx.core.app.ActivityCompat.finishAffinity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
@@ -82,6 +83,7 @@ import com.devlog.article.presentation.ui.theme.ArticleTheme
 import com.devlog.article.presentation.ui.theme.Gray30
 import com.devlog.article.presentation.ui.theme.Gray60
 import com.devlog.article.presentation.ui.theme.Gray70
+import dagger.hilt.android.AndroidEntryPoint
 import java.net.URI
 
 
@@ -92,10 +94,10 @@ var userViewArticleId = arrayListOf<String>()
 
 val LocalViewModel =
     staticCompositionLocalOf<ArticleListViewModel> { error("MainViewModel not provided") }
-
+@AndroidEntryPoint
 class ArticleFragment : Fragment() {
     lateinit var articleArray: ArrayList<ArticleTabState>
-    lateinit var viewModel: ArticleListViewModel
+     val viewModel: ArticleListViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -106,7 +108,7 @@ class ArticleFragment : Fragment() {
         pass = userPreference.getUserPagePassed()
 
 
-        viewModel = ArticleListViewModel()
+
         viewModel.userSignCheck = userPreference.userSignInCheck
         viewModel.permission = userPreference.userPermission
         processArticleResponse(articleArray)
