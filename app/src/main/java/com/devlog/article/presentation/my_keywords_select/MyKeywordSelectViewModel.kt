@@ -14,17 +14,17 @@ import com.devlog.article.data.repository.ArticleRepositoryImpl
 import com.devlog.article.data.repository.DefaultRepository
 import com.devlog.article.data.repository.UserRepository
 import com.devlog.article.data.response.ArticleResponse
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 
+
 class MyKeywordSelectViewModel :ViewModel(){
-    lateinit var succeed :()->Unit
     lateinit var failed :()->Unit
     lateinit var succeedPathMyKeywords:()-> Unit
-    lateinit var succeedGetArticle:()->Unit
-    lateinit var article: ArticleResponse
+
     fun pathMyKeywords(keywords: Array<Int>):Job =viewModelScope.launch{
         val api= ApiService(
             provideProductRetrofit(
@@ -43,25 +43,8 @@ class MyKeywordSelectViewModel :ViewModel(){
         }
 
     }
-    fun getArticle(page:ArrayList<String>): Job = viewModelScope.launch {
-        val api = ApiService(
-            provideProductRetrofit(
-                buildOkHttpClient(),
-                provideGsonConverterFactory()
-            )
-        )
-
-        val repository: ArticleRepository =
-            ArticleRepositoryImpl.getInstance(api, ioDispatcher = Dispatchers.IO)
-        val serverCode = repository.getArticle(1,page )
-        if (serverCode!=null) {
-            article=serverCode
-            succeedGetArticle()
-
-        } else {
-            failed()
-        }
 
 
-    }
+
+
 }

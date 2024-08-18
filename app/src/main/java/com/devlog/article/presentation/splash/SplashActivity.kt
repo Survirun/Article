@@ -111,7 +111,7 @@ class SplashActivity : ComponentActivity() {
             if (keywordCheck()) {
                 viewModel.getBookMaker()
                 viewModel.fetchData()
-                viewModel.getArticle(userPreference.getUserPagePassed())
+                viewModel.getArticle()
             }
 
         }
@@ -169,7 +169,7 @@ class SplashActivity : ComponentActivity() {
 
     fun handlePostApi() {
         viewModel.getBookMaker()
-        viewModel.getArticle(userPreference.getUserPagePassed())
+        viewModel.getArticle()
         getApiKeywordList.forEach {
             viewModel.getArticleKeyword(it, arrayListOf())
         }

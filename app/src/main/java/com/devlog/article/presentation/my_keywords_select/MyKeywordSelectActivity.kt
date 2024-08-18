@@ -38,28 +38,26 @@ import com.devlog.article.presentation.splash.SplashActivity
 import com.devlog.article.presentation.ui.theme.ArticleTheme
 import com.devlog.article.presentation.ui.theme.BaseColumn
 import com.devlog.article.presentation.ui.theme.HeaderView
+import dagger.hilt.android.AndroidEntryPoint
 
 lateinit var count: MutableState<Int>
 var keywordList = listOf<KeywordSelectData>()
-
+@AndroidEntryPoint
 class MyKeywordSelectActivity : ComponentActivity() {
     var viewModel=MyKeywordSelectViewModel()
     lateinit var userPreference: UserPreference
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         userPreference=UserPreference.getInstance(this)
-        viewModel.succeedGetArticle={
-            userPreference.userKeywordCheck=true
-            val intent =Intent(this, SplashActivity::class.java)
-            intent.putExtra("article",viewModel.article)
-            startActivity(intent)
-            finish()
-        }
+
         viewModel.failed ={
             Toast.makeText(this,"잠시후 다시 시도해주세요",Toast.LENGTH_SHORT).show()
         }
         viewModel.succeedPathMyKeywords ={
-            viewModel.getArticle(userPreference.getUserPagePassed())
+            userPreference.userKeywordCheck=true
+            val intent =Intent(this, SplashActivity::class.java)
+            startActivity(intent)
+            finish()
 
         }
 

@@ -16,7 +16,7 @@ import java.util.ArrayList
 
 interface ArticleRepository {
 
-    suspend fun getArticle(page:Int,passed:ArrayList<String>):ArticleResponse?
+    suspend fun getArticle(page:Int,passed:ArrayList<String>):ApiResponse<ArticleResponse>
 
     suspend fun postBookmark(articleId:String):Boolean
 

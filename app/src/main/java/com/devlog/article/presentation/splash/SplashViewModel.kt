@@ -18,6 +18,7 @@ import com.devlog.article.data.repository.ArticleRepositoryImpl
 import com.devlog.article.data.request.ArticleKeywordRequest
 import com.devlog.article.data.response.ArticleResponse
 import com.devlog.article.domain.usecase.GetArticleKeywordUseCase
+import com.devlog.article.domain.usecase.GetArticleUseCase
 import com.devlog.article.utility.UtilManager.toJson
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -30,6 +31,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SplashViewModel@Inject constructor(
+    private val getArticleUseCase: GetArticleUseCase,
     private val getArticleKeywordUseCase : GetArticleKeywordUseCase
 ) : ViewModel() {
     private val coroutineExceptionHandler = CoroutineExceptionHandler { _, throwable ->
@@ -60,24 +62,17 @@ class SplashViewModel@Inject constructor(
     fun fetchData()= viewModelScope.launch {
         setState(SplashState.Loading)
     }
-    fun getArticle(page: ArrayList<String>): Job = viewModelScope.launch(coroutineExceptionHandler) {
-        val api = ApiService(
-            provideProductRetrofit(
-                buildOkHttpClient(),
-                provideGsonConverterFactory()
-            )
-        )
+    fun getArticle(page:Int=1): Job = viewModelScope.launch(coroutineExceptionHandler) {
+        getArticleUseCase.execute(page = page, onError = {
 
-        val repository: ArticleRepository = ArticleRepositoryImpl.getInstance(api, ioDispatcher = Dispatchers.IO)
-        val serverCode = repository.getArticle(1, page)
+        }, onException = {
 
-        if (serverCode != null) {
-            article = serverCode
+        }, onComplete = {
 
-
-        } else {
-
+        }).collect{
+            article = it
         }
+
 
 
     }

@@ -10,6 +10,9 @@ import javax.inject.Inject
 class ApiDataSource @Inject constructor(
     private val apiService: ApiService
 ) {
+    suspend fun getArticle(page:Int,passed: Passed):ApiResponse<ArticleResponse>{
+        return apiService.getArticle(page = page , passed =passed)
+    }
     suspend fun getArticleKeyword(articleKeywordRequest: ArticleKeywordRequest): ApiResponse<ArticleResponse> {
         return  apiService.getArticleKeyword(articleKeywordRequest.keyword,articleKeywordRequest.page, Passed(articleKeywordRequest.passed))
     }

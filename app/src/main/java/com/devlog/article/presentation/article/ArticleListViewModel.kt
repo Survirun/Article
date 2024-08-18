@@ -19,6 +19,7 @@ import com.devlog.article.data.response.Article
 import com.devlog.article.data.response.ArticleLogResponse
 import com.devlog.article.data.response.ArticleResponse
 import com.devlog.article.domain.usecase.GetArticleKeywordUseCase
+import com.devlog.article.domain.usecase.GetArticleUseCase
 import com.devlog.article.utility.UtilManager.toJson
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -27,6 +28,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 @HiltViewModel
 class ArticleListViewModel@Inject constructor(
+    private val getArticleUseCase: GetArticleUseCase,
     private val getArticleKeywordUseCase : GetArticleKeywordUseCase
 ): ViewModel(
 
@@ -44,23 +46,19 @@ class ArticleListViewModel@Inject constructor(
     lateinit var test1: () -> Unit
 
     fun getArticle(passed: ArrayList<String>, page : Int): Job = viewModelScope.launch {
-        val api = ApiService(
-            provideProductRetrofit(
-                buildOkHttpClient(),
-                provideGsonConverterFactory()
-            )
-        )
-
-        val repository: ArticleRepository =
-            ArticleRepositoryImpl.getInstance(api, ioDispatcher = Dispatchers.IO)
-        val serverCode = repository.getArticle(page, passed)
-        if (serverCode != null) {
-            article = serverCode.data.articles as ArrayList<Article>
-            succeed()
-
-        } else {
+        getArticleUseCase.execute(page = page, onError = {
             failed()
+        }, onException = {
+            failed()
+        }, onComplete = {
+
+        }).collect{
+            article = it.data.articles as ArrayList<Article>
+            succeed()
         }
+
+
+
 
 
     }
