@@ -37,7 +37,7 @@ object NetworkModule {
             level = if (BuildConfig.DEBUG ) {
                 HttpLoggingInterceptor.Level.BODY
             } else {
-                HttpLoggingInterceptor.Level.NONE
+                HttpLoggingInterceptor.Level.BODY
             }
         }
     }
@@ -168,7 +168,7 @@ internal fun LoginBuildOkHttpClient(): OkHttpClient {
         interceptor.level = HttpLoggingInterceptor.Level.BODY
 
     } else {
-        interceptor.level = HttpLoggingInterceptor.Level.NONE
+        interceptor.level = HttpLoggingInterceptor.Level.BODY
     }
     return OkHttpClient.Builder()
         .connectTimeout(5, TimeUnit.SECONDS)
@@ -182,7 +182,7 @@ internal fun buildOkHttpClient(): OkHttpClient {
         interceptor.level = HttpLoggingInterceptor.Level.BODY
 
     } else {
-        interceptor.level = HttpLoggingInterceptor.Level.NONE
+        interceptor.level = HttpLoggingInterceptor.Level.BODY
     }
     return OkHttpClient.Builder().apply {
         addInterceptor(HttpInterceptor())

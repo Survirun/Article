@@ -109,6 +109,7 @@ class SplashActivity : ComponentActivity() {
         intentCustom = Intent(this, MainActivity::class.java)
         if (signInCheck()) {
             if (keywordCheck()) {
+                viewModel.getArticleSeveralKeyword(arrayListOf( 1))
                 viewModel.getBookMaker()
                 viewModel.fetchData()
                 viewModel.getArticle()
@@ -170,8 +171,9 @@ class SplashActivity : ComponentActivity() {
     fun handlePostApi() {
         viewModel.getBookMaker()
         viewModel.getArticle()
+        viewModel.getArticleSeveralKeyword(arrayListOf(1))
         getApiKeywordList.forEach {
-            viewModel.getArticleKeyword(it, arrayListOf())
+        //    viewModel.getArticleKeyword(it, arrayListOf())
         }
 
 

@@ -18,6 +18,7 @@ import com.devlog.article.data.repository.ArticleRepositoryImpl
 import com.devlog.article.data.request.ArticleKeywordRequest
 import com.devlog.article.data.response.ArticleResponse
 import com.devlog.article.domain.usecase.GetArticleKeywordUseCase
+import com.devlog.article.domain.usecase.GetArticleSeveralKeywordUseCase
 import com.devlog.article.domain.usecase.GetArticleUseCase
 import com.devlog.article.utility.UtilManager.toJson
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -30,9 +31,10 @@ import java.util.concurrent.ConcurrentLinkedQueue
 import javax.inject.Inject
 
 @HiltViewModel
-class SplashViewModel@Inject constructor(
+class SplashViewModel @Inject constructor(
     private val getArticleUseCase: GetArticleUseCase,
-    private val getArticleKeywordUseCase : GetArticleKeywordUseCase
+    private val getArticleKeywordUseCase: GetArticleKeywordUseCase,
+    private val getArticleSeveralKeywordUseCase: GetArticleSeveralKeywordUseCase
 ) : ViewModel() {
     private val coroutineExceptionHandler = CoroutineExceptionHandler { _, throwable ->
         throwable.printStackTrace() // throwable = SocketException or HttpException or UnknownHostException or else
@@ -47,6 +49,7 @@ class SplashViewModel@Inject constructor(
             isApiFinished = false
         }
     }
+
     lateinit var failed: () -> Unit
     lateinit var keyword_failed: () -> Unit
     lateinit var article: ArticleResponse
@@ -59,20 +62,35 @@ class SplashViewModel@Inject constructor(
     private var _profileSplashStateLiveData = MutableLiveData<SplashState>(SplashState.Loading)
     val profileSplashStateLiveData: LiveData<SplashState> = _profileSplashStateLiveData
 
-    fun fetchData()= viewModelScope.launch {
+    fun fetchData() = viewModelScope.launch {
         setState(SplashState.Loading)
     }
-    fun getArticle(page:Int=1): Job = viewModelScope.launch(coroutineExceptionHandler) {
+
+    fun getArticleSeveralKeyword(keywordList: ArrayList<Int>): Job =
+        viewModelScope.launch ( coroutineExceptionHandler ) {
+            Log.d("polaris_0823","시작")
+            getArticleSeveralKeywordUseCase.execute(keywordList = keywordList, page = 1, onError = {
+                Log.d("polaris_0823",it.toJson())
+            }, onException = {
+                Log.d("polaris_0823",it.toJson())
+            }, onComplete = {
+                Log.d("polaris_0823","완료")
+
+            }).collect {
+                Log.d("polaris_0823",it.toJson())
+            }
+        }
+
+    fun getArticle(page: Int = 1): Job = viewModelScope.launch(coroutineExceptionHandler) {
         getArticleUseCase.execute(page = page, onError = {
 
         }, onException = {
 
         }, onComplete = {
 
-        }).collect{
+        }).collect {
             article = it
         }
-
 
 
     }
@@ -102,31 +120,32 @@ class SplashViewModel@Inject constructor(
                     )
                 )
             }
-           setState(SplashState.GetBookMaker(bookmark))
+            setState(SplashState.GetBookMaker(bookmark))
         }
     }
 
-    fun getArticleKeyword(keyword: Int, pass: ArrayList<String>): Job = viewModelScope.launch(coroutineExceptionHandler) {
-        val articleKeywordRequest= ArticleKeywordRequest(keyword,1,pass)
+    fun getArticleKeyword(keyword: Int, pass: ArrayList<String>): Job =
+        viewModelScope.launch(coroutineExceptionHandler) {
+            val articleKeywordRequest = ArticleKeywordRequest(keyword, 1, pass)
 
 
-        getArticleKeywordUseCase.execute(
-            articleKeywordRequest,
-            onComplete = {},
-            onError = {
-                enqueueState(SplashState.GetArticleFail)
-            },
-            onException = {
-                enqueueState(SplashState.GetArticleFail)
+            getArticleKeywordUseCase.execute(
+                articleKeywordRequest,
+                onComplete = {},
+                onError = {
+                    enqueueState(SplashState.GetArticleFail)
+                },
+                onException = {
+                    enqueueState(SplashState.GetArticleFail)
+                }
+            ).collect {
+                count++
+                enqueueState(SplashState.GetArticle(it, keyword))
+
             }
-        ).collect {
-            count++
-            enqueueState(SplashState.GetArticle(it, keyword))
+
 
         }
-
-
-    }
 
 
     private fun enqueueState(state: SplashState) {
@@ -150,6 +169,7 @@ class SplashViewModel@Inject constructor(
             isProcessing = false
         }
     }
+
     private fun setState(state: SplashState) {
         _profileSplashStateLiveData.postValue(state)
     }

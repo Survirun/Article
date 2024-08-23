@@ -4,7 +4,9 @@ import com.devlog.article.data.entity.ArticleLogEntity
 import com.devlog.article.data.entity.LoginEntity
 import com.devlog.article.data.entity.MyKeyword
 import com.devlog.article.data.entity.Passed
+import com.devlog.article.data.repository.v2.ApiDataSource
 import com.devlog.article.data.response.ArticleResponse
+import com.devlog.article.data.response.ArticleSeveralKeywordResponse
 import com.devlog.article.data.response.BookmarkResponse
 import com.devlog.article.data.response.DefaultResponse
 import com.devlog.article.data.response.UserInfoEntity
@@ -57,10 +59,14 @@ interface ApiService {
     @DELETE("user/my")
     suspend fun userDelete(): Response<Any>
 
-    @POST("article/{keyword}")
+    @POST("/article/{keyword}")
     suspend fun getArticleKeyword(
         @Path("keyword") keyword: Int,
         @Query("page") page: Int,
         @Body passed: Passed
     ) : ApiResponse<ArticleResponse>
+
+    //TODO 양현준
+    @POST("/article/keywords")
+    suspend fun getArticleSeveralKeyword(@Body keywords:ApiDataSource.Keywords, @Query("page") page: Int):ApiResponse<ArticleSeveralKeywordResponse>
 }
