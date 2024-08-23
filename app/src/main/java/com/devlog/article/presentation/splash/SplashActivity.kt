@@ -75,6 +75,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.io.Serializable
 
 @SuppressLint("CustomSplashScreen")
 @AndroidEntryPoint
@@ -110,9 +111,9 @@ class SplashActivity : ComponentActivity() {
         if (signInCheck()) {
             if (keywordCheck()) {
                 viewModel.getArticleSeveralKeyword(arrayListOf( 1))
-                viewModel.getBookMaker()
-                viewModel.fetchData()
-                viewModel.getArticle()
+               // viewModel.getBookMaker()
+                //viewModel.fetchData()
+                //viewModel.getArticle()
             }
 
         }
@@ -121,7 +122,14 @@ class SplashActivity : ComponentActivity() {
 
     fun observeData() = viewModel.profileSplashStateLiveData.observe(this) {
         when (it) {
+            is SplashState.Initialize ->{
+                if (signInCheck()) {
+                    if (keywordCheck()) {
+                      viewModel.fetchData()
+                    }
 
+                }
+            }
             is SplashState.Loading -> handlePostApi()
             is SplashState.GetBookMaker -> handleBookMakerState(it)
             is SplashState.GetArticle -> {
@@ -169,9 +177,9 @@ class SplashActivity : ComponentActivity() {
 
 
     fun handlePostApi() {
-        viewModel.getBookMaker()
-        viewModel.getArticle()
-        viewModel.getArticleSeveralKeyword(arrayListOf(1))
+        //viewModel.getBookMaker()
+        //viewModel.getArticle()
+        viewModel.getArticleSeveralKeyword(arrayListOf(0, 1, 3, 4, 5, 6, 7, 8, 9, 10, 12))
         getApiKeywordList.forEach {
         //    viewModel.getArticleKeyword(it, arrayListOf())
         }
@@ -185,59 +193,15 @@ class SplashActivity : ComponentActivity() {
     }
 
     fun handleArticleState(state: SplashState.GetArticle) {
+        //TODO 여기서 부터 작업 필요
         count++
-        Log.e("테스트 입니다", count.toString())
-        when (state.category) {
-            Common -> {
-                intentCustom.putExtra("article_common", state.articleResponse)
-
-            }
-
-            DevelopmentCommon -> {
-                intentCustom.putExtra("article_developmentCommon", state.articleResponse)
-            }
-
-            DEVCOMMON -> {
-                intentCustom.putExtra("article_dev_common", state.articleResponse)
-            }
-
-            androidDevelopment -> {
-                intentCustom.putExtra("article_android_development", state.articleResponse)
-            }
-
-            serverDevelopment -> {
-                intentCustom.putExtra("article_server_development", state.articleResponse)
-            }
-
-            WebDevelopment -> {
-                intentCustom.putExtra("article_web_development", state.articleResponse)
-            }
-
-            AIDevelopment -> {
-                intentCustom.putExtra("article_ai_development", state.articleResponse)
-            }
-
-            UIUXDesign -> {
-                intentCustom.putExtra("article_ui_ux_design", state.articleResponse)
-            }
-
-            PM -> {
-                intentCustom.putExtra("article_pm", state.articleResponse)
-            }
-
-            iOSDevelopment -> {
-                intentCustom.putExtra("article_ios", state.articleResponse)
-            }
-
-            ITNews -> {
-                intentCustom.putExtra("article_it_news", state.articleResponse)
-            }
-        }
 
         if (count == maxCount) {
+            val bundle = Bundle()
+            bundle.putSerializable("map", state.articleResponseMap as Serializable)
             intentCustom.putExtra("article", viewModel.article)
-
-            viewModel.isApiFinished = true
+            intentCustom.putExtra("article_map",bundle)
+            viewModel.isApiFinished=true
         }
     }
 

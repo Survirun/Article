@@ -5,6 +5,7 @@ import com.devlog.article.data.entity.LoginEntity
 import com.devlog.article.data.entity.MyKeyword
 import com.devlog.article.data.entity.Passed
 import com.devlog.article.data.repository.v2.ApiDataSource
+import com.devlog.article.data.request.ArticleSeveralKeywordRequest
 import com.devlog.article.data.response.ArticleResponse
 import com.devlog.article.data.response.ArticleSeveralKeywordResponse
 import com.devlog.article.data.response.BookmarkResponse
@@ -67,6 +68,6 @@ interface ApiService {
     ) : ApiResponse<ArticleResponse>
 
     //TODO 양현준
-    @POST("/article/keywords")
-    suspend fun getArticleSeveralKeyword(@Body keywords:ApiDataSource.Keywords, @Query("page") page: Int):ApiResponse<ArticleSeveralKeywordResponse>
+    @POST("article/keywords")
+    suspend fun getArticleSeveralKeyword(@Body articleSeveralKeywordRequest: ArticleSeveralKeywordRequest, @Query("page") page: Int):ApiResponse<ArticleSeveralKeywordResponse>
 }

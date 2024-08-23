@@ -59,7 +59,7 @@ class SplashViewModel @Inject constructor(
     private val maxCount = 11
     private var count = 0
 
-    private var _profileSplashStateLiveData = MutableLiveData<SplashState>(SplashState.Loading)
+    private var _profileSplashStateLiveData = MutableLiveData<SplashState>(SplashState.Initialize)
     val profileSplashStateLiveData: LiveData<SplashState> = _profileSplashStateLiveData
 
     fun fetchData() = viewModelScope.launch {
@@ -68,16 +68,16 @@ class SplashViewModel @Inject constructor(
 
     fun getArticleSeveralKeyword(keywordList: ArrayList<Int>): Job =
         viewModelScope.launch ( coroutineExceptionHandler ) {
-            Log.d("polaris_0823","시작")
+
             getArticleSeveralKeywordUseCase.execute(keywordList = keywordList, page = 1, onError = {
-                Log.d("polaris_0823",it.toJson())
+
             }, onException = {
-                Log.d("polaris_0823",it.toJson())
+
             }, onComplete = {
-                Log.d("polaris_0823","완료")
+
 
             }).collect {
-                Log.d("polaris_0823",it.toJson())
+                enqueueState(SplashState.GetArticle(it.data))
             }
         }
 
@@ -140,7 +140,7 @@ class SplashViewModel @Inject constructor(
                 }
             ).collect {
                 count++
-                enqueueState(SplashState.GetArticle(it, keyword))
+
 
             }
 
