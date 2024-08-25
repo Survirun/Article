@@ -7,7 +7,7 @@ import com.devlog.article.data.response.UserInfoEntity
 
 interface UserRepository {
 
-    suspend fun postLogin(loginEntity: LoginEntity): DefaultResponse?
+
 
     suspend fun pathMyKeywords(keywords: Array<Int>): Boolean
 

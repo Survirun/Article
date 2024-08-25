@@ -10,11 +10,17 @@ import com.devlog.article.data.network.provideProductRetrofit
 
 import com.devlog.article.data.repository.DefaultRepository
 import com.devlog.article.data.repository.UserRepository
+import com.devlog.article.domain.usecase.PostLoginUseCase
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class LoginViewModel:ViewModel() {
+@HiltViewModel
+class LoginViewModel @Inject constructor(
+    private val postLoginUseCase: PostLoginUseCase
+):ViewModel() {
 
 
     lateinit var loginSucceed :()->Unit
@@ -22,20 +28,18 @@ class LoginViewModel:ViewModel() {
 
 
     fun login(uid:String,email:String,name:String):Job =viewModelScope.launch {
-        val api= ApiService(
-            provideProductRetrofit(
-                buildOkHttpClient(),
-                provideGsonConverterFactory()
-            )
-        )
-        val repository: UserRepository = DefaultRepository.getInstance(api, ioDispatcher = Dispatchers.IO)
-        val response= repository.postLogin(LoginEntity(uid = uid , email =email ,name=name))
 
-        if(response != null){
-            loginSucceed()
-        }else{
-            loginFailed()
-        }
+        postLoginUseCase.execute(LoginEntity(uid = uid , email =email ,name=name),
+            onError = {
+                loginFailed()
+            },
+            onException = {
+                loginFailed()
+            },
+            onComplete = {  loginSucceed()
+            }
+        )
+
 
 
 

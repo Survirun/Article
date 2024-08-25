@@ -7,6 +7,8 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
+import androidx.fragment.app.viewModels
 import com.devlog.article.R
 import com.devlog.article.databinding.ActivitySignInBinding
 import com.devlog.article.data.preference.UserPreference
@@ -22,15 +24,16 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import dagger.hilt.android.AndroidEntryPoint
 import org.json.JSONObject
 import java.util.Base64
-
+@AndroidEntryPoint
 class SignInActivity : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
     lateinit var googleSignInClient: GoogleSignInClient
     lateinit var userPreference : UserPreference
-    lateinit var loginViewModel:LoginViewModel
-    var activityResultLauncher =
+    private val loginViewModel:LoginViewModel by viewModels()
+    private var activityResultLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
                 // There are no request codes in this method
@@ -54,7 +57,6 @@ class SignInActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         bindind=ActivitySignInBinding.inflate(layoutInflater)
         setContentView(bindind.root)
-        loginViewModel=LoginViewModel()
         userPreference= UserPreference.getInstance(this)
         bindind.googleSignInButton.setOnClickListener{
             signIn()

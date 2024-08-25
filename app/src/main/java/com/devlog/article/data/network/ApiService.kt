@@ -26,7 +26,7 @@ import retrofit2.http.Query
 interface ApiService {
     //로그인
     @POST("user/auth")
-    suspend fun postLogin(@Body loginEntity: LoginEntity): Response<DefaultResponse>
+    suspend fun postLogin(@Body loginEntity: LoginEntity): ApiResponse<DefaultResponse>
     //내 키워드 관심사 수정
 
     @POST("user/my/keywords")

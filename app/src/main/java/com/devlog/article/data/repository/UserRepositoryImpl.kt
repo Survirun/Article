@@ -25,15 +25,7 @@ class DefaultRepository private constructor(
         }
     }
 
-    override suspend fun postLogin(loginEntity: LoginEntity): DefaultResponse? =
-        withContext(ioDispatcher) {
-            val response = api.postLogin(loginEntity)
-            return@withContext if (response.isSuccessful) {
-                response.body()
-            } else {
-                null
-            }
-        }
+
 
     override suspend fun pathMyKeywords(keywords: Array<Int>): Boolean = withContext(ioDispatcher) {
         val response = api.pathMyKeywords(MyKeyword(keywords))
