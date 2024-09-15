@@ -54,7 +54,7 @@ class SplashViewModel @Inject constructor(
     lateinit var keyword_failed: () -> Unit
     lateinit var article: ArticleResponse
     val bookmark = ArrayList<ArticleEntity>()
-    private val stateQueue: ConcurrentLinkedQueue<SplashState> = ConcurrentLinkedQueue()
+
     private var isProcessing = false
     private val maxCount = 11
     private var count = 0
@@ -77,7 +77,7 @@ class SplashViewModel @Inject constructor(
 
 
             }).collect {
-                enqueueState(SplashState.GetArticle(it.data))
+                _profileSplashStateLiveData.postValue(SplashState.GetArticle(it.data))
             }
         }
 
@@ -133,10 +133,10 @@ class SplashViewModel @Inject constructor(
                 articleKeywordRequest,
                 onComplete = {},
                 onError = {
-                    enqueueState(SplashState.GetArticleFail)
+                    _profileSplashStateLiveData.postValue(SplashState.GetArticleFail)
                 },
                 onException = {
-                    enqueueState(SplashState.GetArticleFail)
+                    _profileSplashStateLiveData.postValue(SplashState.GetArticleFail)
                 }
             ).collect {
                 count++
@@ -148,27 +148,7 @@ class SplashViewModel @Inject constructor(
         }
 
 
-    private fun enqueueState(state: SplashState) {
-        stateQueue.add(state)
-        processQueue()
-    }
 
-    @Synchronized
-    private fun processQueue() {
-        if (isProcessing) return
-        isProcessing = true
-
-        viewModelScope.launch {
-            while (stateQueue.isNotEmpty()) {
-                val state = stateQueue.poll()
-                state?.let {
-                    _profileSplashStateLiveData.postValue(it)
-                    delay(180)  // 각 상태 변화 간격 조정
-                }
-            }
-            isProcessing = false
-        }
-    }
 
     private fun setState(state: SplashState) {
         _profileSplashStateLiveData.postValue(state)

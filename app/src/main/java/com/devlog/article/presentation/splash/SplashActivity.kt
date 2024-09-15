@@ -177,12 +177,9 @@ class SplashActivity : ComponentActivity() {
 
 
     fun handlePostApi() {
-        //viewModel.getBookMaker()
-        //viewModel.getArticle()
+        viewModel.getBookMaker()
+        viewModel.getArticle()
         viewModel.getArticleSeveralKeyword(arrayListOf(0, 1, 3, 4, 5, 6, 7, 8, 9, 10, 12))
-        getApiKeywordList.forEach {
-        //    viewModel.getArticleKeyword(it, arrayListOf())
-        }
 
 
     }
