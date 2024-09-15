@@ -36,7 +36,7 @@ class ArticleListViewModel@Inject constructor(
     var userSignCheck =true
     var permission =""
     lateinit var succeed: () -> Unit
-    lateinit var failed: () -> Unit
+
     lateinit var reportSucceed: () -> Unit
     lateinit var reportFailed: () -> Unit
     lateinit var article: ArrayList<Article>
@@ -47,9 +47,9 @@ class ArticleListViewModel@Inject constructor(
 
     fun getArticle(passed: ArrayList<String>, page : Int): Job = viewModelScope.launch {
         getArticleUseCase.execute(page = page, onError = {
-            failed()
+
         }, onException = {
-            failed()
+
         }, onComplete = {
 
         }).collect{
@@ -63,39 +63,23 @@ class ArticleListViewModel@Inject constructor(
 
     }
     fun getArticleKeyword(page: Int, keyword: Int, pass: ArrayList<String>): Job = viewModelScope.launch {
-        val articleKeywordRequest= ArticleKeywordRequest(page,keyword,pass)
+        val articleKeywordRequest= ArticleKeywordRequest(keyword=keyword,page=page,pass)
         getArticleKeywordUseCase.execute(
             articleKeywordRequest,
             onComplete = {},
             onError = {
-                failed()
+               Log.d("polaris_onError",it.toString())
             },
             onException = {
-                failed()
+                Log.d("polaris_onException",it.toString())
             }
         ).collect {
-           Log.d("박태규", "getAppTechInfo : ${it.toJson()}")
+           Log.d("polaris", "getAppTechInfo : ${it.toJson()}")
+            article=it.data.articles
             succeed()
 
         }
-        val api = ApiService(
-            provideProductRetrofit(
-                buildOkHttpClient(),
-                provideGsonConverterFactory()
-            )
-        )
 
-//        val repository: ArticleRepository =
-//            ArticleRepositoryImpl.getInstance(api, ioDispatcher = Dispatchers.IO)
-//        val serverCode = repository.getArticleKeyword(keyword, page, pass)
-//
-//        if (serverCode != null) {
-//            article = serverCode.data.articles as ArrayList<Article>
-//            succeed()
-//
-//        } else {
-//            failed()
-//        }
     }
 
     fun postArticleLog(postArticleLogResponse: ArrayList<ArticleLogResponse>): Job =
@@ -129,7 +113,7 @@ class ArticleListViewModel@Inject constructor(
         if (serverCode) {
 
         } else {
-            failed()
+
         }
 
     }

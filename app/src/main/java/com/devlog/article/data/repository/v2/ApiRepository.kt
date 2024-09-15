@@ -25,7 +25,7 @@ class ApiRepository @Inject constructor(
         return  apiDataSource.getArticleKeyword(articleKeywordRequest)
     }
 
-    suspend fun getArticleSeveralKeywordUseCase(keywords:ArrayList<Int>,page: Int):ApiResponse<ArticleSeveralKeywordResponse>{
+    suspend fun getArticleSeveralKeywordUseCase(keywords:List<Int>,page: Int):ApiResponse<ArticleSeveralKeywordResponse>{
         return apiDataSource.getArticleSeveralKeywordUseCase(keywords,page)
     }
 

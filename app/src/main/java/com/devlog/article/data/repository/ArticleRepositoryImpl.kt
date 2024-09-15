@@ -60,7 +60,7 @@ class ArticleRepositoryImpl private constructor(
     override suspend fun getArticleKeyword(
         articleKeywordRequest : ArticleKeywordRequest
     ): ApiResponse<ArticleResponse> = withContext(ioDispatcher) {
-        val response = api.getArticleKeyword(articleKeywordRequest.keyword, articleKeywordRequest.page, Passed(articleKeywordRequest.passed))
+        val response = api.getArticleKeyword(articleKeywordRequest.keyword, articleKeywordRequest.page)
         return@withContext response
     }
 

@@ -44,9 +44,11 @@ class SignInActivity : AppCompatActivity() {
                     firebaseAuthWithGoogle(account)
 
                 } catch (e: ApiException) {
-
+                    Log.d("polaris",e.toString())
                 }
 
+            }else{
+                Log.d("polaris",result.resultCode.toString())
             }
 
 
@@ -105,7 +107,7 @@ class SignInActivity : AppCompatActivity() {
             .addOnCompleteListener(this,
                 OnCompleteListener<AuthResult?> { task ->
                     if (task.isSuccessful) {
-
+                        Log.d("polaris","1")
                         userPreference.userUid=task.result.user!!.uid
                         // 로그인 성공
                         userPreference.userName=task.result.user!!.displayName.toString()
@@ -115,7 +117,7 @@ class SignInActivity : AppCompatActivity() {
 
 
                     } else {
-
+                        Log.d("polaris","2")
                         Toast.makeText(this, "로그인 실패", Toast.LENGTH_SHORT)
                             .show()
                     }

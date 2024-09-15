@@ -21,10 +21,10 @@ class ApiDataSource @Inject constructor(
         return apiService.getArticle(page = page , passed =passed)
     }
     suspend fun getArticleKeyword(articleKeywordRequest: ArticleKeywordRequest): ApiResponse<ArticleResponse> {
-        return  apiService.getArticleKeyword(articleKeywordRequest.keyword,articleKeywordRequest.page, Passed(articleKeywordRequest.passed))
+        return  apiService.getArticleKeyword(articleKeywordRequest.keyword,articleKeywordRequest.page)
     }
 
-    suspend fun getArticleSeveralKeywordUseCase(keywords:ArrayList<Int>,page: Int):ApiResponse<ArticleSeveralKeywordResponse>{
+    suspend fun getArticleSeveralKeywordUseCase(keywords:List<Int>,page: Int):ApiResponse<ArticleSeveralKeywordResponse>{
 
         return apiService.getArticleSeveralKeyword(ArticleSeveralKeywordRequest(keywords),page)
     }

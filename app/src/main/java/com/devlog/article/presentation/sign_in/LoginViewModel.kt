@@ -36,9 +36,12 @@ class LoginViewModel @Inject constructor(
             onException = {
                 loginFailed()
             },
-            onComplete = {  loginSucceed()
+            onComplete = {
             }
-        )
+        ).collect {
+            loginSucceed()
+
+        }
 
 
 

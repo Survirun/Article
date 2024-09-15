@@ -9,8 +9,8 @@ sealed  class SplashState {
     object Loading:SplashState()
 
     data class GetBookMaker(var bookMakerList:ArrayList<ArticleEntity>)  : SplashState()
-
     data class GetArticle(var articleResponseMap : Map<String, Data>): SplashState()
+    data class GetArticleKeyword(var articleResponseMap : Map<String, Data>): SplashState()
 
     object  GetArticleFail: SplashState()
 }

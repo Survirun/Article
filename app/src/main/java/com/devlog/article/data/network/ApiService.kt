@@ -60,11 +60,10 @@ interface ApiService {
     @DELETE("user/my")
     suspend fun userDelete(): Response<Any>
 
-    @POST("/article/{keyword}")
+    @POST("article/{keyword}")
     suspend fun getArticleKeyword(
         @Path("keyword") keyword: Int,
-        @Query("page") page: Int,
-        @Body passed: Passed
+        @Query("page") page: Int
     ) : ApiResponse<ArticleResponse>
 
     //TODO 양현준

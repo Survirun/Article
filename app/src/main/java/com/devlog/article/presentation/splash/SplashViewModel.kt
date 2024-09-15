@@ -17,6 +17,7 @@ import com.devlog.article.data.repository.ArticleRepository
 import com.devlog.article.data.repository.ArticleRepositoryImpl
 import com.devlog.article.data.request.ArticleKeywordRequest
 import com.devlog.article.data.response.ArticleResponse
+import com.devlog.article.data.response.Data
 import com.devlog.article.domain.usecase.GetArticleKeywordUseCase
 import com.devlog.article.domain.usecase.GetArticleSeveralKeywordUseCase
 import com.devlog.article.domain.usecase.GetArticleUseCase
@@ -50,14 +51,11 @@ class SplashViewModel @Inject constructor(
         }
     }
 
-    lateinit var failed: () -> Unit
-    lateinit var keyword_failed: () -> Unit
-    lateinit var article: ArticleResponse
+
+    lateinit var article:Map<String, Data>
     val bookmark = ArrayList<ArticleEntity>()
 
-    private var isProcessing = false
-    private val maxCount = 11
-    private var count = 0
+
 
     private var _profileSplashStateLiveData = MutableLiveData<SplashState>(SplashState.Initialize)
     val profileSplashStateLiveData: LiveData<SplashState> = _profileSplashStateLiveData
@@ -66,7 +64,7 @@ class SplashViewModel @Inject constructor(
         setState(SplashState.Loading)
     }
 
-    fun getArticleSeveralKeyword(keywordList: ArrayList<Int>): Job =
+    fun getArticleSeveralKeyword(keywordList: List<Int>): Job =
         viewModelScope.launch ( coroutineExceptionHandler ) {
 
             getArticleSeveralKeywordUseCase.execute(keywordList = keywordList, page = 1, onError = {
@@ -77,7 +75,7 @@ class SplashViewModel @Inject constructor(
 
 
             }).collect {
-                _profileSplashStateLiveData.postValue(SplashState.GetArticle(it.data))
+                _profileSplashStateLiveData.postValue(SplashState.GetArticleKeyword(it.data))
             }
         }
 
@@ -89,7 +87,8 @@ class SplashViewModel @Inject constructor(
         }, onComplete = {
 
         }).collect {
-            article = it
+            _profileSplashStateLiveData.postValue(SplashState.GetArticle( mapOf("0" to it.data)))
+
         }
 
 
@@ -124,28 +123,6 @@ class SplashViewModel @Inject constructor(
         }
     }
 
-    fun getArticleKeyword(keyword: Int, pass: ArrayList<String>): Job =
-        viewModelScope.launch(coroutineExceptionHandler) {
-            val articleKeywordRequest = ArticleKeywordRequest(keyword, 1, pass)
-
-
-            getArticleKeywordUseCase.execute(
-                articleKeywordRequest,
-                onComplete = {},
-                onError = {
-                    _profileSplashStateLiveData.postValue(SplashState.GetArticleFail)
-                },
-                onException = {
-                    _profileSplashStateLiveData.postValue(SplashState.GetArticleFail)
-                }
-            ).collect {
-                count++
-
-
-            }
-
-
-        }
 
 
 

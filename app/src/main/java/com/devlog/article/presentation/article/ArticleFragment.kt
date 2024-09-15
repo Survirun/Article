@@ -252,10 +252,7 @@ fun ArticleScreen(viewModel: ArticleListViewModel, showDialog: Boolean, onShowDi
     fun addArticles(articleTabState: ArticleTabState) {
         articleTabState.page += 1
         if (viewModel.userSignCheck && articleTabState.keyword == Common) {
-            viewModel.getArticle(
-                pass,
-                articleTabState.page
-            )
+            viewModel.getArticle(pass, articleTabState.page)
         } else {
             viewModel.getArticleKeyword(articleTabState.page, articleTabState.keyword, pass)
         }
@@ -271,6 +268,7 @@ fun ArticleScreen(viewModel: ArticleListViewModel, showDialog: Boolean, onShowDi
                 articleTabState.copy(articles = updatedArticles as ArrayList<Article>)
             articles[tabIndex] = articleTabState.copy(articles = updatedArticles)
         }
+
     }
 
     fun maxPage() {

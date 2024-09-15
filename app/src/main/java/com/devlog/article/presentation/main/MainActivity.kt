@@ -1,6 +1,7 @@
 package com.devlog.article.presentation.main
 
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.TooltipCompat
 import androidx.core.view.forEach
@@ -10,6 +11,7 @@ import com.devlog.article.data.entity.ArticleEntity
 import com.devlog.article.data.preference.UserPreference
 import com.devlog.article.data.response.Article
 import com.devlog.article.data.response.ArticleResponse
+import com.devlog.article.data.response.Data
 import com.devlog.article.databinding.ActivityMainBinding
 import com.devlog.article.presentation.article.ArticleFragment
 import com.devlog.article.presentation.article.ArticleTabState
@@ -24,6 +26,7 @@ import com.devlog.article.presentation.my_keywords_select.WebDevelopment
 import com.devlog.article.presentation.my_keywords_select.androidDevelopment
 import com.devlog.article.presentation.my_keywords_select.iOSDevelopment
 import com.devlog.article.presentation.my_keywords_select.serverDevelopment
+import com.devlog.article.utility.UtilManager.toJson
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -73,51 +76,37 @@ class MainActivity() : AppCompatActivity() {
     }
 
     private fun getArticleData() {
-        val totalArticles = ArrayList<ArticleTabState>()
-        val firstKey = if (userPreference.userSignInCheck) "article" else "article_common"
-        val keywordList = mapOf(
-            firstKey to Common,
-            "article_dev_common" to DEVCOMMON,
-            "article_it_news" to ITNews,
-            "article_android_development" to androidDevelopment,
-            "article_ios" to iOSDevelopment,
-            "article_web_development" to WebDevelopment,
-            "article_server_development" to serverDevelopment,
-            "article_ai_development" to AIDevelopment,
-            "article_ui_ux_design" to UIUXDesign,
-            "article_pm" to PM
-        )
-        for (keyword in keywordList) {
 
-            val articleResponse = intent.getSerializableExtra(keyword.key) as ArticleResponse
-//            val newArticles = ArrayList<ArticleEntity>()
-//            articleResponse.data.articles.forEach {
-//                if (it.date == null) {
-//                    it.date = ""
-//                }
-//                if (it.snippet == null) {
-//                    it.snippet = ""
-//                }
-//                newArticles.add(
-//                    ArticleEntity(
-//                        title = it.title,
-//                        text = it.snippet!!,
-//                        image = it.thumbnail!!,
-//                        url = it.link,
-//                        articleId = it._id,
-//                        type = it.type
-//                    )
-//                )
-//            }
-            val newArticles = articleResponse.data.articles as ArrayList<Article>
+        // Bundle에서 map 가져오기
+        val bundle = intent.getBundleExtra("article_map")
+        val articleMap = bundle?.getSerializable("map") as? Map<String, Data>
+
+        // 로그 출력
+        var getApiKeywordList = listOf(0, 12, 10, 3,9, 4, 5, 6, 7, 8)
+        Log.d("NextActivity", "Article Map: ${articleMap!!.toJson()}")
+        val totalArticles = ArrayList<ArticleTabState>()
+        val sortedMap: Map<String, Data> = articleMap.toList().sortedBy {
+            val index = getApiKeywordList.indexOf(it.first.toInt())
+            Log.d("polaris_index",index.toString())
+            // -1이 나오는 경우, 정렬 우선순위를 마지막으로 보내거나 다른 처리를 할 수 있음
+            if (index != -1) index else Int.MAX_VALUE
+        }.toMap(LinkedHashMap())
+
+
+        sortedMap.forEach{ (key, date) ->
+
+            Log.d("polaris_key",key.toString())
+
             totalArticles.add(
                 ArticleTabState(
-                    newArticles,
-                    keyword.value,
-                    articleResponse.data.maxPage
+                    date.articles,
+                    key.toInt(),
+                    date.maxPage
                 )
             )
+
         }
+
         articleFragment.articleArray = totalArticles
     }
 

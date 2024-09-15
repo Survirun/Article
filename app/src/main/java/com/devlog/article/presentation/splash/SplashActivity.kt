@@ -27,6 +27,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -81,16 +82,17 @@ import java.io.Serializable
 @AndroidEntryPoint
 class SplashActivity : ComponentActivity() {
     lateinit var userPreference: UserPreference
-    val viewModel : SplashViewModel by viewModels()
+    val viewModel: SplashViewModel by viewModels()
     lateinit var intentCustom: Intent
-    var getApiKeywordList = arrayListOf(0, 1, 3, 4, 5, 6, 7, 8, 9, 10, 12)
+    var getApiKeywordList = listOf( 12, 10, 3,9, 4, 5, 6, 7, 8)
 
     var count = 0
     var maxCount = 11
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION)
+        window.decorView.systemUiVisibility =
+            (View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION)
         setContent {
 
             SplashTheme {
@@ -110,8 +112,8 @@ class SplashActivity : ComponentActivity() {
         intentCustom = Intent(this, MainActivity::class.java)
         if (signInCheck()) {
             if (keywordCheck()) {
-                viewModel.getArticleSeveralKeyword(arrayListOf( 1))
-               // viewModel.getBookMaker()
+                //viewModel.getArticleSeveralKeyword(arrayListOf( 1))
+                // viewModel.getBookMaker()
                 //viewModel.fetchData()
                 //viewModel.getArticle()
             }
@@ -122,23 +124,24 @@ class SplashActivity : ComponentActivity() {
 
     fun observeData() = viewModel.profileSplashStateLiveData.observe(this) {
         when (it) {
-            is SplashState.Initialize ->{
+            is SplashState.Initialize -> {
                 if (signInCheck()) {
                     if (keywordCheck()) {
-                      viewModel.fetchData()
+                        viewModel.fetchData()
                     }
 
                 }
             }
+
             is SplashState.Loading -> handlePostApi()
             is SplashState.GetBookMaker -> handleBookMakerState(it)
             is SplashState.GetArticle -> {
-                CoroutineScope(Dispatchers.IO).launch {
-                    handleArticleState(it)
-                }
+                handleArticleState(it)
 
 
             }
+
+            is SplashState.GetArticleKeyword -> handleArticleKeywordState(it)
 
             is SplashState.GetArticleFail -> {
                 count++
@@ -174,12 +177,9 @@ class SplashActivity : ComponentActivity() {
     }
 
 
-
-
     fun handlePostApi() {
         viewModel.getBookMaker()
         viewModel.getArticle()
-        viewModel.getArticleSeveralKeyword(arrayListOf(0, 1, 3, 4, 5, 6, 7, 8, 9, 10, 12))
 
 
     }
@@ -189,17 +189,23 @@ class SplashActivity : ComponentActivity() {
 
     }
 
-    fun handleArticleState(state: SplashState.GetArticle) {
-        //TODO 여기서 부터 작업 필요
-        count++
+    fun handleArticleKeywordState(state: SplashState.GetArticleKeyword) {
+        viewModel.article += state.articleResponseMap
+        val bundle = Bundle()
 
-        if (count == maxCount) {
-            val bundle = Bundle()
-            bundle.putSerializable("map", state.articleResponseMap as Serializable)
-            intentCustom.putExtra("article", viewModel.article)
-            intentCustom.putExtra("article_map",bundle)
-            viewModel.isApiFinished=true
-        }
+        bundle.putSerializable("map", viewModel.article as Serializable)
+        intentCustom.putExtra("article_map", bundle)
+        viewModel.isApiFinished = true
+
+
+    }
+
+    fun handleArticleState(state: SplashState.GetArticle) {
+
+        viewModel.article = state.articleResponseMap
+        viewModel.getArticleSeveralKeyword(getApiKeywordList)
+
+
     }
 
 
@@ -223,13 +229,18 @@ fun SplashScreen(viewModel: SplashViewModel) {
         if (viewModel.isApiFinished) {
             backgroundColor = (Color(0xFFFFFFFF))
             showTransition = true
-            viewModel.viewModelScope.launch(Dispatchers.Main) {
+            Log.d("polaris", transitionProgress.toString())
+            snapshotFlow { transitionProgress }
+                .collect { progress ->
+                    Log.d("polaris", progress.toString())
 
-                if (transitionProgress == 1f) {
-                    composeStartActivity(context)
+                    // transitionProgress가 1f에 도달했을 때 화면 전환
+                    if (progress == 1f) {
+                        composeStartActivity(context)
+                    }
                 }
 
-            }
+
         }
     }
 
@@ -259,13 +270,13 @@ fun SplashScreen(viewModel: SplashViewModel) {
 }
 
 fun composeStartActivity(context: android.content.Context) {
-
+    Log.e("polris", "composeStartActivity")
     val options = ActivityOptions.makeCustomAnimation(context, 0, 0)
-    (context as? SplashActivity)!!.startActivity(
-        (context as? SplashActivity)!!.intentCustom,
+    (context as SplashActivity).startActivity(
+        (context as SplashActivity).intentCustom,
         options.toBundle()
     )
-    (context as? SplashActivity)!!.finish()
+    (context as SplashActivity)!!.finish()
 
 }
 
@@ -273,7 +284,7 @@ fun composeStartActivity(context: android.content.Context) {
 @Composable
 fun DefaultPreview() {
 
-   // SplashScreen()
+    // SplashScreen()
 }
 
 @Composable
