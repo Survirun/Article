@@ -86,8 +86,7 @@ class SplashActivity : ComponentActivity() {
     lateinit var intentCustom: Intent
     var getApiKeywordList = listOf( 12, 10, 3,9, 4, 5, 6, 7, 8)
 
-    var count = 0
-    var maxCount = 11
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -144,7 +143,7 @@ class SplashActivity : ComponentActivity() {
             is SplashState.GetArticleKeyword -> handleArticleKeywordState(it)
 
             is SplashState.GetArticleFail -> {
-                count++
+
             }
         }
     }
