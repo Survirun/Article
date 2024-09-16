@@ -2,9 +2,8 @@ package com.devlog.article.domain.usecase
 
 import android.util.Log
 import com.devlog.article.data.repository.v2.ApiRepository
-import com.devlog.article.data.request.ArticleKeywordRequest
-import com.devlog.article.data.response.ArticleResponse
 import com.devlog.article.data.response.ArticleSeveralKeywordResponse
+import com.devlog.article.data.response.BookmarkResponse
 import com.skydoves.sandwich.suspendOnError
 import com.skydoves.sandwich.suspendOnException
 import com.skydoves.sandwich.suspendOnSuccess
@@ -16,20 +15,19 @@ import kotlinx.coroutines.flow.onCompletion
 import okhttp3.Response
 import javax.inject.Inject
 
-class GetArticleSeveralKeywordUseCase @Inject constructor(
+class GetBookMakerUseCase @Inject constructor(
     private val apiRepository: ApiRepository
 ) {
     suspend fun execute(
-        keywordList: List<Int>,
-        page:Int,
         onComplete: () -> Unit,
         onError: (Response) -> Unit,
         onException: (Throwable) -> Unit
-    ): Flow<ArticleSeveralKeywordResponse> {
+    ):
+            Flow<BookmarkResponse> {
 
 
         return flow {
-            val response = apiRepository.getArticleSeveralKeyword(keywordList,page)
+            val response = apiRepository.getBookMaker()
             response.suspendOnSuccess {
                 emit(data)
             }.suspendOnError {

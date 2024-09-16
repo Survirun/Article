@@ -21,6 +21,7 @@ import com.devlog.article.data.response.Data
 import com.devlog.article.domain.usecase.GetArticleKeywordUseCase
 import com.devlog.article.domain.usecase.GetArticleSeveralKeywordUseCase
 import com.devlog.article.domain.usecase.GetArticleUseCase
+import com.devlog.article.domain.usecase.GetBookMakerUseCase
 import com.devlog.article.utility.UtilManager.toJson
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -35,7 +36,8 @@ import javax.inject.Inject
 class SplashViewModel @Inject constructor(
     private val getArticleUseCase: GetArticleUseCase,
     private val getArticleKeywordUseCase: GetArticleKeywordUseCase,
-    private val getArticleSeveralKeywordUseCase: GetArticleSeveralKeywordUseCase
+    private val getArticleSeveralKeywordUseCase: GetArticleSeveralKeywordUseCase,
+    private val getBookMakerUseCase: GetBookMakerUseCase
 ) : ViewModel() {
     private val coroutineExceptionHandler = CoroutineExceptionHandler { _, throwable ->
         throwable.printStackTrace() // throwable = SocketException or HttpException or UnknownHostException or else
@@ -53,7 +55,7 @@ class SplashViewModel @Inject constructor(
 
 
     lateinit var article:Map<String, Data>
-    val bookmark = ArrayList<ArticleEntity>()
+
 
 
 
@@ -95,32 +97,18 @@ class SplashViewModel @Inject constructor(
     }
 
     fun getBookMaker(): Job = viewModelScope.launch(coroutineExceptionHandler) {
+        getBookMakerUseCase.execute(onComplete = {
 
-        val api = ApiService(
-            provideProductRetrofit(
-                buildOkHttpClient(),
-                provideGsonConverterFactory()
-            )
-        )
-        val repository: ArticleRepository =
-            ArticleRepositoryImpl.getInstance(api, ioDispatcher = Dispatchers.IO)
-        val serverCode = repository.getBookMaker()
+        }, onError = {
 
-        if (serverCode != null) {
-            serverCode.data.forEach {
-                bookmark.add(
-                    ArticleEntity(
-                        title = it.title,
-                        text = it.snippet!!,
-                        image = it.thumbnail!!,
-                        url = it.link,
-                        articleId = it._id,
-                        type = it.type
-                    )
-                )
-            }
-            setState(SplashState.GetBookMaker(bookmark))
+        }, onException = {
+
         }
+        ).collect{
+            setState(SplashState.GetBookMaker(it.data))
+        }
+
+
     }
 
 

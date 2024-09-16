@@ -5,6 +5,7 @@ import com.devlog.article.data.entity.Passed
 import com.devlog.article.data.request.ArticleKeywordRequest
 import com.devlog.article.data.response.ArticleResponse
 import com.devlog.article.data.response.ArticleSeveralKeywordResponse
+import com.devlog.article.data.response.BookmarkResponse
 import com.devlog.article.data.response.DefaultResponse
 import com.skydoves.sandwich.ApiResponse
 import javax.inject.Inject
@@ -25,8 +26,12 @@ class ApiRepository @Inject constructor(
         return  apiDataSource.getArticleKeyword(articleKeywordRequest)
     }
 
-    suspend fun getArticleSeveralKeywordUseCase(keywords:List<Int>,page: Int):ApiResponse<ArticleSeveralKeywordResponse>{
+    suspend fun getArticleSeveralKeyword(keywords:List<Int>,page: Int):ApiResponse<ArticleSeveralKeywordResponse>{
         return apiDataSource.getArticleSeveralKeywordUseCase(keywords,page)
+    }
+
+    suspend fun getBookMaker() : ApiResponse<BookmarkResponse>{
+        return apiDataSource.getBookMaker()
     }
 
 

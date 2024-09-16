@@ -184,7 +184,7 @@ class SplashActivity : ComponentActivity() {
     }
 
     fun handleBookMakerState(state: SplashState.GetBookMaker) {
-        BookmarkSharedPreferencesHelper(this).saveToSharedPreferences(state.bookMakerList)
+        BookmarkSharedPreferencesHelper(this).saveToSharedPreferences(state.bookMakerList.toMutableList())
 
     }
 
