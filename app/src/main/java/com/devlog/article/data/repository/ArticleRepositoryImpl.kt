@@ -41,10 +41,7 @@ class ArticleRepositoryImpl private constructor(
         return@withContext response.isSuccessful
     }
 
-    override suspend fun getBookMaker(): BookmarkResponse? = withContext(ioDispatcher) {
-        val response = api.getBookMaker()
-        return@withContext response.body()
-    }
+
 
     override suspend fun postArticleLog(articleLogResponse: ArrayList<ArticleLogResponse>): Boolean =
         withContext(ioDispatcher) {

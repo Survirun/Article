@@ -82,7 +82,7 @@ class BookmarkFragment : Fragment() {
 
             setContent {
                 initData()
-                articleList.value = bookmarkSharedPreferencesHelper.readFromSharedPreferences()
+               // articleList.value = bookmarkSharedPreferencesHelper.readFromSharedPreferences()
                 ArticleTheme {
                     Surface(
                         modifier = Modifier.fillMaxSize(),
@@ -135,7 +135,7 @@ class BookmarkFragment : Fragment() {
         viewModel.postBookmark(articleEntity)
         showDialog.value = false
         articleList.value = articleList.value.filter { it != articleEntity }.toMutableList()
-        bookmarkSharedPreferencesHelper.saveToSharedPreferences(articleList.value)
+      //  bookmarkSharedPreferencesHelper.saveToSharedPreferences(articleList.value)
 
     }
 

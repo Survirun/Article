@@ -87,9 +87,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import java.net.URI
 
 
-lateinit var pass: ArrayList<String>
-var articles = ArrayList<ArticleTabState>()
-var userViewArticleId = arrayListOf<String>()
+
 
 
 val LocalViewModel =
@@ -105,13 +103,13 @@ class ArticleFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         val userPreference = UserPreference.getInstance(requireContext())
-        pass = userPreference.getUserPagePassed()
 
 
 
         viewModel.userSignCheck = userPreference.userSignInCheck
         viewModel.permission = userPreference.userPermission
-        processArticleResponse(articleArray)
+        viewModel.articles = articleArray
+
         viewModel.test={
             userPreference.userName=""
             userPreference.userUid=""
@@ -124,6 +122,18 @@ class ArticleFragment : Fragment() {
         viewModel.test1 ={
             Toast.makeText(context,"잠시 후 다시 시도해주세요", Toast.LENGTH_SHORT).show()
         }
+        viewModel.article.observe(viewLifecycleOwner){
+            val newArticles = it
+            val uniqueNewArticles = newArticles.filterNot { newArticle ->
+                viewModel.currentArticles.value!!.articles.any { currentArticle ->
+                    currentArticle._id == newArticle._id
+                }
+            }
+            val updatedArticles = viewModel.currentArticles.value!!.articles + uniqueNewArticles
+
+            viewModel.currentArticles.value = viewModel.currentArticles.value!!.copy(articles = updatedArticles as ArrayList<Article>)
+            viewModel.articles[viewModel.tabIndex.value] = viewModel.currentArticles.value!!.copy(articles = updatedArticles)
+        }
         onStateChanged()
         return ComposeView(requireContext()).apply {
             setContent {
@@ -135,16 +145,16 @@ class ArticleFragment : Fragment() {
     }
 
     fun onStateChanged() {
-        var userBookmarkArticleId = arrayListOf<String>()
+        val userBookmarkArticleId = arrayListOf<String>()
         val bookmarArticleLogResponseList = arrayListOf<ArticleLogResponse>()
         val viewArticleLogResponseList = arrayListOf<ArticleLogResponse>()
         val shareArticleLogResponseList = arrayListOf<ArticleLogResponse>()
-        var userShareArticleId = arrayListOf<String>()
+        val userShareArticleId = arrayListOf<String>()
         lifecycle.addObserver(object : LifecycleEventObserver {
             override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
                 when (event) {
                     Lifecycle.Event.ON_STOP -> {
-                        userViewArticleId.forEach {
+                        viewModel.userViewArticleId.forEach {
                             viewArticleLogResponseList.add(ArticleLogResponse(it, "click"))
                         }
                         userShareArticleId.forEach {
@@ -154,7 +164,7 @@ class ArticleFragment : Fragment() {
                             bookmarArticleLogResponseList.add(ArticleLogResponse(it, "bookmark"))
                         }
 
-                        if (userViewArticleId.size != 0) {
+                        if (viewModel.userViewArticleId.size != 0) {
                             viewModel.postArticleLog(viewArticleLogResponseList)
                         }
                         if (userShareArticleId.size != 0) {
@@ -220,9 +230,9 @@ fun Header( onShowDialogChange: (Boolean) -> Unit) {
     }
 }
 
-fun articleDetails(article: Article, context: Context) {
+fun articleDetails(viewModel: ArticleListViewModel,article: Article, context: Context) {
     MixPanelManager.articleClick(article.title)
-    userViewArticleId.add(article._id)
+    viewModel.userViewArticleId.add(article._id)
     val intent = Intent(context, ArticleWebViewActivity::class.java)
     intent.putExtra("url", article.link)
     intent.putExtra("title", article.title)
@@ -231,8 +241,7 @@ fun articleDetails(article: Article, context: Context) {
 
 @Composable
 fun ArticleScreen(viewModel: ArticleListViewModel, showDialog: Boolean, onShowDialogChange: (Boolean) -> Unit) {
-    val (tabIndex, setTabIndex) = remember { mutableStateOf(0) }
-    val currentArticles = remember(tabIndex) { mutableStateOf(articles[tabIndex]) }
+   viewModel.currentArticles = remember(viewModel.tabIndex.value) { mutableStateOf(viewModel.articles[viewModel.tabIndex.value]) }
 
     if (showDialog) {
         AlertDialog(
@@ -252,22 +261,11 @@ fun ArticleScreen(viewModel: ArticleListViewModel, showDialog: Boolean, onShowDi
     fun addArticles(articleTabState: ArticleTabState) {
         articleTabState.page += 1
         if (viewModel.userSignCheck && articleTabState.keyword == Common) {
-            viewModel.getArticle(pass, articleTabState.page)
+            viewModel.getArticle(articleTabState.page)
         } else {
-            viewModel.getArticleKeyword(articleTabState.page, articleTabState.keyword, pass)
+            viewModel.getArticleKeyword(articleTabState.page, articleTabState.keyword)
         }
-        viewModel.succeed = {
-            val newArticles = viewModel.article
-            val uniqueNewArticles = newArticles.filterNot { newArticle ->
-                currentArticles.value.articles.any { currentArticle ->
-                    currentArticle._id == newArticle._id
-                }
-            }
-            val updatedArticles = articleTabState.articles + uniqueNewArticles
-            currentArticles.value =
-                articleTabState.copy(articles = updatedArticles as ArrayList<Article>)
-            articles[tabIndex] = articleTabState.copy(articles = updatedArticles)
-        }
+
 
     }
 
@@ -277,10 +275,10 @@ fun ArticleScreen(viewModel: ArticleListViewModel, showDialog: Boolean, onShowDi
 
     Column(modifier = Modifier.fillMaxWidth()) {
         val context = LocalContext.current
-        TabLayout(tabIndex, setTabIndex)
+        TabLayout(viewModel)
         ArticleList(
-            currentArticles.value,
-            onClick = { articleDetails(it, context) },
+            viewModel.currentArticles.value!!,
+            onClick = { articleDetails(viewModel,it, context) },
             loadMore = { addArticles(it) },
             maxPage = { maxPage() }
         )
@@ -288,7 +286,7 @@ fun ArticleScreen(viewModel: ArticleListViewModel, showDialog: Boolean, onShowDi
 }
 
 @Composable
-fun TabLayout(tabIndex: Int, onTabSelected: (Int) -> Unit) {
+fun TabLayout(viewModel: ArticleListViewModel) {
     val tabs =
         listOf(
             "내 관심사",
@@ -303,11 +301,11 @@ fun TabLayout(tabIndex: Int, onTabSelected: (Int) -> Unit) {
             "기획"
         )
     ScrollableTabRow(
-        selectedTabIndex = tabIndex,
+        selectedTabIndex = viewModel.tabIndex.value,
         containerColor = Color.Transparent,
         indicator = { tabPositions ->
             TabRowDefaults.Indicator(
-                modifier = Modifier.tabIndicatorOffset(tabPositions[tabIndex]),
+                modifier = Modifier.tabIndicatorOffset(tabPositions[viewModel.tabIndex.value]),
                 color = Color.Black,
                 height = 1.5.dp
             )
@@ -321,11 +319,11 @@ fun TabLayout(tabIndex: Int, onTabSelected: (Int) -> Unit) {
         edgePadding = 20.dp,
     ) {
         tabs.forEachIndexed { index, title ->
-            val isSelected = tabIndex == index
+            val isSelected = viewModel.tabIndex.value == index
             Tab(
                 modifier = Modifier.padding(0.dp).width(72.dp),
                 selected = isSelected,
-                onClick = { onTabSelected(index) },
+                onClick = { viewModel.tabIndex.value=index },
                 selectedContentColor = Color.Black,
                 unselectedContentColor = Color(0xFFA0A0AB)
 
@@ -520,15 +518,7 @@ fun TitleText(text: String) {
 }
 
 
-fun processArticleResponse(articleArray: ArrayList<ArticleTabState>) {
-    val list = pass
-    articleArray.forEach { articleTabState ->
-        articleTabState.articles.forEach {
-            list.add(it._id)
-        }
-    }
-    articles = articleArray
-}
+
 
 fun isMaxPage(articleList: ArticleTabState): Boolean {
     return articleList.page == articleList.maxPage
@@ -566,7 +556,7 @@ fun DefaultPreview() {
         Column {
             Header(){}
             Column(modifier = Modifier.fillMaxWidth()) {
-                TabLayout(tabIndex, setTabIndex)
+                //TabLayout(tabIndex, setTabIndex)
             }
         }
     }

@@ -1,6 +1,10 @@
 package com.devlog.article.presentation.article
 
 import android.util.Log
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.devlog.article.data.entity.ArticleEntity
@@ -35,17 +39,22 @@ class ArticleListViewModel@Inject constructor(
 ) {
     var userSignCheck =true
     var permission =""
-    lateinit var succeed: () -> Unit
 
     lateinit var reportSucceed: () -> Unit
     lateinit var reportFailed: () -> Unit
-    lateinit var article: ArrayList<Article>
+    var article=MutableLiveData<ArrayList<Article>>()
     lateinit var bookmark: ArrayList<ArticleEntity>
 
     lateinit var test: () -> Unit
     lateinit var test1: () -> Unit
 
-    fun getArticle(passed: ArrayList<String>, page : Int): Job = viewModelScope.launch {
+    lateinit var currentArticles:MutableState<ArticleTabState>
+    var tabIndex= mutableIntStateOf(0)
+
+    var articles = ArrayList<ArticleTabState>()
+    var userViewArticleId = arrayListOf<String>()
+
+    fun getArticle(page : Int): Job = viewModelScope.launch {
         getArticleUseCase.execute(page = page, onError = {
 
         }, onException = {
@@ -53,8 +62,8 @@ class ArticleListViewModel@Inject constructor(
         }, onComplete = {
 
         }).collect{
-            article = it.data.articles as ArrayList<Article>
-            succeed()
+            article.value = it.data.articles
+
         }
 
 
@@ -62,8 +71,8 @@ class ArticleListViewModel@Inject constructor(
 
 
     }
-    fun getArticleKeyword(page: Int, keyword: Int, pass: ArrayList<String>): Job = viewModelScope.launch {
-        val articleKeywordRequest= ArticleKeywordRequest(keyword=keyword,page=page,pass)
+    fun getArticleKeyword(page: Int, keyword: Int): Job = viewModelScope.launch {
+        val articleKeywordRequest= ArticleKeywordRequest(keyword=keyword,page=page)
         getArticleKeywordUseCase.execute(
             articleKeywordRequest,
             onComplete = {},
@@ -75,8 +84,8 @@ class ArticleListViewModel@Inject constructor(
             }
         ).collect {
            Log.d("polaris", "getAppTechInfo : ${it.toJson()}")
-            article=it.data.articles
-            succeed()
+            article.value=it.data.articles
+
 
         }
 

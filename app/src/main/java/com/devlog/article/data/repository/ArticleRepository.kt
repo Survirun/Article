@@ -20,7 +20,6 @@ interface ArticleRepository {
 
     suspend fun postBookmark(articleId:String):Boolean
 
-    suspend fun getBookMaker(): BookmarkResponse?
 
     suspend fun postArticleLog(articleLogResponse: ArrayList<ArticleLogResponse>):Boolean
 
