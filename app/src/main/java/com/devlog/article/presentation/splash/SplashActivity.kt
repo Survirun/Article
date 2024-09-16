@@ -109,15 +109,7 @@ class SplashActivity : ComponentActivity() {
 
         userPreference = UserPreference.getInstance(this)
         intentCustom = Intent(this, MainActivity::class.java)
-        if (signInCheck()) {
-            if (keywordCheck()) {
-                //viewModel.getArticleSeveralKeyword(arrayListOf( 1))
-                // viewModel.getBookMaker()
-                //viewModel.fetchData()
-                //viewModel.getArticle()
-            }
 
-        }
 
     }
 

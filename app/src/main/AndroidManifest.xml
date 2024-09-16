@@ -17,11 +17,7 @@
             android:name=".presentation.article.ArticleFragment"
             android:exported="false"
             android:theme="@style/Theme.Article" />
-        <activity
-            android:name=".presentation.bookmark.Bookmark"
-            android:exported="false"
-            android:label="@string/title_activity_bookmark"
-            android:theme="@style/Theme.Article" />
+
         <activity
             android:name=".presentation.article_webview.ArticleWebViewActivity"
             android:exported="false" />

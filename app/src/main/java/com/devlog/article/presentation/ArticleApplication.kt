@@ -21,7 +21,7 @@ class ArticleApplication : Application() {
     init {
         instance =this
 
-        Log.e("dfafs","safsfdsfsdfsd")
+
 
 
     }
