@@ -70,6 +70,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.devlog.article.R
@@ -90,8 +91,7 @@ import java.net.URI
 
 
 
-val LocalViewModel =
-    staticCompositionLocalOf<ArticleListViewModel> { error("MainViewModel not provided") }
+
 @AndroidEntryPoint
 class ArticleFragment : Fragment() {
     lateinit var articleArray: ArrayList<ArticleTabState>
@@ -138,7 +138,7 @@ class ArticleFragment : Fragment() {
         return ComposeView(requireContext()).apply {
             setContent {
                 ArticleTheme {
-                    Main(viewModel)
+                    Main()
                 }
             }
         }
@@ -187,19 +187,18 @@ class ArticleFragment : Fragment() {
 
 
 @Composable
-fun Main(viewModel: ArticleListViewModel) {
+fun Main() {
     var showDialog by remember { mutableStateOf(false) }
 
-    CompositionLocalProvider(LocalViewModel provides viewModel) {
         Surface(
             modifier = Modifier.fillMaxSize(),
             color = Color.White
         ) {
             Column {
                 Header( onShowDialogChange = { showDialog = it })
-                ArticleScreen(viewModel, showDialog = showDialog, onShowDialogChange = { showDialog = it })
+                ArticleScreen(viewModel(), showDialog = showDialog, onShowDialogChange = { showDialog = it })
             }
-        }
+
     }
 }
 
@@ -220,9 +219,11 @@ fun Header( onShowDialogChange: (Boolean) -> Unit) {
         )
         Spacer(modifier = Modifier.weight(1f)) // 빈 공간을 채우기 위해 Spacer 사용
         Icon(
-            modifier = Modifier.size(20.dp).clickable {
-                onShowDialogChange(true)
-            },
+            modifier = Modifier
+                .size(20.dp)
+                .clickable {
+                    onShowDialogChange(true)
+                },
             painter = painterResource(id = R.drawable.baseline_settings_24),
             tint = Color(0xFF000000),
             contentDescription = null
@@ -321,7 +322,9 @@ fun TabLayout(viewModel: ArticleListViewModel) {
         tabs.forEachIndexed { index, title ->
             val isSelected = viewModel.tabIndex.value == index
             Tab(
-                modifier = Modifier.padding(0.dp).width(72.dp),
+                modifier = Modifier
+                    .padding(0.dp)
+                    .width(72.dp),
                 selected = isSelected,
                 onClick = { viewModel.tabIndex.value=index },
                 selectedContentColor = Color.Black,
@@ -329,7 +332,9 @@ fun TabLayout(viewModel: ArticleListViewModel) {
 
             ){
                 Box(
-                    modifier = Modifier.width(72.dp).padding(0.dp, 12.dp),
+                    modifier = Modifier
+                        .width(72.dp)
+                        .padding(0.dp, 12.dp),
                 ) {
                     TabText(title, isSelected)
                 }
@@ -372,6 +377,8 @@ fun ArticleList(
 
 @Composable
 fun ArticleItem(article: Article, onClick: () -> Unit) {
+    val articleListViewModel: ArticleListViewModel = viewModel()
+
     Row(
         modifier = Modifier
             .clickable(onClick = onClick)
@@ -382,7 +389,9 @@ fun ArticleItem(article: Article, onClick: () -> Unit) {
     ) {
         ArticleText(
             article,
-            modifier = Modifier.weight(1f).height(80.dp)
+            modifier = Modifier
+                .weight(1f)
+                .height(80.dp)
         )
         Spacer(modifier = Modifier.size(12.dp))
         AsyncImage(
@@ -393,7 +402,8 @@ fun ArticleItem(article: Article, onClick: () -> Unit) {
                 .size(81.dp)
                 .clip(RoundedCornerShape(4.dp))
         )
-        if (isAdmin(LocalViewModel.current.permission)) {
+
+        if (isAdmin()) {
             reportButton(article._id)
         }
     }
@@ -421,7 +431,7 @@ fun CompanyArticleItem(article: Article, onClick: () -> Unit) {
         )
         Spacer(modifier = Modifier.size(8.dp))
         ArticleText(article)
-        if (isAdmin(LocalViewModel.current.permission)) {
+        if (isAdmin()) {
             reportButton(article._id)
         }
     }
@@ -436,15 +446,18 @@ fun TabText(title: String, isSelected: Boolean) {
             Font(R.font.font, FontWeight.SemiBold)
         ),
         textAlign = TextAlign.Center,
-        modifier = Modifier.fillMaxWidth().height(24.dp).wrapContentHeight(align = Alignment.CenterVertically)
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(24.dp)
+            .wrapContentHeight(align = Alignment.CenterVertically)
     )
 }
 
 @Composable
 fun reportButton(articleId: String) {
-    val viewModel = LocalViewModel.current
+    val articleListViewModel: ArticleListViewModel = viewModel()
     Button(
-        onClick = { reportArticle(viewModel, articleId) },
+        onClick = { reportArticle(articleListViewModel, articleId) },
         modifier = Modifier.wrapContentSize(),
     ) {
         Text("신고")
@@ -523,9 +536,10 @@ fun TitleText(text: String) {
 fun isMaxPage(articleList: ArticleTabState): Boolean {
     return articleList.page == articleList.maxPage
 }
-
-fun isAdmin(permission: String): Boolean {
-    return permission == "admin"
+@Composable
+fun isAdmin(): Boolean {
+    val articleListViewModel: ArticleListViewModel = viewModel()
+    return articleListViewModel.permission == "admin"
 }
 
 
