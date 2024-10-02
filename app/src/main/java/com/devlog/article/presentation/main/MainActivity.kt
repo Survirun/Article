@@ -1,9 +1,14 @@
 package com.devlog.article.presentation.main
 
+import android.Manifest
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.TooltipCompat
+import androidx.core.content.ContextCompat
 import androidx.core.view.forEach
 import androidx.fragment.app.Fragment
 import com.devlog.article.R
@@ -35,11 +40,24 @@ class MainActivity() : AppCompatActivity() {
     private var articleFragment = ArticleFragment()
     lateinit var userPreference: UserPreference
 
+    private val requestPermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
+            if (isGranted) {
+                // 권한이 승인되었을 때 실행할 코드
+
+            } else {
+
+            }
+        }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         userPreference = UserPreference.getInstance(this)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            askNotificationPermission()
+        }
         getArticleData()
         supportFragmentManager.beginTransaction().add(R.id.containers, articleFragment).commit()
         binding.bottomNavigationview.setOnItemSelectedListener { item ->
@@ -108,6 +126,27 @@ class MainActivity() : AppCompatActivity() {
         }
 
         articleFragment.articleArray = totalArticles
+    }
+
+    private fun askNotificationPermission() {
+        // Android 13(API 33) 이상에서만 권한 확인 및 요청
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            // 권한 상태 확인
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) ==
+                PackageManager.PERMISSION_GRANTED) {
+                // 권한이 이미 승인되어 있음
+            } else if (shouldShowRequestPermissionRationale(Manifest.permission.POST_NOTIFICATIONS)) {
+                // 권한 요청 이유를 사용자에게 설명해야 함
+                // 사용자에게 권한 요청의 필요성을 설명하는 UI를 표시한 후 requestPermissionLauncher 호출
+                requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+            } else {
+                // 권한 요청 실행
+                requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+            }
+        } else {
+            // Android 13 미만의 경우, 별도의 권한 요청 없이 알림을 보낼 수 있음
+            // 필요 시 바로 알림을 발송하거나 다른 로직을 수행할 수 있습니다.
+        }
     }
 
 }
