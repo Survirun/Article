@@ -66,6 +66,7 @@ class ArticleApplication : Application() {
             .setConstraints(constraints)
             .build()
 
+
         WorkManager.getInstance(this).enqueue(dailyWorkRequest)
     }
 
