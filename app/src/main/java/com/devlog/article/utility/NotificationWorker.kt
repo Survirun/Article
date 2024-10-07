@@ -12,7 +12,10 @@ import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.devlog.article.R
 import com.devlog.article.data.mixpanel.MixPanelManager
+import com.devlog.article.data.preference.PrefManager
 import com.devlog.article.presentation.main.MainActivity
+import com.devlog.article.utility.UtilManager.getToday
+import com.devlog.article.utility.UtilManager.getTodayToInt
 
 
 class NotificationWorker(var context: Context, params: WorkerParameters) : Worker(context, params) {
@@ -20,21 +23,33 @@ class NotificationWorker(var context: Context, params: WorkerParameters) : Worke
     // 실제 작업을 수행하는 doWork() 메서드
     override fun doWork(): Result {
         // 알림을 보내는 메서드 호출
-
-        sendNotification()
+        val title = inputData.getString("title") ?: "Default Title"
+        val subtitle = inputData.getString("subtitle") ?: "Default Subtitle"
+        val time = inputData.getInt("time", 0)
+        if (time > 12) {
+            if (PrefManager.appAccessDate == getTodayToInt()) {
+                return Result.success()
+            }
+        }
+        showNotification(title, subtitle)
 
         return Result.success()  // 작업 성공 반환
     }
 
     // 알림을 보내는 메서드
-    fun sendNotification() {
-        val notificationManager = applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+    fun showNotification(title: String, subtitle: String) {
+        val notificationManager =
+            applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         val channelId = "daily_notification_channel"
 
         // Android 8.0 이상에서 NotificationChannel을 생성
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel(channelId, "새로운 아티클이 도착했어요", NotificationManager.IMPORTANCE_DEFAULT).apply {
-                description = "얼른 새로운 아티클을 읽어보세요"
+            val channel = NotificationChannel(
+                channelId,
+                title,
+                NotificationManager.IMPORTANCE_DEFAULT
+            ).apply {
+                description = subtitle
             }
             notificationManager.createNotificationChannel(channel)  // 채널 생성
         }
@@ -44,12 +59,13 @@ class NotificationWorker(var context: Context, params: WorkerParameters) : Worke
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             putExtra("EXTRA_NOTIFICATION_CLICKED", true)
         }
-        val pendingIntent: PendingIntent = PendingIntent.getActivity(applicationContext, 0, intent, PendingIntent.FLAG_IMMUTABLE)
+        val pendingIntent: PendingIntent =
+            PendingIntent.getActivity(applicationContext, 0, intent, PendingIntent.FLAG_IMMUTABLE)
 
         // 알림 생성
         val notification = NotificationCompat.Builder(applicationContext, channelId)
-            .setContentTitle("새로운 아티클이 도착했어요")  // 알림 제목 설정
-            .setContentText("얼른 새로운 아티클을 읽어보세요")  // 알림 메시지 설정
+            .setContentTitle(title)  // 알림 제목 설정
+            .setContentText(subtitle)  // 알림 메시지 설정
             .setSmallIcon(R.drawable.ic_launcher_app_logo_foreground)  // 알림 아이콘 설정
             .setContentIntent(pendingIntent)  // 인텐트 설정
             //.setColor(ContextCompat.getColor(context, R.color.color_all_main_color))
