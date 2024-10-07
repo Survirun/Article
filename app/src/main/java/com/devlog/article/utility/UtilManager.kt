@@ -9,15 +9,15 @@ object UtilManager {
     fun Any.toJson(): String {
         return "\n" + GsonBuilder().setPrettyPrinting().create().toJson(this)
     }
-    fun getToday(){
+    fun getToday():String{
         val currentDate = LocalDate.now()
         val formattedDate = currentDate.format(DateTimeFormatter.ofPattern("yyyyMMdd"))
-        return getToday()
+        return formattedDate.toString()
     }
 
     fun getTodayToInt():Int{
         val currentDate = LocalDate.now()
         val formattedDate = currentDate.format(DateTimeFormatter.ofPattern("yyyyMMdd"))
-        return  getToday().toString().toInt()
+        return  getToday().toInt()
     }
 }
