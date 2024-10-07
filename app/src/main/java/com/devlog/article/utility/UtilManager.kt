@@ -20,4 +20,8 @@ object UtilManager {
         val formattedDate = currentDate.format(DateTimeFormatter.ofPattern("yyyyMMdd"))
         return  getToday().toInt()
     }
+
+    fun String.toDotDateFormat(): String {
+        return this.replace("-", ".")
+    }
 }

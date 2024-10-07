@@ -24,6 +24,7 @@ import com.devlog.article.data.response.ArticleLogResponse
 import com.devlog.article.data.response.ArticleResponse
 import com.devlog.article.domain.usecase.GetArticleKeywordUseCase
 import com.devlog.article.domain.usecase.GetArticleUseCase
+import com.devlog.article.presentation.my_keywords_select.Common
 import com.devlog.article.utility.UtilManager.toJson
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -160,6 +161,17 @@ class ArticleListViewModel@Inject constructor(
         } else {
             test1()
         }
+    }
+
+    fun addArticles(articleTabState: ArticleTabState) {
+        articleTabState.page += 1
+        if (userSignCheck && articleTabState.keyword == Common) {
+            getArticle(articleTabState.page)
+        } else {
+            getArticleKeyword(articleTabState.page, articleTabState.keyword)
+        }
+
+
     }
 
 }

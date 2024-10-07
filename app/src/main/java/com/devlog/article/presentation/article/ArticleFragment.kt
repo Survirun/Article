@@ -84,6 +84,7 @@ import com.devlog.article.presentation.ui.theme.ArticleTheme
 import com.devlog.article.presentation.ui.theme.Gray30
 import com.devlog.article.presentation.ui.theme.Gray60
 import com.devlog.article.presentation.ui.theme.Gray70
+import com.devlog.article.utility.UtilManager.toDotDateFormat
 import dagger.hilt.android.AndroidEntryPoint
 import java.net.URI
 
@@ -259,20 +260,7 @@ fun ArticleScreen(viewModel: ArticleListViewModel, showDialog: Boolean, onShowDi
         )
     }
 
-    fun addArticles(articleTabState: ArticleTabState) {
-        articleTabState.page += 1
-        if (viewModel.userSignCheck && articleTabState.keyword == Common) {
-            viewModel.getArticle(articleTabState.page)
-        } else {
-            viewModel.getArticleKeyword(articleTabState.page, articleTabState.keyword)
-        }
 
-
-    }
-
-    fun maxPage() {
-//        Toast.makeText(context, "끝에 도달", Toast.LENGTH_SHORT).show()
-    }
 
     Column(modifier = Modifier.fillMaxWidth()) {
         val context = LocalContext.current
@@ -280,8 +268,8 @@ fun ArticleScreen(viewModel: ArticleListViewModel, showDialog: Boolean, onShowDi
         ArticleList(
             viewModel.currentArticles.value!!,
             onClick = { articleDetails(viewModel,it, context) },
-            loadMore = { addArticles(it) },
-            maxPage = { maxPage() }
+            loadMore = { viewModel.addArticles(it) },
+            maxPage = {}
         )
     }
 }
@@ -421,7 +409,7 @@ fun CompanyArticleItem(article: Article, onClick: () -> Unit) {
             .padding(vertical = 16.dp, horizontal = 20.dp),
     ) {
         AsyncImage(
-            model = if (article.link.contains("yozm.wishket")) R.drawable.yozm else article.thumbnail,
+            model =  article.thumbnail,
             contentDescription = null,
             contentScale = ContentScale.Crop,
             modifier = Modifier
@@ -554,9 +542,7 @@ fun reportArticle(viewModel: ArticleListViewModel, articleId: String) {
 
 }
 
-fun String.toDotDateFormat(): String {
-    return this.replace("-", ".")
-}
+
 
 @Preview(showBackground = true)
 @Composable
