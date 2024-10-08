@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -50,9 +51,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
@@ -72,6 +75,7 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
+import coil.compose.rememberImagePainter
 import coil.request.ImageRequest
 import com.devlog.article.R
 import com.devlog.article.data.mixpanel.MixPanelManager
@@ -89,14 +93,10 @@ import dagger.hilt.android.AndroidEntryPoint
 import java.net.URI
 
 
-
-
-
-
 @AndroidEntryPoint
 class ArticleFragment : Fragment() {
     lateinit var articleArray: ArrayList<ArticleTabState>
-     val viewModel: ArticleListViewModel by viewModels()
+    val viewModel: ArticleListViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -111,19 +111,19 @@ class ArticleFragment : Fragment() {
         viewModel.permission = userPreference.userPermission
         viewModel.articles = articleArray
 
-        viewModel.test={
-            userPreference.userName=""
-            userPreference.userUid=""
-            userPreference.userSignInCheck=false
-            userPreference.userKeywordCheck=false
-            Toast.makeText(context,"앱 계정이 삭제 되었습니다", Toast.LENGTH_SHORT).show()
+        viewModel.test = {
+            userPreference.userName = ""
+            userPreference.userUid = ""
+            userPreference.userSignInCheck = false
+            userPreference.userKeywordCheck = false
+            Toast.makeText(context, "앱 계정이 삭제 되었습니다", Toast.LENGTH_SHORT).show()
             finishAffinity(requireActivity())
 
         }
-        viewModel.test1 ={
-            Toast.makeText(context,"잠시 후 다시 시도해주세요", Toast.LENGTH_SHORT).show()
+        viewModel.test1 = {
+            Toast.makeText(context, "잠시 후 다시 시도해주세요", Toast.LENGTH_SHORT).show()
         }
-        viewModel.article.observe(viewLifecycleOwner){
+        viewModel.article.observe(viewLifecycleOwner) {
             val newArticles = it
             val uniqueNewArticles = newArticles.filterNot { newArticle ->
                 viewModel.currentArticles.value!!.articles.any { currentArticle ->
@@ -132,8 +132,10 @@ class ArticleFragment : Fragment() {
             }
             val updatedArticles = viewModel.currentArticles.value!!.articles + uniqueNewArticles
 
-            viewModel.currentArticles.value = viewModel.currentArticles.value!!.copy(articles = updatedArticles as ArrayList<Article>)
-            viewModel.articles[viewModel.tabIndex.value] = viewModel.currentArticles.value!!.copy(articles = updatedArticles)
+            viewModel.currentArticles.value =
+                viewModel.currentArticles.value!!.copy(articles = updatedArticles as ArrayList<Article>)
+            viewModel.articles[viewModel.tabIndex.value] =
+                viewModel.currentArticles.value!!.copy(articles = updatedArticles)
         }
         onStateChanged()
         return ComposeView(requireContext()).apply {
@@ -186,25 +188,27 @@ class ArticleFragment : Fragment() {
 }
 
 
-
 @Composable
 fun Main() {
     var showDialog by remember { mutableStateOf(false) }
 
-        Surface(
-            modifier = Modifier.fillMaxSize(),
-            color = Color.White
-        ) {
-            Column {
-                Header( onShowDialogChange = { showDialog = it })
-                ArticleScreen(viewModel(), showDialog = showDialog, onShowDialogChange = { showDialog = it })
-            }
+    Surface(
+        modifier = Modifier.fillMaxSize(),
+        color = Color.White
+    ) {
+        Column {
+            Header(onShowDialogChange = { showDialog = it })
+            ArticleScreen(
+                viewModel(),
+                showDialog = showDialog,
+                onShowDialogChange = { showDialog = it })
+        }
 
     }
 }
 
 @Composable
-fun Header( onShowDialogChange: (Boolean) -> Unit) {
+fun Header(onShowDialogChange: (Boolean) -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -232,7 +236,7 @@ fun Header( onShowDialogChange: (Boolean) -> Unit) {
     }
 }
 
-fun articleDetails(viewModel: ArticleListViewModel,article: Article, context: Context) {
+fun articleDetails(viewModel: ArticleListViewModel, article: Article, context: Context) {
     MixPanelManager.articleClick(article.title)
     viewModel.userViewArticleId.add(article._id)
     val intent = Intent(context, ArticleWebViewActivity::class.java)
@@ -242,8 +246,13 @@ fun articleDetails(viewModel: ArticleListViewModel,article: Article, context: Co
 }
 
 @Composable
-fun ArticleScreen(viewModel: ArticleListViewModel, showDialog: Boolean, onShowDialogChange: (Boolean) -> Unit) {
-   viewModel.currentArticles = remember(viewModel.tabIndex.value) { mutableStateOf(viewModel.articles[viewModel.tabIndex.value]) }
+fun ArticleScreen(
+    viewModel: ArticleListViewModel,
+    showDialog: Boolean,
+    onShowDialogChange: (Boolean) -> Unit
+) {
+    viewModel.currentArticles =
+        remember(viewModel.tabIndex.value) { mutableStateOf(viewModel.articles[viewModel.tabIndex.value]) }
 
     if (showDialog) {
         AlertDialog(
@@ -253,7 +262,8 @@ fun ArticleScreen(viewModel: ArticleListViewModel, showDialog: Boolean, onShowDi
             confirmButton = {
                 Button(onClick = {
                     viewModel.deleteUser()
-                    onShowDialogChange(false) }) {
+                    onShowDialogChange(false)
+                }) {
                     Text("확인")
                 }
             }
@@ -267,7 +277,7 @@ fun ArticleScreen(viewModel: ArticleListViewModel, showDialog: Boolean, onShowDi
         TabLayout(viewModel)
         ArticleList(
             viewModel.currentArticles.value!!,
-            onClick = { articleDetails(viewModel,it, context) },
+            onClick = { articleDetails(viewModel, it, context) },
             loadMore = { viewModel.addArticles(it) },
             maxPage = {}
         )
@@ -304,7 +314,8 @@ fun TabLayout(viewModel: ArticleListViewModel) {
             Divider(
                 color = Gray30,
                 thickness = 1.5.dp
-            )},
+            )
+        },
         edgePadding = 20.dp,
     ) {
         tabs.forEachIndexed { index, title ->
@@ -314,17 +325,17 @@ fun TabLayout(viewModel: ArticleListViewModel) {
                     .padding(0.dp)
                     .width(72.dp),
                 selected = isSelected,
-                onClick = { viewModel.tabIndex.value=index },
+                onClick = { viewModel.tabIndex.value = index },
                 selectedContentColor = Color.Black,
                 unselectedContentColor = Color(0xFFA0A0AB)
 
-            ){
+            ) {
                 Box(
                     modifier = Modifier
                         .width(72.dp)
                         .padding(0.dp, 12.dp),
                 ) {
-                    TabText(title, isSelected)
+                    TabText(title)
                 }
             }
         }
@@ -344,9 +355,9 @@ fun ArticleList(
             if (idx >= articleList.articles.size - 1) {
                 if (isMaxPage(articleList)) {
                     maxPage()
-                    Log.d("poalris","max")
+                    Log.d("poalris", "max")
                 } else {
-                    Log.d("poalris","min")
+                    Log.d("poalris", "min")
                     LaunchedEffect(articleList.page) {
                         loadMore(articleList)
                     }
@@ -363,9 +374,27 @@ fun ArticleList(
     }
 }
 
+@Preview
 @Composable
-fun ArticleItem(article: Article, onClick: () -> Unit) {
-    val articleListViewModel: ArticleListViewModel = viewModel()
+fun ArticleItem(
+    article: Article = Article(
+        snippet = "서브 제목 입니다",
+        date = "2024.10.08",
+        thumbnail = "https://th.bing.com/th?q=Linux&w=138&h=138&c=7&o=5&pid=1.7&mkt=ko-KR&cc=KR&setlang=ko&adlt=strict&t=1",
+        keywords = arrayListOf(),
+        displayLink = "",
+        sitename = "사이트 이름",
+        link = "",
+        title = "제목입니다",
+        cx = 0,
+        _id = "",
+        weight = 0.0,
+        type = 0
+
+    ), onClick: () -> Unit = {}
+) {
+    val isPreview = LocalInspectionMode.current
+    val articleListViewModel: ArticleListViewModel? = if (!isPreview) viewModel() else null
 
     Row(
         modifier = Modifier
@@ -382,25 +411,42 @@ fun ArticleItem(article: Article, onClick: () -> Unit) {
                 .height(80.dp)
         )
         Spacer(modifier = Modifier.size(12.dp))
-        AsyncImage(
-            model = if (article.link.contains("yozm.wishket")) R.drawable.yozm else article.thumbnail,
+
+        displayImage(article,isPreview)
+
+        if (articleListViewModel?.isAdmin()==true) {
+            reportButton(article._id)
+        }
+    }
+
+}
+@Composable
+fun displayImage(article: Article, isPreview: Boolean) {
+    if (isPreview) {
+        // 프리뷰 모드에서는 Image와 painterResource 사용
+        Image(
+            painter = painterResource(id = R.drawable.yozm),
             contentDescription = null,
             contentScale = ContentScale.Crop,
             modifier = Modifier
                 .size(81.dp)
                 .clip(RoundedCornerShape(4.dp))
         )
-
-        if (isAdmin()) {
-            reportButton(article._id)
-        }
+    } else {
+        // 실제 모드에서는 AsyncImage 사용
+        AsyncImage(
+            model = article.thumbnail,
+            contentDescription = null,
+            contentScale = ContentScale.Crop,
+            modifier = Modifier
+                .size(81.dp)
+                .clip(RoundedCornerShape(4.dp))
+        )
     }
-
 }
-
-
 @Composable
 fun CompanyArticleItem(article: Article, onClick: () -> Unit) {
+    val articleListViewModel: ArticleListViewModel = viewModel()
     Column(
         modifier = Modifier
             .clickable(onClick = onClick)
@@ -409,7 +455,7 @@ fun CompanyArticleItem(article: Article, onClick: () -> Unit) {
             .padding(vertical = 16.dp, horizontal = 20.dp),
     ) {
         AsyncImage(
-            model =  article.thumbnail,
+            model = article.thumbnail,
             contentDescription = null,
             contentScale = ContentScale.Crop,
             modifier = Modifier
@@ -419,14 +465,15 @@ fun CompanyArticleItem(article: Article, onClick: () -> Unit) {
         )
         Spacer(modifier = Modifier.size(8.dp))
         ArticleText(article)
-        if (isAdmin()) {
+        if (articleListViewModel.isAdmin()) {
             reportButton(article._id)
         }
     }
 }
 
+@Preview
 @Composable
-fun TabText(title: String, isSelected: Boolean) {
+fun TabText(title: String = "제목") {
     Text(
         title,
         fontSize = 16.sp,
@@ -441,11 +488,16 @@ fun TabText(title: String, isSelected: Boolean) {
     )
 }
 
+@Preview
 @Composable
-fun reportButton(articleId: String) {
-    val articleListViewModel: ArticleListViewModel = viewModel()
+fun reportButton(articleId: String = "") {
+    val isPreview = LocalInspectionMode.current
+    val articleListViewModel: ArticleListViewModel? = if (!isPreview) viewModel() else null
+
     Button(
-        onClick = { reportArticle(articleListViewModel, articleId) },
+        onClick = {
+            reportArticle(articleListViewModel, articleId)
+                  },
         modifier = Modifier.wrapContentSize(),
     ) {
         Text("신고")
@@ -519,29 +571,24 @@ fun TitleText(text: String) {
 }
 
 
-
-
 fun isMaxPage(articleList: ArticleTabState): Boolean {
     return articleList.page == articleList.maxPage
 }
-@Composable
-fun isAdmin(): Boolean {
-    val articleListViewModel: ArticleListViewModel = viewModel()
-    return articleListViewModel.permission == "admin"
-}
 
 
-fun reportArticle(viewModel: ArticleListViewModel, articleId: String) {
-    viewModel.postReport(articleId)
-    viewModel.reportSucceed = {
-        Log.e("test", "성공")
-    }
-    viewModel.reportFailed = {
-        Log.e("test", "실패")
+fun reportArticle(viewModel: ArticleListViewModel?, articleId: String) {
+    viewModel?.run{
+        postReport(articleId)
+        reportSucceed = {
+            Log.e("test", "성공")
+        }
+        reportFailed = {
+            Log.e("test", "실패")
+        }
     }
 
-}
 
+}
 
 
 @Preview(showBackground = true)
@@ -554,7 +601,7 @@ fun DefaultPreview() {
         color = Color.White
     ) {
         Column {
-            Header(){}
+            Header() {}
             Column(modifier = Modifier.fillMaxWidth()) {
                 //TabLayout(tabIndex, setTabIndex)
             }

@@ -173,5 +173,9 @@ class ArticleListViewModel@Inject constructor(
 
 
     }
+    fun isAdmin(): Boolean {
+
+        return permission == "admin"
+    }
 
 }
