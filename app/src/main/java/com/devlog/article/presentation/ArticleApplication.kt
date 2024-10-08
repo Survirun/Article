@@ -28,13 +28,13 @@ class ArticleApplication : Application() {
 
 
     }
+
     init {
-        instance =this
-
-
+        instance = this
 
 
     }
+
     override fun onCreate() {
         super.onCreate()
         MixPanelManager.init(applicationContext)
@@ -44,11 +44,23 @@ class ArticleApplication : Application() {
 
     }
 
-    private fun createWorkRequest(){
+    private fun createWorkRequest() {
 
-        val times = listOf(12, 16, 18, 21,23) // 12시, 4시, 6시, 9시 ,11시
-        val titles = listOf("Title 12PM", "Title 4PM", "Title 6PM", "Title 9PM")
-        val subtitles = listOf("Subtitle 12PM", "Subtitle 4PM", "Subtitle 6PM", "Subtitle 9PM")
+        val times = listOf(12, 16, 18, 21, 23) // 12시, 4시, 6시, 9시 ,11시
+        val titles = listOf(
+            "최신 아티클이 도착했습니다! 놓치지 마세요!",
+            "긴급! 당신이 놓친 아티클이 여기에!",
+            "당신의 동료가 읽고 있는 그 글, 왜 당신은 아직 모르나요?",
+            "모두가 읽은 아티클, 당신은 아직도 안 읽었나요?",
+            "띵동! 당신의 택배가 도착했습니다!"
+        )
+        val subtitles = listOf(
+            "점심시간에 조금의 여유를 가지세요. 이 이야기를 놓치면, 당신의 하루가 평범하게 지나가고 중요한 통찰을 놓칠 수 있습니다. 클릭해 보세요.",
+            "잘 해결안되는 일이 있나요? 다른 회사들에서 문제를 해결하는법 찾아보기",
+            "내일 동료들과의 대화에서 놓칠 수 있는 주제일지도 모릅니다. 이 글을 읽지 않으면, 중요한 대화에서 뒤처질 수 있습니다.",
+            "이 글을 읽지 않으면, 내일의 이야기에 뒤처질 수 있습니다. 지금 바로 확인해 보세요!",
+            "내일 회의에서 필요한 정보 다 여기 있어요."
+        )
 
         for (i in times.indices) {
             val currentDate = Calendar.getInstance()
@@ -58,7 +70,7 @@ class ArticleApplication : Application() {
             dueDate.set(Calendar.MINUTE, 0)
             dueDate.set(Calendar.SECOND, 0)
 
-            if(dueDate.before(currentDate)) {
+            if (dueDate.before(currentDate)) {
                 dueDate.add(Calendar.HOUR_OF_DAY, 24)
             }
 
@@ -72,7 +84,7 @@ class ArticleApplication : Application() {
             val data = Data.Builder()
                 .putString("title", titles[i])
                 .putString("subtitle", subtitles[i])
-                .putInt("time",times[i])
+                .putInt("time", times[i])
                 .build()
 
 
@@ -89,7 +101,6 @@ class ArticleApplication : Application() {
         }
 
     }
-
 
 
 }
