@@ -29,6 +29,9 @@ class NotificationWorker(var context: Context, params: WorkerParameters) : Worke
         if (time > 12) {
             if (PrefManager.appAccessDate == getTodayToInt()) {
                 return Result.success()
+            }else{
+                showNotification(title, subtitle)
+                return Result.success()
             }
         }
         showNotification(title, subtitle)
