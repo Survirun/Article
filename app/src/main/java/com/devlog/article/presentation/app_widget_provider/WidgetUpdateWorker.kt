@@ -53,7 +53,7 @@ class WidgetUpdateWorker  @AssistedInject constructor(
         MyRemoteViewsFactory.updateData(data,intent)
 
         for (appWidgetId in appWidgetIds) {
-            val views = RemoteViews(applicationContext.packageName, R.layout.appwidget_provider_layout)
+            val views = RemoteViews(applicationContext.packageName, R.layout.widget_provider_layout)
 
             // RemoteViewsService를 설정하여 데이터를 표시
 

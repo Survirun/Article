@@ -8,13 +8,15 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.RemoteViews
+import androidx.work.Constraints
+import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import com.devlog.article.R
 import com.devlog.article.presentation.article_webview.ArticleWebViewActivity
-import com.devlog.article.presentation.main.MainActivity
-import com.devlog.article.presentation.splash.SplashActivity
-import java.util.UUID
+import java.util.concurrent.TimeUnit
 
 class AppWidgetProviderArticle: AppWidgetProvider() {
 
@@ -42,8 +44,19 @@ class AppWidgetProviderArticle: AppWidgetProvider() {
         appWidgetIds: IntArray
     ) {
         Log.d("polaris_onUpdate","onUpdate")
-        val workRequest = OneTimeWorkRequestBuilder<WidgetUpdateWorker>().build()
-        WorkManager.getInstance(context).enqueue(workRequest)
+        val workRequest = PeriodicWorkRequestBuilder<WidgetUpdateWorker>(1, TimeUnit.HOURS)
+            .setConstraints(
+                Constraints.Builder()
+                    .setRequiredNetworkType(NetworkType.CONNECTED) // 네트워크가 연결된 경우에만 실행
+                    .build()
+            )
+            .build()
+
+        WorkManager.getInstance(context).enqueueUniquePeriodicWork(
+            "WidgetUpdateWork",
+            ExistingPeriodicWorkPolicy.REPLACE, // 기존 작업을 대체함
+            workRequest
+        )
 
         super.onUpdate(context, appWidgetManager, appWidgetIds)
         // Perform this loop procedure for each App Widget that belongs to this provider
@@ -54,7 +67,7 @@ class AppWidgetProviderArticle: AppWidgetProvider() {
             val pendingIntentTemplate = PendingIntent.getActivity(
                 context,  appWidgetId , clickIntentTemplate, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE
             )
-            val views = RemoteViews(context.packageName, R.layout.appwidget_provider_layout)
+            val views = RemoteViews(context.packageName, R.layout.widget_provider_layout)
 
             // 리스트뷰에 대한 클릭 템플릿 설정
             views.setPendingIntentTemplate(R.id.widget_list_view, pendingIntentTemplate)
