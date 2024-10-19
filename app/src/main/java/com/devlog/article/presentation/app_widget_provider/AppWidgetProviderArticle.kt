@@ -6,6 +6,7 @@ import android.appwidget.AppWidgetProvider
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.RemoteViews
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
@@ -37,7 +38,7 @@ class AppWidgetProviderArticle: AppWidgetProvider() {
         appWidgetManager: AppWidgetManager,
         appWidgetIds: IntArray
     ) {
-
+        Log.d("polaris_onUpdate","onUpdate")
         val workRequest = OneTimeWorkRequestBuilder<WidgetUpdateWorker>().build()
         WorkManager.getInstance(context).enqueue(workRequest)
 

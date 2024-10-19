@@ -11,22 +11,13 @@ import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.devlog.article.R
 import com.devlog.article.data.entity.Passed
-import com.devlog.article.data.network.ApiService
-import com.devlog.article.data.network.NetworkModule.provideApiRepository
 
-import com.devlog.article.data.repository.v2.ApiDataSource
-import com.devlog.article.data.repository.v2.ApiRepository
-import com.devlog.article.data.request.ArticleKeywordRequest
 import com.devlog.article.data.response.Article
-import com.devlog.article.domain.usecase.GetArticleUseCase
 import com.devlog.article.presentation.ArticleApplication
-import com.skydoves.sandwich.isSuccess
 import com.skydoves.sandwich.suspendMapSuccess
-import com.skydoves.sandwich.toFlow
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
-import retrofit2.Retrofit
-import javax.inject.Inject
+
 @HiltWorker
 class WidgetUpdateWorker  @AssistedInject constructor(
     @Assisted context: Context,
@@ -57,15 +48,15 @@ class WidgetUpdateWorker  @AssistedInject constructor(
     private fun updateWidget(data: List<Article>) {
         val appWidgetManager = AppWidgetManager.getInstance(applicationContext)
         val appWidgetIds = appWidgetManager.getAppWidgetIds(ComponentName(applicationContext, AppWidgetProviderArticle::class.java))
-
+        val intent = Intent(applicationContext, RemoteViewsService::class.java)
         // 데이터를 MyRemoteViewsFactory로 전달
-        MyRemoteViewsFactory.updateData(data)
+        MyRemoteViewsFactory.updateData(data,intent)
 
         for (appWidgetId in appWidgetIds) {
             val views = RemoteViews(applicationContext.packageName, R.layout.appwidget_provider_layout)
 
             // RemoteViewsService를 설정하여 데이터를 표시
-            val intent = Intent(applicationContext, RemoteViewsService::class.java)
+
             views.setRemoteAdapter(R.id.widget_list_view, intent)
 
             // 위젯 업데이트

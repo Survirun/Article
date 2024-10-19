@@ -1,7 +1,10 @@
 package com.devlog.article.presentation
 
 import android.app.Application
+import android.appwidget.AppWidgetManager
+import android.content.ComponentName
 import android.content.Context
+import android.content.Intent
 import android.util.Log
 import androidx.hilt.work.HiltWorkerFactory
 
@@ -15,6 +18,7 @@ import com.devlog.article.data.mixpanel.MixPanelManager
 import com.devlog.article.data.preference.PrefManager
 import com.devlog.article.data.preference.UserPreference
 import com.devlog.article.data.repository.v2.ApiRepository
+import com.devlog.article.presentation.app_widget_provider.AppWidgetProviderArticle
 import com.devlog.article.presentation.app_widget_provider.WidgetUpdateWorker
 import com.devlog.article.utility.NotificationWorker
 import com.devlog.article.utility.UtilManager.getTodayToInt
@@ -57,6 +61,7 @@ class ArticleApplication : Application(), Configuration.Provider  {
         PrefManager.init(applicationContext)
         PrefManager.appAccessDate = getTodayToInt()
         createWorkRequest()
+        updateWidget()
 
     }
 
@@ -116,6 +121,22 @@ class ArticleApplication : Application(), Configuration.Provider  {
 
         }
 
+    }
+
+    private fun updateWidget() {
+        val context = this
+        val appWidgetManager = AppWidgetManager.getInstance(context)
+        val widgetComponent = ComponentName(context, AppWidgetProviderArticle::class.java)
+
+        // 위젯 ID들을 가져옴
+        val appWidgetIds = appWidgetManager.getAppWidgetIds(widgetComponent)
+
+        // 위젯 업데이트 브로드캐스트 보내기
+        val intent = Intent(context, AppWidgetProviderArticle::class.java).apply {
+            action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
+            putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, appWidgetIds)
+        }
+        context.sendBroadcast(intent)
     }
 
 

@@ -1,34 +1,52 @@
 package com.devlog.article.presentation.app_widget_provider
 
+import android.appwidget.AppWidgetManager
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
+import android.util.Log
 import android.widget.RemoteViews
 import android.widget.RemoteViewsService
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.RequestOptions
+import com.bumptech.glide.request.target.AppWidgetTarget
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
 import com.devlog.article.R
 import com.devlog.article.data.response.Article
-
+import com.devlog.article.utility.UtilManager.isImageUrlValid
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 class RemoteViewsService : RemoteViewsService() {
-    override fun onGetViewFactory(intent: Intent?):RemoteViewsFactory {
-        return MyRemoteViewsFactory(this.applicationContext)
+    override fun onGetViewFactory(intent: Intent?): RemoteViewsFactory {
+        return MyRemoteViewsFactory(this.applicationContext, intent!!)
     }
 }
 
-class MyRemoteViewsFactory(private val context: Context) : RemoteViewsService.RemoteViewsFactory {
-
+class MyRemoteViewsFactory(private val context: Context, intent: Intent) : RemoteViewsService.RemoteViewsFactory {
 
     companion object {
         private val dataList: MutableList<Article> = mutableListOf()
 
         // 외부에서 데이터 업데이트
-        fun updateData(newData: List<Article>) {
+        fun updateData(newData: List<Article>, intent: Intent) {
             dataList.clear()
             dataList.addAll(newData)
         }
     }
+
+    private val appWidgetId: Int = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID)
+
     // 초기화
     override fun onCreate() {
         // 데이터를 초기화하거나 불러오기 (여기서는 간단한 데이터 예시)
-
     }
 
     // 데이터 갱신
@@ -42,7 +60,31 @@ class MyRemoteViewsFactory(private val context: Context) : RemoteViewsService.Re
 
     override fun getViewAt(position: Int): RemoteViews {
         val views = RemoteViews(context.packageName, R.layout.widget_list_item)
-        views.setTextViewText(R.id.widget_item_text, dataList[position].title)
+        views.setTextViewText(R.id.widget_item_title_text, dataList[position].title)
+        views.setTextViewText(R.id.widget_item_sub_title_text, dataList[position].snippet ?: "")
+
+        val imageUrl = dataList[position].thumbnail
+        if (!imageUrl.isNullOrBlank()) {
+            try {
+                // 이미지 동기 로드
+                val bitmap = Glide.with(context.applicationContext)
+                    .asBitmap()
+                    .load(imageUrl)
+                    .submit() // 동기적으로 이미지 로드
+                    .get()
+
+                // 이미지를 성공적으로 로드하면 setImageViewBitmap으로 설정
+                views.setImageViewBitmap(R.id.imageView1, bitmap)
+            } catch (e: Exception) {
+                Log.e("GlideError", "Failed to load image: $imageUrl", e)
+            }
+        }
+
+        // 클릭 이벤트를 처리하려면 PendingIntent를 설정
+        val fillInIntent = Intent()
+        fillInIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
+       // views.setOnClickFillInIntent(R.id.widget_item_container, fillInIntent)
+
         return views
     }
 
