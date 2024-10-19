@@ -3,6 +3,9 @@ package com.devlog.article.presentation
 import android.app.Application
 import android.content.Context
 import android.util.Log
+import androidx.hilt.work.HiltWorkerFactory
+
+import androidx.work.Configuration
 import androidx.work.Constraints
 import androidx.work.Data
 import androidx.work.NetworkType
@@ -11,14 +14,17 @@ import androidx.work.WorkManager
 import com.devlog.article.data.mixpanel.MixPanelManager
 import com.devlog.article.data.preference.PrefManager
 import com.devlog.article.data.preference.UserPreference
+import com.devlog.article.data.repository.v2.ApiRepository
+import com.devlog.article.presentation.app_widget_provider.WidgetUpdateWorker
 import com.devlog.article.utility.NotificationWorker
 import com.devlog.article.utility.UtilManager.getTodayToInt
 import dagger.hilt.android.HiltAndroidApp
 import java.util.Calendar
 import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 
 @HiltAndroidApp
-class ArticleApplication : Application() {
+class ArticleApplication : Application(), Configuration.Provider  {
 
     companion object {
         const val TAG = "Application"
@@ -34,7 +40,17 @@ class ArticleApplication : Application() {
 
 
     }
+    @Inject
+    lateinit var apiRepository: ApiRepository
+    @Inject
+    lateinit var workerFactory: HiltWorkerFactory
 
+
+
+    override val workManagerConfiguration: Configuration
+        get() = Configuration.Builder()
+            .setWorkerFactory(workerFactory)
+            .build()
     override fun onCreate() {
         super.onCreate()
         MixPanelManager.init(applicationContext)
@@ -101,6 +117,8 @@ class ArticleApplication : Application() {
         }
 
     }
+
+
 
 
 }

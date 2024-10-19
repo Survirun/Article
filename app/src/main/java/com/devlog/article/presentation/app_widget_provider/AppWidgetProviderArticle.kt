@@ -7,6 +7,8 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.widget.RemoteViews
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
 import com.devlog.article.R
 import com.devlog.article.presentation.main.MainActivity
 
@@ -36,17 +38,9 @@ class AppWidgetProviderArticle: AppWidgetProvider() {
         appWidgetIds: IntArray
     ) {
 
-        for (appWidgetId in appWidgetIds) {
-            // RemoteViewsService 연결
-            val intent = Intent(context, RemoteViewsService::class.java)
-            intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
+        val workRequest = OneTimeWorkRequestBuilder<WidgetUpdateWorker>().build()
+        WorkManager.getInstance(context).enqueue(workRequest)
 
-            val views = RemoteViews(context.packageName, R.layout.appwidget_provider_layout)
-            views.setRemoteAdapter(R.id.widget_list_view, intent)
-
-            // 위젯 업데이트
-            appWidgetManager.updateAppWidget(appWidgetId, views)
-        }
         super.onUpdate(context, appWidgetManager, appWidgetIds)
         // Perform this loop procedure for each App Widget that belongs to this provider
 //        appWidgetIds.forEach { appWidgetId ->
@@ -85,4 +79,5 @@ class AppWidgetProviderArticle: AppWidgetProvider() {
     override fun onReceive(context: Context, intent: Intent) {
         super.onReceive(context, intent)
     }
+
 }

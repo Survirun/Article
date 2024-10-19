@@ -44,6 +44,7 @@ object NetworkModule {
 
     class AddHeaderInterceptor: Interceptor {
         override fun intercept(chain: Interceptor.Chain): Response {
+            Log.d("polaris", userPreference.userUid)
             val builder = chain.request().newBuilder()
                 .addHeader("uid", userPreference.userUid)
                 //.addHeader("uuid", CredentialPreference.getInstance().uuid)

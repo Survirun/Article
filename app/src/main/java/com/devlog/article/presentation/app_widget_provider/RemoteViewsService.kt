@@ -5,6 +5,7 @@ import android.content.Intent
 import android.widget.RemoteViews
 import android.widget.RemoteViewsService
 import com.devlog.article.R
+import com.devlog.article.data.response.Article
 
 class RemoteViewsService : RemoteViewsService() {
     override fun onGetViewFactory(intent: Intent?):RemoteViewsFactory {
@@ -14,12 +15,20 @@ class RemoteViewsService : RemoteViewsService() {
 
 class MyRemoteViewsFactory(private val context: Context) : RemoteViewsService.RemoteViewsFactory {
 
-    private val dataList: MutableList<String> = mutableListOf()
 
+    companion object {
+        private val dataList: MutableList<Article> = mutableListOf()
+
+        // 외부에서 데이터 업데이트
+        fun updateData(newData: List<Article>) {
+            dataList.clear()
+            dataList.addAll(newData)
+        }
+    }
     // 초기화
     override fun onCreate() {
         // 데이터를 초기화하거나 불러오기 (여기서는 간단한 데이터 예시)
-        dataList.addAll(listOf("Item 1", "Item 2", "Item 3", "Item 4","Item 1", "Item 2", "Item 3", "Item 4","Item 1", "Item 2", "Item 3", "Item 4","Item 1", "Item 2", "Item 3", "Item 4","Item 1", "Item 2", "Item 3", "Item 4","Item 1", "Item 2", "Item 3", "Item 4"))
+
     }
 
     // 데이터 갱신
@@ -33,7 +42,7 @@ class MyRemoteViewsFactory(private val context: Context) : RemoteViewsService.Re
 
     override fun getViewAt(position: Int): RemoteViews {
         val views = RemoteViews(context.packageName, R.layout.widget_list_item)
-        views.setTextViewText(R.id.widget_item_text, dataList[position])
+        views.setTextViewText(R.id.widget_item_text, dataList[position].title)
         return views
     }
 

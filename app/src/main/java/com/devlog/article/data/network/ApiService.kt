@@ -4,6 +4,8 @@ import com.devlog.article.data.entity.ArticleLogEntity
 import com.devlog.article.data.entity.LoginEntity
 import com.devlog.article.data.entity.MyKeyword
 import com.devlog.article.data.entity.Passed
+import com.devlog.article.data.network.NetworkModule.AddHeaderInterceptor
+import com.devlog.article.data.network.Url.PRODUCT_BASE_URL
 import com.devlog.article.data.repository.v2.ApiDataSource
 import com.devlog.article.data.request.ArticleSeveralKeywordRequest
 import com.devlog.article.data.response.ArticleResponse
@@ -15,13 +17,18 @@ import com.skydoves.sandwich.ApiResponse
 import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path
 import retrofit2.http.Query
+import java.util.concurrent.TimeUnit
 
 interface ApiService {
     //로그인
@@ -69,4 +76,38 @@ interface ApiService {
     //TODO 양현준
     @POST("article/keywords")
     suspend fun getArticleSeveralKeyword(@Body articleSeveralKeywordRequest: ArticleSeveralKeywordRequest, @Query("page") page: Int):ApiResponse<ArticleSeveralKeywordResponse>
+
+
+    companion object {
+
+        val logging = HttpLoggingInterceptor().apply {
+            level = HttpLoggingInterceptor.Level.BODY
+        }
+
+        val httpClient = OkHttpClient.Builder()
+            .addInterceptor(logging)
+            .build()
+        fun provideOkHttpClient(): OkHttpClient {
+            return OkHttpClient.Builder()
+                .connectTimeout(300, TimeUnit.SECONDS)
+                .readTimeout(300, TimeUnit.SECONDS)
+                .writeTimeout(300, TimeUnit.SECONDS)
+                .addInterceptor(logging)
+                .addInterceptor(AddHeaderInterceptor())
+//            .addInterceptor(ReceivedHeaderInterceptor())
+                .build()
+        }
+        fun create(): ApiService {
+            val retrofit = Retrofit.Builder()
+                .client(provideOkHttpClient())
+                .baseUrl(PRODUCT_BASE_URL)  // 실제 API의 기본 URL로 변경해야 합니다.
+                .addConverterFactory(GsonConverterFactory.create())
+                .client(httpClient)
+                .build()
+
+            return retrofit.create(ApiService::class.java)
+        }
+    }
+
+
 }
