@@ -11,7 +11,10 @@ import android.widget.RemoteViews
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import com.devlog.article.R
+import com.devlog.article.presentation.article_webview.ArticleWebViewActivity
 import com.devlog.article.presentation.main.MainActivity
+import com.devlog.article.presentation.splash.SplashActivity
+import java.util.UUID
 
 class AppWidgetProviderArticle: AppWidgetProvider() {
 
@@ -44,25 +47,22 @@ class AppWidgetProviderArticle: AppWidgetProvider() {
 
         super.onUpdate(context, appWidgetManager, appWidgetIds)
         // Perform this loop procedure for each App Widget that belongs to this provider
-//        appWidgetIds.forEach { appWidgetId ->
-//            // Create an Intent to launch ExampleActivity
-//            val pendingIntent: PendingIntent = Intent(context, MainActivity::class.java)
-//                .let { intent ->
-//                    PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_IMMUTABLE)
-//                }
-//
-//            // Get the layout for the App Widget and attach an on-click listener
-//            // to the button
-//            val views: RemoteViews = RemoteViews(
-//                context.packageName,
-//                R.layout.appwidget_provider_layout
-//            ).apply {
-//                setOnClickPendingIntent(R.id.button, pendingIntent)
-//            }
-//
-//            // Tell the AppWidgetManager to perform an update on the current app widget
-//            appWidgetManager.updateAppWidget(appWidgetId, views)
-//        }
+
+        appWidgetIds.forEach { appWidgetId ->
+            val clickIntentTemplate = Intent(context, ArticleWebViewActivity::class.java)
+
+            val pendingIntentTemplate = PendingIntent.getActivity(
+                context,  appWidgetId , clickIntentTemplate, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE
+            )
+            val views = RemoteViews(context.packageName, R.layout.appwidget_provider_layout)
+
+            // 리스트뷰에 대한 클릭 템플릿 설정
+            views.setPendingIntentTemplate(R.id.widget_list_view, pendingIntentTemplate)
+
+            // 위젯 업데이트
+            appWidgetManager.updateAppWidget(appWidgetId, views)
+
+        }
     }
     // 이 메소드는 앱 데이터가 구글 시스템에 백업 된 이후 복원 될 때 만약 위젯 데이터가 있다면 데이터가 복구 된 이후 호출 됩니다.
     // 일반적으로 사용 될 경우는 흔치 않습니다.

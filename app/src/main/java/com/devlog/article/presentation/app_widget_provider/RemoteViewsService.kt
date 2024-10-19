@@ -24,6 +24,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.util.UUID
+
 class RemoteViewsService : RemoteViewsService() {
     override fun onGetViewFactory(intent: Intent?): RemoteViewsFactory {
         return MyRemoteViewsFactory(this.applicationContext, intent!!)
@@ -81,8 +83,14 @@ class MyRemoteViewsFactory(private val context: Context, intent: Intent) : Remot
         }
 
         // 클릭 이벤트를 처리하려면 PendingIntent를 설정
-        val fillInIntent = Intent()
-        fillInIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
+        val fillInIntent = Intent().apply {
+            action = UUID.randomUUID().toString() // 고유한 Action 설정
+            putExtra("title", dataList[position].title)
+            putExtra("url", dataList[position].link)
+        }
+
+        views.setOnClickFillInIntent(R.id.widget_item_container, fillInIntent)
+        Log.d("IntentData", "URL: ${fillInIntent.getStringExtra("url")}")
        // views.setOnClickFillInIntent(R.id.widget_item_container, fillInIntent)
 
         return views

@@ -23,7 +23,7 @@
 
         <activity
             android:name=".presentation.article_webview.ArticleWebViewActivity"
-            android:exported="false" />
+            android:exported="true" />
         <activity
             android:name=".presentation.my_keywords_select.MyKeywordSelectActivity"
             android:exported="true"
