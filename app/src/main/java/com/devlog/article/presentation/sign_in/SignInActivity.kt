@@ -10,8 +10,8 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.fragment.app.viewModels
 import com.devlog.article.R
+import com.devlog.article.data.preference.PrefManager
 import com.devlog.article.databinding.ActivitySignInBinding
-import com.devlog.article.data.preference.UserPreference
 import com.devlog.article.presentation.my_keywords_select.MyKeywordSelectActivity
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
@@ -31,7 +31,6 @@ import java.util.Base64
 class SignInActivity : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
     lateinit var googleSignInClient: GoogleSignInClient
-    lateinit var userPreference : UserPreference
     private val loginViewModel:LoginViewModel by viewModels()
     private var activityResultLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -59,7 +58,6 @@ class SignInActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         bindind=ActivitySignInBinding.inflate(layoutInflater)
         setContentView(bindind.root)
-        userPreference= UserPreference.getInstance(this)
         bindind.googleSignInButton.setOnClickListener{
             signIn()
         }
@@ -73,7 +71,7 @@ class SignInActivity : AppCompatActivity() {
 
         loginViewModel.loginSucceed = {
 
-            userPreference.userSignInCheck = true
+            PrefManager.userSignInCheck = true
 
             startActivity(Intent(this, MyKeywordSelectActivity::class.java))
             finish()
@@ -108,11 +106,11 @@ class SignInActivity : AppCompatActivity() {
                 OnCompleteListener<AuthResult?> { task ->
                     if (task.isSuccessful) {
                         Log.d("polaris","1")
-                        userPreference.userUid=task.result.user!!.uid
+                        PrefManager.userUid=task.result.user!!.uid
                         // 로그인 성공
-                        userPreference.userName=task.result.user!!.displayName.toString()
+                        PrefManager.userName=task.result.user!!.displayName.toString()
 
-                        loginViewModel.login( userPreference.userUid,task.result.user!!.email.toString(),task.result.user!!.displayName.toString())
+                        loginViewModel.login( PrefManager.userUid,task.result.user!!.email.toString(),task.result.user!!.displayName.toString())
 
 
 

@@ -33,7 +33,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.devlog.article.data.preference.UserPreference
+import com.devlog.article.data.preference.PrefManager
 import com.devlog.article.presentation.splash.SplashActivity
 import com.devlog.article.presentation.ui.theme.ArticleTheme
 import com.devlog.article.presentation.ui.theme.BaseColumn
@@ -45,16 +45,15 @@ var keywordList = listOf<KeywordSelectData>()
 @AndroidEntryPoint
 class MyKeywordSelectActivity : ComponentActivity() {
     var viewModel=MyKeywordSelectViewModel()
-    lateinit var userPreference: UserPreference
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        userPreference=UserPreference.getInstance(this)
 
         viewModel.failed ={
             Toast.makeText(this,"잠시후 다시 시도해주세요",Toast.LENGTH_SHORT).show()
         }
         viewModel.succeedPathMyKeywords ={
-            userPreference.userKeywordCheck=true
+            PrefManager.userKeywordCheck=true
             val intent =Intent(this, SplashActivity::class.java)
             startActivity(intent)
             finish()

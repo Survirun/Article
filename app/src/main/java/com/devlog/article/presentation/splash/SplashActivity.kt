@@ -49,9 +49,9 @@ import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieAnimatable
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.devlog.article.R
+import com.devlog.article.data.preference.PrefManager
 import com.devlog.article.presentation.main.MainActivity
-import com.devlog.article.data.preference.UserPreference
-import com.devlog.article.presentation.article_webview.ArticleWebViewActivity
+
 import com.devlog.article.presentation.bookmark.BookmarkSharedPreferencesHelper
 import com.devlog.article.presentation.main.MainViewModel
 import com.devlog.article.presentation.my_keywords_select.AIDevelopment
@@ -82,7 +82,7 @@ import java.io.Serializable
 @SuppressLint("CustomSplashScreen")
 @AndroidEntryPoint
 class SplashActivity : ComponentActivity() {
-    lateinit var userPreference: UserPreference
+
     val viewModel: SplashViewModel by viewModels()
     lateinit var intentCustom: Intent
     var getApiKeywordList = listOf( 12, 10, 3,9, 4, 5, 6, 7, 8)
@@ -108,7 +108,7 @@ class SplashActivity : ComponentActivity() {
         }
         observeData()
 
-        userPreference = UserPreference.getInstance(this)
+
         intentCustom = Intent(this, MainActivity::class.java)
 
 
@@ -142,7 +142,7 @@ class SplashActivity : ComponentActivity() {
     }
 
     fun keywordCheck(): Boolean {
-        if (userPreference.userKeywordCheck) {
+        if (PrefManager.userKeywordCheck) {
             return true
         } else {
             Handler(Looper.getMainLooper()).postDelayed({
@@ -157,7 +157,7 @@ class SplashActivity : ComponentActivity() {
     }
 
     fun signInCheck(): Boolean {
-        if (userPreference.userSignInCheck) {
+        if (PrefManager.userSignInCheck) {
             return true
         } else {
             Handler(Looper.getMainLooper()).postDelayed({

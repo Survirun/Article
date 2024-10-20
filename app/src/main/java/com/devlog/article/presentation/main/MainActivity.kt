@@ -16,7 +16,7 @@ import androidx.fragment.app.Fragment
 import com.devlog.article.R
 import com.devlog.article.data.entity.ArticleEntity
 import com.devlog.article.data.mixpanel.MixPanelManager
-import com.devlog.article.data.preference.UserPreference
+
 import com.devlog.article.data.response.Article
 import com.devlog.article.data.response.ArticleResponse
 import com.devlog.article.data.response.Data
@@ -43,7 +43,7 @@ import dagger.hilt.android.AndroidEntryPoint
 class MainActivity() : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private var articleFragment = ArticleFragment()
-    lateinit var userPreference: UserPreference
+
 
     private val requestPermissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
@@ -59,7 +59,6 @@ class MainActivity() : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        userPreference = UserPreference.getInstance(this)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             askNotificationPermission()
         }

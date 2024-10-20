@@ -17,7 +17,7 @@ import com.bumptech.glide.Glide
 import com.devlog.article.R
 import com.devlog.article.databinding.ViewholderArticleItemBinding
 import com.devlog.article.data.entity.ArticleEntity
-import com.devlog.article.data.preference.UserPreference
+
 import com.devlog.article.presentation.article.deetail.DetailActivity
 import kotlin.properties.Delegates
 

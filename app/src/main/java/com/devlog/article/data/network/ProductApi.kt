@@ -2,7 +2,7 @@ package com.devlog.article.data.network
 
 import android.app.Application
 import android.util.Log
-import com.devlog.article.data.preference.UserPreference
+import com.devlog.article.data.preference.PrefManager
 import com.devlog.article.data.repository.v2.ApiDataSource
 import com.devlog.article.data.repository.v2.ApiRepository
 import com.devlog.article.presentation.ArticleApplication
@@ -29,9 +29,7 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
-    val userPreference by lazy {
-        UserPreference.getInstance(ArticleApplication.instance)
-    }
+
     private fun loggingInterceptor(): HttpLoggingInterceptor {
         return HttpLoggingInterceptor(HttpLoggingInterceptor.Logger.DEFAULT).apply {
             level = if (BuildConfig.DEBUG ) {
@@ -44,9 +42,9 @@ object NetworkModule {
 
     class AddHeaderInterceptor: Interceptor {
         override fun intercept(chain: Interceptor.Chain): Response {
-            Log.d("polaris", userPreference.userUid)
+            Log.d("polaris", PrefManager.userUid)
             val builder = chain.request().newBuilder()
-                .addHeader("uid", userPreference.userUid)
+                .addHeader("uid", PrefManager.userUid)
                 //.addHeader("uuid", CredentialPreference.getInstance().uuid)
 //                .addHeader("uuid", CredentialPreference.getInstance().uuid)
 //                .addHeader("User-Agent", System.getProperty("http.agent").toString())

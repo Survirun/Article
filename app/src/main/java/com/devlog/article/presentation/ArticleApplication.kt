@@ -16,7 +16,6 @@ import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import com.devlog.article.data.mixpanel.MixPanelManager
 import com.devlog.article.data.preference.PrefManager
-import com.devlog.article.data.preference.UserPreference
 import com.devlog.article.data.repository.v2.ApiRepository
 import com.devlog.article.presentation.app_widget_provider.AppWidgetProviderArticle
 import com.devlog.article.presentation.app_widget_provider.WidgetUpdateWorker
@@ -57,9 +56,9 @@ class ArticleApplication : Application(), Configuration.Provider  {
             .build()
     override fun onCreate() {
         super.onCreate()
-        MixPanelManager.init(applicationContext)
         PrefManager.init(applicationContext)
         PrefManager.appAccessDate = getTodayToInt()
+        MixPanelManager.init(applicationContext)
         createWorkRequest()
         updateWidget()
 

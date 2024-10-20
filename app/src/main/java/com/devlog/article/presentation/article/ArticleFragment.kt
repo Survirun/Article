@@ -79,7 +79,7 @@ import coil.compose.rememberImagePainter
 import coil.request.ImageRequest
 import com.devlog.article.R
 import com.devlog.article.data.mixpanel.MixPanelManager
-import com.devlog.article.data.preference.UserPreference
+import com.devlog.article.data.preference.PrefManager
 import com.devlog.article.data.response.Article
 import com.devlog.article.data.response.ArticleLogResponse
 import com.devlog.article.presentation.article_webview.ArticleWebViewActivity
@@ -103,19 +103,16 @@ class ArticleFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val userPreference = UserPreference.getInstance(requireContext())
 
-
-
-        viewModel.userSignCheck = userPreference.userSignInCheck
-        viewModel.permission = userPreference.userPermission
+        viewModel.userSignCheck = PrefManager.userSignInCheck
+        viewModel.permission = PrefManager.userPermission
         viewModel.articles = articleArray
 
         viewModel.test = {
-            userPreference.userName = ""
-            userPreference.userUid = ""
-            userPreference.userSignInCheck = false
-            userPreference.userKeywordCheck = false
+            PrefManager.userName = ""
+            PrefManager.userUid = ""
+            PrefManager.userSignInCheck = false
+            PrefManager.userKeywordCheck = false
             Toast.makeText(context, "앱 계정이 삭제 되었습니다", Toast.LENGTH_SHORT).show()
             finishAffinity(requireActivity())
 
