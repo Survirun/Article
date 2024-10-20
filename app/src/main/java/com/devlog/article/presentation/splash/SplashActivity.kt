@@ -219,15 +219,17 @@ fun SplashScreen(viewModel: SplashViewModel) {
 
     LaunchedEffect(viewModel.isApiFinished) {
         if (viewModel.isApiFinished) {
-            backgroundColor = (Color(0xFFFFFFFF))
-            showTransition = true
-            Log.d("polaris", transitionProgress.toString())
+
+
+            Log.d("polaris_snapshotFlow1", transitionProgress.toString())
             snapshotFlow { transitionProgress }
                 .collect { progress ->
-                    Log.d("polaris", progress.toString())
+                    Log.d("polaris_snapshotFlow2", progress.toString())
 
                     // transitionProgress가 1f에 도달했을 때 화면 전환
                     if (progress == 1f) {
+                        backgroundColor = (Color(0xFFFFFFFF))
+                        showTransition = true
                         composeStartActivity(context)
                     }
                 }
