@@ -51,6 +51,7 @@ import com.airbnb.lottie.compose.rememberLottieComposition
 import com.devlog.article.R
 import com.devlog.article.presentation.main.MainActivity
 import com.devlog.article.data.preference.UserPreference
+import com.devlog.article.presentation.article_webview.ArticleWebViewActivity
 import com.devlog.article.presentation.bookmark.BookmarkSharedPreferencesHelper
 import com.devlog.article.presentation.main.MainViewModel
 import com.devlog.article.presentation.my_keywords_select.AIDevelopment
@@ -262,12 +263,23 @@ fun SplashScreen(viewModel: SplashViewModel) {
 
 fun composeStartActivity(context: android.content.Context) {
     Log.e("polris", "composeStartActivity")
+    val title =    (context as SplashActivity).intent.getStringExtra("title")
+    val url =  (context ).intent.getStringExtra("url")
+    if (title?.isNotEmpty() == true && url?.isNotEmpty() ==true){
+
+        (context ).intentCustom.putExtra("url", url)
+        (context ).intentCustom.putExtra("title", title)
+
+    }
+    Log.d("polaris",title.toString())
     val options = ActivityOptions.makeCustomAnimation(context, 0, 0)
-    (context as SplashActivity).startActivity(
-        (context as SplashActivity).intentCustom,
+    (context ).startActivity(
+        (context ).intentCustom,
         options.toBundle()
     )
-    (context as SplashActivity)!!.finish()
+    (context).finish()
+
+
 
 }
 

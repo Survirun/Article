@@ -1,6 +1,8 @@
 package com.devlog.article.presentation.main
 
 import android.Manifest
+import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
@@ -13,13 +15,16 @@ import androidx.core.view.forEach
 import androidx.fragment.app.Fragment
 import com.devlog.article.R
 import com.devlog.article.data.entity.ArticleEntity
+import com.devlog.article.data.mixpanel.MixPanelManager
 import com.devlog.article.data.preference.UserPreference
 import com.devlog.article.data.response.Article
 import com.devlog.article.data.response.ArticleResponse
 import com.devlog.article.data.response.Data
 import com.devlog.article.databinding.ActivityMainBinding
 import com.devlog.article.presentation.article.ArticleFragment
+import com.devlog.article.presentation.article.ArticleListViewModel
 import com.devlog.article.presentation.article.ArticleTabState
+import com.devlog.article.presentation.article_webview.ArticleWebViewActivity
 import com.devlog.article.presentation.bookmark.BookmarkFragment
 import com.devlog.article.presentation.my_keywords_select.AIDevelopment
 import com.devlog.article.presentation.my_keywords_select.Common
@@ -59,6 +64,9 @@ class MainActivity() : AppCompatActivity() {
             askNotificationPermission()
         }
         getArticleData()
+        startWebViewHandler()
+
+
         supportFragmentManager.beginTransaction().add(R.id.containers, articleFragment).commit()
         binding.bottomNavigationview.setOnItemSelectedListener { item ->
             when (item.itemId) {
@@ -148,5 +156,21 @@ class MainActivity() : AppCompatActivity() {
             // 필요 시 바로 알림을 발송하거나 다른 로직을 수행할 수 있습니다.
         }
     }
+
+    fun articleDetails(title:String,url:String) {
+        MixPanelManager.articleClick(title)
+        //viewModel.userViewArticleId.add(article._id)
+        val intent = Intent(this, ArticleWebViewActivity::class.java)
+        intent.putExtra("url", url)
+        intent.putExtra("title", title)
+        ContextCompat.startActivity(this, intent, null)
+    }
+
+    private fun startWebViewHandler(){
+        if ( intent.getStringExtra("title")?.isNotEmpty()== true && intent.getStringExtra("url")?.isNotEmpty() == true){
+            articleDetails(intent.getStringExtra("title")!!,intent.getStringExtra("url")!!)
+        }
+    }
+
 
 }
