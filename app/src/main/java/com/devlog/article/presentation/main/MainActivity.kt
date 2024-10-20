@@ -1,7 +1,6 @@
 package com.devlog.article.presentation.main
 
 import android.Manifest
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
@@ -14,28 +13,13 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.forEach
 import androidx.fragment.app.Fragment
 import com.devlog.article.R
-import com.devlog.article.data.entity.ArticleEntity
 import com.devlog.article.data.mixpanel.MixPanelManager
-
-import com.devlog.article.data.response.Article
-import com.devlog.article.data.response.ArticleResponse
 import com.devlog.article.data.response.Data
 import com.devlog.article.databinding.ActivityMainBinding
 import com.devlog.article.presentation.article.ArticleFragment
-import com.devlog.article.presentation.article.ArticleListViewModel
 import com.devlog.article.presentation.article.ArticleTabState
 import com.devlog.article.presentation.article_webview.ArticleWebViewActivity
 import com.devlog.article.presentation.bookmark.BookmarkFragment
-import com.devlog.article.presentation.my_keywords_select.AIDevelopment
-import com.devlog.article.presentation.my_keywords_select.Common
-import com.devlog.article.presentation.my_keywords_select.DEVCOMMON
-import com.devlog.article.presentation.my_keywords_select.ITNews
-import com.devlog.article.presentation.my_keywords_select.PM
-import com.devlog.article.presentation.my_keywords_select.UIUXDesign
-import com.devlog.article.presentation.my_keywords_select.WebDevelopment
-import com.devlog.article.presentation.my_keywords_select.androidDevelopment
-import com.devlog.article.presentation.my_keywords_select.iOSDevelopment
-import com.devlog.article.presentation.my_keywords_select.serverDevelopment
 import com.devlog.article.utility.UtilManager.toJson
 import dagger.hilt.android.AndroidEntryPoint
 
