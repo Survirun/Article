@@ -21,6 +21,8 @@ import com.devlog.article.presentation.app_widget_provider.AppWidgetProviderArti
 import com.devlog.article.presentation.app_widget_provider.WidgetUpdateWorker
 import com.devlog.article.utility.NotificationWorker
 import com.devlog.article.utility.UtilManager.getTodayToInt
+import com.google.firebase.FirebaseApp
+import com.google.firebase.messaging.FirebaseMessaging
 import dagger.hilt.android.HiltAndroidApp
 import java.util.Calendar
 import java.util.concurrent.TimeUnit
@@ -61,7 +63,17 @@ class ArticleApplication : Application(), Configuration.Provider  {
         MixPanelManager.init(applicationContext)
         createWorkRequest()
         updateWidget()
+        FirebaseApp.initializeApp(this)
+        FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
+            if (!task.isSuccessful) {
+                Log.w("FCM", "FCM 토큰 가져오기 실패", task.exception)
+                return@addOnCompleteListener
+            }
 
+            // 토큰 가져오기 성공
+            val token = task.result
+            Log.d("FCM", "FCM 토큰: $token")
+        }
     }
 
     private fun createWorkRequest() {
