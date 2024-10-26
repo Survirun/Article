@@ -60,7 +60,6 @@ class AppWidgetProviderArticle: AppWidgetProvider() {
             workRequest
         )
 
-        super.onUpdate(context, appWidgetManager, appWidgetIds)
         // Perform this loop procedure for each App Widget that belongs to this provider
 
         appWidgetIds.forEach { appWidgetId ->
@@ -78,6 +77,7 @@ class AppWidgetProviderArticle: AppWidgetProvider() {
             appWidgetManager.updateAppWidget(appWidgetId, views)
 
         }
+        super.onUpdate(context, appWidgetManager, appWidgetIds)
     }
     // 이 메소드는 앱 데이터가 구글 시스템에 백업 된 이후 복원 될 때 만약 위젯 데이터가 있다면 데이터가 복구 된 이후 호출 됩니다.
     // 일반적으로 사용 될 경우는 흔치 않습니다.
