@@ -40,7 +40,7 @@ class MyRemoteViewsFactory(private val context: Context, intent: Intent) : Remot
         // 외부에서 데이터 업데이트
         fun updateData(newData: List<Article>, intent: Intent) {
             dataList.clear()
-            dataList.addAll(newData)
+            dataList.addAll(newData.subList(0, dataList.size/2))
         }
     }
 
@@ -80,6 +80,8 @@ class MyRemoteViewsFactory(private val context: Context, intent: Intent) : Remot
             } catch (e: Exception) {
                 Log.e("GlideError", "Failed to load image: $imageUrl", e)
             }
+        }else{
+            views.setImageViewBitmap(R.id.imageView1, null)
         }
 
         // 클릭 이벤트를 처리하려면 PendingIntent를 설정
