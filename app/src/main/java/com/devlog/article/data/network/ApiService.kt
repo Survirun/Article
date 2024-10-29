@@ -1,12 +1,11 @@
 package com.devlog.article.data.network
 
-import com.devlog.article.data.entity.ArticleLogEntity
-import com.devlog.article.data.entity.LoginEntity
-import com.devlog.article.data.entity.MyKeyword
-import com.devlog.article.data.entity.Passed
+import com.devlog.article.data.entity.article.ArticleLogEntity
+import com.devlog.article.data.entity.article.LoginEntity
+import com.devlog.article.data.entity.article.MyKeyword
+import com.devlog.article.data.entity.article.Passed
 import com.devlog.article.data.network.NetworkModule.AddHeaderInterceptor
 import com.devlog.article.data.network.Url.PRODUCT_BASE_URL
-import com.devlog.article.data.repository.v2.ApiDataSource
 import com.devlog.article.data.request.ArticleSeveralKeywordRequest
 import com.devlog.article.data.response.ArticleResponse
 import com.devlog.article.data.response.ArticleSeveralKeywordResponse
@@ -14,9 +13,6 @@ import com.devlog.article.data.response.BookmarkResponse
 import com.devlog.article.data.response.DefaultResponse
 import com.devlog.article.data.response.UserInfoEntity
 import com.skydoves.sandwich.ApiResponse
-import dagger.Module
-import dagger.hilt.InstallIn
-import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Response

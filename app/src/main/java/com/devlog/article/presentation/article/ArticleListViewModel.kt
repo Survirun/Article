@@ -3,11 +3,10 @@ package com.devlog.article.presentation.article
 import android.util.Log
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.devlog.article.data.entity.ArticleEntity
+import com.devlog.article.data.entity.article.ArticleEntity
 import com.devlog.article.data.network.ApiService
 import com.devlog.article.data.network.buildOkHttpClient
 import com.devlog.article.data.network.provideGsonConverterFactory
@@ -21,7 +20,6 @@ import com.devlog.article.data.repository.UserRepository
 import com.devlog.article.data.request.ArticleKeywordRequest
 import com.devlog.article.data.response.Article
 import com.devlog.article.data.response.ArticleLogResponse
-import com.devlog.article.data.response.ArticleResponse
 import com.devlog.article.domain.usecase.GetArticleKeywordUseCase
 import com.devlog.article.domain.usecase.GetArticleUseCase
 import com.devlog.article.presentation.my_keywords_select.Common

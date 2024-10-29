@@ -1,15 +1,13 @@
 package com.devlog.article.data.repository
 
 import android.annotation.SuppressLint
-import android.util.Log
-import com.devlog.article.data.entity.ArticleLogEntity
-import com.devlog.article.data.entity.Passed
+import com.devlog.article.data.entity.article.ArticleLogEntity
+import com.devlog.article.data.entity.article.Passed
 
 import com.devlog.article.data.network.ApiService
 import com.devlog.article.data.request.ArticleKeywordRequest
 import com.devlog.article.data.response.ArticleLogResponse
 import com.devlog.article.data.response.ArticleResponse
-import com.devlog.article.data.response.BookmarkResponse
 import com.skydoves.sandwich.ApiResponse
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext

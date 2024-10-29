@@ -2,10 +2,8 @@ package com.devlog.article.data.repository
 
 
 import android.annotation.SuppressLint
-import com.devlog.article.data.entity.LoginEntity
-import com.devlog.article.data.entity.MyKeyword
+import com.devlog.article.data.entity.article.MyKeyword
 import com.devlog.article.data.network.ApiService
-import com.devlog.article.data.response.DefaultResponse
 import com.devlog.article.data.response.UserInfoEntity
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext

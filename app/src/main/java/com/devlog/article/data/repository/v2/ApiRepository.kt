@@ -1,7 +1,7 @@
 package com.devlog.article.data.repository.v2
 
-import com.devlog.article.data.entity.LoginEntity
-import com.devlog.article.data.entity.Passed
+import com.devlog.article.data.entity.article.LoginEntity
+import com.devlog.article.data.entity.article.Passed
 import com.devlog.article.data.request.ArticleKeywordRequest
 import com.devlog.article.data.response.ArticleResponse
 import com.devlog.article.data.response.ArticleSeveralKeywordResponse

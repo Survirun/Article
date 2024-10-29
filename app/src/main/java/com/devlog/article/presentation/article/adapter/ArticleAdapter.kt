@@ -1,31 +1,20 @@
 package com.devlog.article.presentation.article.adapter
 
-import android.app.Activity
-import android.content.Context
-import android.content.Intent
-import android.opengl.Visibility
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
-import androidx.cardview.widget.CardView
-import androidx.core.app.ActivityOptionsCompat
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.devlog.article.R
 import com.devlog.article.databinding.ViewholderArticleItemBinding
-import com.devlog.article.data.entity.ArticleEntity
+import com.devlog.article.data.entity.article.ArticleEntity
 
-import com.devlog.article.presentation.article.deetail.DetailActivity
 import kotlin.properties.Delegates
 
 class ArticleAdapter() : RecyclerView.Adapter<ArticleAdapter.ArticleViewHolder>() {
     private var articleList:List<ArticleEntity> = listOf()
-    private lateinit var articleItemClickListener: (link:ArticleEntity) -> Unit
-    private lateinit var  articleShareClickListener: (link:ArticleEntity) -> Unit
-    private lateinit var articleBookmarkClickListener : (articleId:ArticleEntity) -> Unit
+    private lateinit var articleItemClickListener: (link: ArticleEntity) -> Unit
+    private lateinit var  articleShareClickListener: (link: ArticleEntity) -> Unit
+    private lateinit var articleBookmarkClickListener : (articleId: ArticleEntity) -> Unit
     private lateinit var articleReportClickListener : (articleId:String) -> Unit
     private var isVisibility by Delegates.notNull<Int>()
     lateinit var articleViewHolder:ArticleViewHolder
@@ -112,7 +101,7 @@ class ArticleAdapter() : RecyclerView.Adapter<ArticleAdapter.ArticleViewHolder>(
     }
     override fun getItemCount(): Int = articleList.size
 
-    fun setProductList(productList: List<ArticleEntity>, productItemClickListener: (link:ArticleEntity) -> Unit={ } ,articleShareClickListener:(link:ArticleEntity)->Unit ={} ,articleBookmarkClickListener:(link:ArticleEntity)->Unit ={}, articleReportClickListener:(articleId:String)->Unit={}, isVisibility : Int){
+    fun setProductList(productList: List<ArticleEntity>, productItemClickListener: (link: ArticleEntity) -> Unit={ }, articleShareClickListener:(link: ArticleEntity)->Unit ={}, articleBookmarkClickListener:(link: ArticleEntity)->Unit ={}, articleReportClickListener:(articleId:String)->Unit={}, isVisibility : Int){
         this.articleList=productList
         this.articleItemClickListener=productItemClickListener
         this.articleShareClickListener = articleShareClickListener

@@ -1,8 +1,6 @@
 package com.devlog.article.presentation.splash
 
-import com.devlog.article.data.entity.ArticleEntity
 import com.devlog.article.data.response.Article
-import com.devlog.article.data.response.ArticleResponse
 import com.devlog.article.data.response.Data
 
 sealed  class SplashState {

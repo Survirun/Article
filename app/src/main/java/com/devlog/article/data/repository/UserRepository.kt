@@ -1,7 +1,5 @@
 package com.devlog.article.data.repository
 
-import com.devlog.article.data.entity.LoginEntity
-import com.devlog.article.data.response.DefaultResponse
 import com.devlog.article.data.response.UserInfoEntity
 
 
