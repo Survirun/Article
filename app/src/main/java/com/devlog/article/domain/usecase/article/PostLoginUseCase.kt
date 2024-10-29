@@ -1,4 +1,4 @@
-package com.devlog.article.domain.usecase
+package com.devlog.article.domain.usecase.article
 
 import android.util.Log
 import com.devlog.article.data.entity.article.LoginEntity

@@ -8,10 +8,10 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.devlog.article.data.response.Data
-import com.devlog.article.domain.usecase.GetArticleKeywordUseCase
-import com.devlog.article.domain.usecase.GetArticleSeveralKeywordUseCase
-import com.devlog.article.domain.usecase.GetArticleUseCase
-import com.devlog.article.domain.usecase.GetBookMakerUseCase
+import com.devlog.article.domain.usecase.article.GetArticleKeywordUseCase
+import com.devlog.article.domain.usecase.article.GetArticleSeveralKeywordUseCase
+import com.devlog.article.domain.usecase.article.GetArticleUseCase
+import com.devlog.article.domain.usecase.article.GetBookMakerUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Job

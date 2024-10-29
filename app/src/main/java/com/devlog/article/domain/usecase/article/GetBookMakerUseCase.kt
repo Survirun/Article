@@ -1,9 +1,8 @@
-package com.devlog.article.domain.usecase
+package com.devlog.article.domain.usecase.article
 
 import android.util.Log
-import com.devlog.article.data.entity.article.Passed
 import com.devlog.article.data.repository.v2.ApiRepository
-import com.devlog.article.data.response.ArticleResponse
+import com.devlog.article.data.response.BookmarkResponse
 import com.skydoves.sandwich.suspendOnError
 import com.skydoves.sandwich.suspendOnException
 import com.skydoves.sandwich.suspendOnSuccess
@@ -15,19 +14,19 @@ import kotlinx.coroutines.flow.onCompletion
 import okhttp3.Response
 import javax.inject.Inject
 
-class GetArticleUseCase @Inject constructor(
+class GetBookMakerUseCase @Inject constructor(
     private val apiRepository: ApiRepository
 ) {
     suspend fun execute(
-        page:Int,
         onComplete: () -> Unit,
         onError: (Response) -> Unit,
         onException: (Throwable) -> Unit
-    ): Flow<ArticleResponse> {
+    ):
+            Flow<BookmarkResponse> {
 
 
         return flow {
-            val response = apiRepository.getArticle(page = page, Passed(arrayListOf()))
+            val response = apiRepository.getBookMaker()
             response.suspendOnSuccess {
                 emit(data)
             }.suspendOnError {
@@ -40,4 +39,5 @@ class GetArticleUseCase @Inject constructor(
             }
         }.onCompletion { onComplete() }.flowOn(Dispatchers.IO)
     }
+
 }

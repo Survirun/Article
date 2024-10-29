@@ -1,10 +1,9 @@
-package com.devlog.article.domain.usecase
+package com.devlog.article.domain.usecase.article
 
 import android.util.Log
 import com.devlog.article.data.repository.v2.ApiRepository
 import com.devlog.article.data.request.ArticleKeywordRequest
 import com.devlog.article.data.response.ArticleResponse
-import com.devlog.article.data.response.ArticleSeveralKeywordResponse
 import com.skydoves.sandwich.suspendOnError
 import com.skydoves.sandwich.suspendOnException
 import com.skydoves.sandwich.suspendOnSuccess
@@ -16,20 +15,19 @@ import kotlinx.coroutines.flow.onCompletion
 import okhttp3.Response
 import javax.inject.Inject
 
-class GetArticleSeveralKeywordUseCase @Inject constructor(
+class GetArticleKeywordUseCase @Inject constructor(
     private val apiRepository: ApiRepository
 ) {
     suspend fun execute(
-        keywordList: List<Int>,
-        page:Int,
+        articleKeywordRequest: ArticleKeywordRequest,
         onComplete: () -> Unit,
         onError: (Response) -> Unit,
         onException: (Throwable) -> Unit
-    ): Flow<ArticleSeveralKeywordResponse> {
+    ): Flow<ArticleResponse> {
 
 
         return flow {
-            val response = apiRepository.getArticleSeveralKeyword(keywordList,page)
+            val response = apiRepository.getArticleKeyword(articleKeywordRequest)
             response.suspendOnSuccess {
                 emit(data)
             }.suspendOnError {

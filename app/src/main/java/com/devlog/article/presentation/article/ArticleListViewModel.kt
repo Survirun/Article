@@ -20,8 +20,8 @@ import com.devlog.article.data.repository.UserRepository
 import com.devlog.article.data.request.ArticleKeywordRequest
 import com.devlog.article.data.response.Article
 import com.devlog.article.data.response.ArticleLogResponse
-import com.devlog.article.domain.usecase.GetArticleKeywordUseCase
-import com.devlog.article.domain.usecase.GetArticleUseCase
+import com.devlog.article.domain.usecase.article.GetArticleKeywordUseCase
+import com.devlog.article.domain.usecase.article.GetArticleUseCase
 import com.devlog.article.presentation.my_keywords_select.Common
 import com.devlog.article.utility.UtilManager.toJson
 import dagger.hilt.android.lifecycle.HiltViewModel
