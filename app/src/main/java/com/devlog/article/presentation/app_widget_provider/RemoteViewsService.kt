@@ -40,7 +40,7 @@ class MyRemoteViewsFactory(private val context: Context, intent: Intent) : Remot
         // 외부에서 데이터 업데이트
         fun updateData(newData: List<Article>, intent: Intent) {
             dataList.clear()
-            dataList.addAll(newData.subList(0, dataList.size/2))
+            dataList.addAll(newData.subList(0, newData.size/2))
         }
     }
 
@@ -57,10 +57,12 @@ class MyRemoteViewsFactory(private val context: Context, intent: Intent) : Remot
     }
 
     override fun getCount(): Int {
+        Log.d("polaris","getCount${dataList.size}")
         return dataList.size
     }
 
     override fun getViewAt(position: Int): RemoteViews {
+        Log.d("polaris","getViewAt")
         val views = RemoteViews(context.packageName, R.layout.widget_list_item)
         views.setTextViewText(R.id.widget_item_title_text, dataList[position].title)
         views.setTextViewText(R.id.widget_item_sub_title_text, dataList[position].snippet ?: "")

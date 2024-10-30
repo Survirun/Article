@@ -58,8 +58,9 @@ class WidgetUpdateWorker  @AssistedInject constructor(
         val appWidgetIds = appWidgetManager.getAppWidgetIds(ComponentName(applicationContext, AppWidgetProviderArticle::class.java))
         val intent = Intent(applicationContext, RemoteViewsService::class.java)
         // 데이터를 MyRemoteViewsFactory로 전달
+        Log.d("polaris","updateWidget")
         MyRemoteViewsFactory.updateData(data,intent)
-
+        Log.d("polaris","updateWidget")
         for (appWidgetId in appWidgetIds) {
             val views = RemoteViews(applicationContext.packageName, R.layout.widget_provider_layout)
 
