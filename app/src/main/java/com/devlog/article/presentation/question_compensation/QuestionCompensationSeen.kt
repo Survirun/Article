@@ -8,12 +8,16 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import com.devlog.article.data.preference.PrefManager
 
 
 @Composable
 fun QuestionCompensationSeen(onComplete:() -> Unit){
     Column(modifier = Modifier.fillMaxSize(1f), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
-        Button(onClick = { onComplete() }, ) {
+        Button(onClick = {
+            onComplete()
+            PrefManager.day += 1
+                         }, ) {
             Text(text = "학습을 완료 했어요")
         }
     }

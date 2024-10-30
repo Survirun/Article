@@ -14,6 +14,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -28,7 +29,7 @@ fun QuestionSeen(
 
     viewModel.getQuestionTitleList()
     QuestionSeenView(questionTitleLis) {
-        Log.d("polaris","클릭")
+        Log.d("polaris", "클릭")
         onQuestionClick()
     }
 }
@@ -38,11 +39,14 @@ fun QuestionSeenView(questionTitleLis: List<String>, onClick: () -> Unit) {
     Column {
         LazyColumn() {
             itemsIndexed(questionTitleLis, key = { _, item -> item }) { index, item ->
-                Surface(onClick = {
-                    onClick()
-                    PrefManager.day = index
-                }) {
-                    QuestionItem(item)
+                Surface(modifier = Modifier.padding(10.dp),
+                    onClick = {
+                        if (PrefManager.day >= index) {
+                            onClick()
+                            PrefManager.day = index
+                        }
+                    }) {
+                    QuestionItem(index, item)
                 }
 
 
@@ -53,7 +57,7 @@ fun QuestionSeenView(questionTitleLis: List<String>, onClick: () -> Unit) {
 }
 
 @Composable
-fun QuestionItem( titls: String) {
+fun QuestionItem(index: Int, titls: String) {
     Column(
         modifier = Modifier
             .fillMaxWidth(1f)
@@ -61,8 +65,10 @@ fun QuestionItem( titls: String) {
 
         horizontalAlignment = Alignment.CenterHorizontally,
 
-    ) {
-        Text(text = titls)
+        ) {
+        Log.d("polaris_day",(PrefManager.day).toString())
+        Log.d("polaris_day",(index).toString())
+        Text(text = titls, color = if (PrefManager.day>= index) Color(0xFF000000) else Color(0xFFB1B1B1))
     }
 
 

@@ -49,6 +49,8 @@ class AppWidgetProviderArticle: AppWidgetProvider() {
         val workRequest = PeriodicWorkRequestBuilder<WidgetUpdateWorker>(1, TimeUnit.HOURS)
             .setConstraints(
                 Constraints.Builder()
+                    .setRequiresBatteryNotLow(false)  // 배터리 조건 무시
+                    .setRequiresCharging(false)       // 충전 중 여부 무시
                     .setRequiredNetworkType(NetworkType.CONNECTED) // 네트워크가 연결된 경우에만 실행
                     .build()
             )

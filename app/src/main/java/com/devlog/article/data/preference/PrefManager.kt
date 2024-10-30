@@ -57,7 +57,7 @@ object PrefManager {
     var day :Int
         get() = pref.getInt("day",0)
         set(v){
-            pref.edit().putInt("day", v +1).apply()
+            pref.edit().putInt("day", v).apply()
         }
 
 }

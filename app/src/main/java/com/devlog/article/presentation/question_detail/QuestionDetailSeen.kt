@@ -31,7 +31,7 @@ import com.devlog.article.data.preference.PrefManager
 fun QuestionDetailSeen(viewModel: QuestionDetailViewModel = hiltViewModel(),onQuestionComplete: () -> Unit) {
 
 
-    viewModel.getQuestionUseCase(PrefManager.day)
+    viewModel.getQuestionUseCase(PrefManager.day+1)
     viewModel.onQuestionComplete = { onQuestionComplete() }
     Box(modifier = Modifier.fillMaxSize()) {
 

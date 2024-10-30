@@ -15,6 +15,8 @@ import com.devlog.article.data.entity.article.Passed
 import com.devlog.article.data.response.Article
 import com.devlog.article.presentation.ArticleApplication
 import com.skydoves.sandwich.suspendMapSuccess
+import com.skydoves.sandwich.suspendOnError
+import com.skydoves.sandwich.suspendOnFailure
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 
@@ -32,11 +34,17 @@ class WidgetUpdateWorker  @AssistedInject constructor(
         val response =
 
         ArticleApplication.instance.apiRepository.getArticle(1, Passed(arrayListOf()))
-
+        Log.d("polaris","시작")
         if (response != null) {
             response.suspendMapSuccess {
                 Log.d("polaris","성공")
                 updateWidget(data.articles)
+            }
+            response.suspendOnError {
+                Log.d("polaris","실패")
+            }
+            response.suspendOnFailure {
+                Log.d("polaris","실패")
             }
 
 
