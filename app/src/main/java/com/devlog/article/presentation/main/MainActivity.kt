@@ -20,6 +20,7 @@ import com.devlog.article.presentation.article.ArticleFragment
 import com.devlog.article.presentation.article.ArticleTabState
 import com.devlog.article.presentation.article_webview.ArticleWebViewActivity
 import com.devlog.article.presentation.bookmark.BookmarkFragment
+import com.devlog.article.presentation.question.QuestionFragment
 import com.devlog.article.utility.UtilManager.toJson
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -62,10 +63,10 @@ class MainActivity() : AppCompatActivity() {
                     replaceFragment(BookmarkFragment())
                     true
                 }
-//                R.id.profile -> {
-//                    replaceFragment(ProfileFragment())
-//                    true
-//                }
+                R.id.question -> {
+                    replaceFragment(QuestionFragment())
+                    true
+                }
                 else -> false
             }
 

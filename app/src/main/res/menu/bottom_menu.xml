@@ -11,4 +11,10 @@
         android:icon="@drawable/outline_bookmark_border_24"
         android:title="북마크" />
 
+    <item
+        android:id="@+id/question"
+        android:icon="@drawable/outline_bookmark_border_24"
+        android:title="북마크" />
+
+
 </menu>

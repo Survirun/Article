@@ -1,21 +1,40 @@
 package com.devlog.article.data.repository
 
 import android.app.Application
+import android.util.Log
 import com.devlog.article.data.entity.question.Question
 import com.devlog.article.data.entity.question.Week
+import com.skydoves.sandwich.ApiResponse
+import retrofit2.Response
 
-class QuestionRepositoryImpl(
+class QuestionRepositoryImpl  constructor(
     private val weeks: List<Week>
 ) : QuestionRepository {
 
-    override suspend fun getQuestionsForDay(day: Int): List<Question>? {
+    override suspend fun getQuestionsForDay(day: Int): ApiResponse<List<Question>> {
         for (week in weeks) {
             for (dayData in week.days) {
                 if (dayData.day == day) {
-                    return dayData.questions
+                    return ApiResponse.Success(Response.success(dayData.questions))
                 }
             }
         }
-        return null // 해당 날짜가 없으면 null 반환
+        // 해당 날짜에 질문이 없으면 ApiResponse.Error로 반환
+        return ApiResponse.error(Throwable("error"))
     }
+
+    override suspend fun getTitlesLIst(): ApiResponse<List<String>> {
+        val titles = mutableListOf<String>()
+        for (week in weeks) {
+            Log.d("polaris",week.toString())
+            Log.d("polaris",weeks.toString())
+            for (dayData in week.days) {
+                Log.d("polaris",dayData.title)
+                titles.add(dayData.title)
+            }
+        }
+        return ApiResponse.Success(Response.success(titles))
+
+    }
+
 }

@@ -54,4 +54,10 @@ object PrefManager {
             pref.edit().putString(PreferenceConstants.USER_PERMISSION, v).apply()
         }
 
+    var day :Int
+        get() = pref.getInt("day",0)
+        set(v){
+            pref.edit().putInt("day", v +1).apply()
+        }
+
 }
