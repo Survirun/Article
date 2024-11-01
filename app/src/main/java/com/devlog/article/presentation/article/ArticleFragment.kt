@@ -378,7 +378,7 @@ fun ArticleItem(
         snippet = "서브 제목 입니다",
         date = "2024.10.08",
         thumbnail = "https://th.bing.com/th?q=Linux&w=138&h=138&c=7&o=5&pid=1.7&mkt=ko-KR&cc=KR&setlang=ko&adlt=strict&t=1",
-        keywords = arrayListOf(),
+
         displayLink = "",
         sitename = "사이트 이름",
         link = "",

@@ -11,7 +11,7 @@ data class Article(
     var snippet: String?,
     var date: String?,
     var thumbnail: String?,
-    val keywords: ArrayList<String>,
+   // val keywords: ArrayList<String>,
     val displayLink: String,
     val sitename: String,
     val link: String,
