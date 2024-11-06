@@ -10,18 +10,35 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.material.BottomNavigation
+import androidx.compose.material.BottomNavigationItem
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.rememberNavController
 import coil.ImageLoader
 import coil.compose.rememberAsyncImagePainter
 import coil.decode.GifDecoder
@@ -29,6 +46,9 @@ import coil.decode.ImageDecoderDecoder
 import coil.request.ImageRequest
 import coil.size.Size
 import com.devlog.article.R
+import com.devlog.article.presentation.article_v2.navigateArticle
+import com.devlog.article.presentation.main.MainRoute
+import com.devlog.article.presentation.question.navigateQuestion
 
 @Composable
 fun HeaderView() {
@@ -83,9 +103,32 @@ fun LineView() {
 }
 
 @Composable
-fun MainButton() {
-
+fun BottomNavigationBar(
+    navController: NavController,
+    showBottomBar: State<Boolean>
+) {
+    if (showBottomBar.value) {
+        BottomNavigation(backgroundColor = Color.White) {
+            BottomNavigationItem(
+                icon = { Icon(Icons.Default.Home, contentDescription = null) },
+                label = { Text("Home") },
+                selected = navController.currentDestination?.route == "home",
+                onClick = {
+                    navController.navigateArticle()
+                }
+            )
+            BottomNavigationItem(
+                icon = { Icon(Icons.Default.Person, contentDescription = null) },
+                label = { Text("Profile") },
+                selected = navController.currentDestination?.route == "question",
+                onClick = {
+                    navController.navigateQuestion()
+                }
+            )
+        }
+    }
 }
+
 
 @Preview(showBackground = true)
 @Composable

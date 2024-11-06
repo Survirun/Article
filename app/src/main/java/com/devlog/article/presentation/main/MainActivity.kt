@@ -7,29 +7,58 @@ import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.TooltipCompat
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.BottomAppBar
+import androidx.compose.material.BottomNavigation
+import androidx.compose.material.BottomNavigationItem
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.ComposeView
 import androidx.core.content.ContextCompat
-import androidx.core.view.forEach
-import androidx.fragment.app.Fragment
-import com.devlog.article.R
+import androidx.navigation.NavController
+import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navigation
 import com.devlog.article.data.mixpanel.MixPanelManager
 import com.devlog.article.data.response.Data
-import com.devlog.article.databinding.ActivityMainBinding
+
 import com.devlog.article.presentation.article.ArticleFragment
+import com.devlog.article.presentation.article_v2.ArticleSeen
 import com.devlog.article.presentation.article.ArticleTabState
+import com.devlog.article.presentation.article_v2.articleNavGraph
+import com.devlog.article.presentation.article_v2.articleRoute
+import com.devlog.article.presentation.article_v2.navigateArticle
 import com.devlog.article.presentation.article_webview.ArticleWebViewActivity
-import com.devlog.article.presentation.bookmark.BookmarkFragment
-import com.devlog.article.presentation.question.QuestionFragment
+import com.devlog.article.presentation.question.navigateQuestion
+import com.devlog.article.presentation.question.questionNavGraph
+import com.devlog.article.presentation.question_compensation.navigateQuestionCompensation
+import com.devlog.article.presentation.question_compensation.questionCompensationNavGraph
+import com.devlog.article.presentation.question_detail.navigateQuestionDetail
+import com.devlog.article.presentation.question_detail.questionDetailNavGraph
+import com.devlog.article.presentation.ui.theme.BottomNavigationBar
 import com.devlog.article.utility.UtilManager.toJson
 import dagger.hilt.android.AndroidEntryPoint
 
+
 @AndroidEntryPoint
 class MainActivity() : AppCompatActivity() {
-    private lateinit var binding: ActivityMainBinding
-    private var articleFragment = ArticleFragment()
-
-
+    private val viewModel: MainViewModel by viewModels()
     private val requestPermissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
             if (isGranted) {
@@ -42,8 +71,6 @@ class MainActivity() : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             askNotificationPermission()
         }
@@ -51,39 +78,50 @@ class MainActivity() : AppCompatActivity() {
         startWebViewHandler()
 
 
-        supportFragmentManager.beginTransaction().add(R.id.containers, articleFragment).commit()
-        binding.bottomNavigationview.setOnItemSelectedListener { item ->
-            when (item.itemId) {
-                R.id.home -> {
-                    replaceFragment(articleFragment)
-                    true
+        setContentView(ComposeView(this).apply {
+            setContent {
+
+                val navController = rememberNavController()
+
+                // 현재 화면이 `home`이나 `profile`일 때만 바텀 네비게이션을 표시하기 위한 상태
+                val showBottomBar = remember { mutableStateOf(true) }
+
+                // 현재 화면의 경로가 바뀔 때마다 상태 업데이트
+                LaunchedEffect(navController) {
+                    navController.addOnDestinationChangedListener { _, destination, _ ->
+                        showBottomBar.value = destination.route in listOf("article", "question")
+                    }
                 }
 
-                R.id.bookmark -> {
-                    replaceFragment(BookmarkFragment())
-                    true
+                Scaffold(
+                    bottomBar ={ BottomNavigationBar(navController = navController, showBottomBar = showBottomBar) }
+                ) { innerPadding ->
+                    NavHost(
+                        navController = navController,
+                        startDestination = MainRoute.route,
+                        Modifier.padding(innerPadding)
+                    ) {
+
+                        navigation(startDestination = articleRoute.route, route = MainRoute.route) {
+
+                            articleNavGraph(viewModel.articleArray)
+                            questionNavGraph(onQuestionClick = { navController.navigateQuestionDetail() })
+                        }
+
+                        questionDetailNavGraph(onQuestionComplete = { navController.navigateQuestionCompensation()})
+
+                        questionCompensationNavGraph(onComplete = { navController.navigateQuestion() })
+
+                    }
                 }
-                R.id.question -> {
-                    replaceFragment(QuestionFragment())
-                    true
-                }
-                else -> false
+            
+              
             }
+        })
 
-        }
 
-        binding.bottomNavigationview.menu.forEach {
-            TooltipCompat.setTooltipText(
-                findViewById(it.itemId),
-                null
-            )
-        }
     }
 
-    // 화면 전환 구현 메소드
-    fun replaceFragment(fragment: Fragment) {
-        supportFragmentManager.beginTransaction().replace(R.id.containers, fragment).commit()
-    }
 
     private fun getArticleData() {
 
@@ -92,20 +130,20 @@ class MainActivity() : AppCompatActivity() {
         val articleMap = bundle?.getSerializable("map") as? Map<String, Data>
 
         // 로그 출력
-        var getApiKeywordList = listOf(0, 12, 10, 3,9, 4, 5, 6, 7, 8)
+        val getApiKeywordList = listOf(0, 12, 10, 3, 9, 4, 5, 6, 7, 8)
         Log.d("NextActivity", "Article Map: ${articleMap!!.toJson()}")
         val totalArticles = ArrayList<ArticleTabState>()
         val sortedMap: Map<String, Data> = articleMap.toList().sortedBy {
             val index = getApiKeywordList.indexOf(it.first.toInt())
-            Log.d("polaris_index",index.toString())
+            Log.d("polaris_index", index.toString())
             // -1이 나오는 경우, 정렬 우선순위를 마지막으로 보내거나 다른 처리를 할 수 있음
             if (index != -1) index else Int.MAX_VALUE
         }.toMap(LinkedHashMap())
 
 
-        sortedMap.forEach{ (key, date) ->
+        sortedMap.forEach { (key, date) ->
 
-            Log.d("polaris_key",key.toString())
+            Log.d("polaris_key", key.toString())
 
             totalArticles.add(
                 ArticleTabState(
@@ -116,8 +154,8 @@ class MainActivity() : AppCompatActivity() {
             )
 
         }
+        viewModel.articleArray = totalArticles
 
-        articleFragment.articleArray = totalArticles
     }
 
     private fun askNotificationPermission() {
@@ -125,7 +163,8 @@ class MainActivity() : AppCompatActivity() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             // 권한 상태 확인
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) ==
-                PackageManager.PERMISSION_GRANTED) {
+                PackageManager.PERMISSION_GRANTED
+            ) {
                 // 권한이 이미 승인되어 있음
             } else if (shouldShowRequestPermissionRationale(Manifest.permission.POST_NOTIFICATIONS)) {
                 // 권한 요청 이유를 사용자에게 설명해야 함
@@ -141,7 +180,7 @@ class MainActivity() : AppCompatActivity() {
         }
     }
 
-    fun articleDetails(title:String,url:String) {
+    fun articleDetails(title: String, url: String) {
         MixPanelManager.articleClick(title)
         //viewModel.userViewArticleId.add(article._id)
         val intent = Intent(this, ArticleWebViewActivity::class.java)
@@ -150,11 +189,12 @@ class MainActivity() : AppCompatActivity() {
         ContextCompat.startActivity(this, intent, null)
     }
 
-    private fun startWebViewHandler(){
-        if ( intent.getStringExtra("title")?.isNotEmpty()== true && intent.getStringExtra("url")?.isNotEmpty() == true){
-            articleDetails(intent.getStringExtra("title")!!,intent.getStringExtra("url")!!)
+    private fun startWebViewHandler() {
+        if (intent.getStringExtra("title")?.isNotEmpty() == true && intent.getStringExtra("url")?.isNotEmpty() == true) {
+            articleDetails(intent.getStringExtra("title")!!, intent.getStringExtra("url")!!)
         }
     }
 
-
 }
+
+
