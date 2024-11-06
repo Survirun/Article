@@ -54,6 +54,21 @@ kapt {
     correctErrorTypes = true
 }
 
+
+task StringResourceSync(type: Exec) {
+    doFirst {
+        println ":::" + "Start to get String Resources..." + ":::"
+    }
+    workingDir project.rootDir
+    commandLine 'python', 'app/script/main.py'
+
+    doLast {
+        println ":::" + "Finish to get String Resources..." + ":::"
+    }
+}
+
+preBuild.dependsOn StringResourceSync
+
 dependencies {
 
     implementation 'androidx.core:core-ktx:1.9.0'
