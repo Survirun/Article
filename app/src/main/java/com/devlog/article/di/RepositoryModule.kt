@@ -24,7 +24,7 @@ object RepositoryModule {
     @Singleton
     fun provideWeeks(@ApplicationContext context: Context): List<Week> {
         // JSON 파일을 읽어 옵니다.
-        val json = context.assets.open("problem.json").bufferedReader().use { it.readText() }
+        val json = context.assets.open("output.json").bufferedReader().use { it.readText() }
 
         // TypeToken을 사용하여 List<Week> 타입으로 파싱합니다.
         val type = object : TypeToken<List<Week>>() {}.type
