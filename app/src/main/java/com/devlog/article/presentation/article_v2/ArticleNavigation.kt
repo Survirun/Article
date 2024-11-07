@@ -1,10 +1,12 @@
 package com.devlog.article.presentation.article_v2
 
+import androidx.compose.runtime.getValue
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.devlog.article.presentation.article.ArticleTabState
 import com.devlog.article.presentation.main.MainRoute
+import com.devlog.article.presentation.main.MainViewModel
 import com.devlog.article.presentation.question.QuestionSeen
 
 fun NavController.navigateArticle() {
@@ -15,10 +17,11 @@ fun NavController.navigateArticle() {
 }
 
 fun NavGraphBuilder.articleNavGraph(
-    articles:ArrayList<ArticleTabState>
+   viewModel:MainViewModel
 ) {
     composable(route = articleRoute.route) {
-       ArticleSeen(articles =articles )
+        val articleArrayState by viewModel.articleArray
+       ArticleSeen(articles =articleArrayState )
     }
 }
 

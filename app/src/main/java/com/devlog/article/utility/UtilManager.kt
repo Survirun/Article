@@ -1,5 +1,14 @@
 package com.devlog.article.utility
 
+import android.app.Activity
+import android.content.Context
+import android.content.Intent
+import android.os.Handler
+import android.os.Looper
+import androidx.core.content.ContextCompat.startActivity
+import com.devlog.article.data.preference.PrefManager
+import com.devlog.article.presentation.my_keywords_select.MyKeywordSelectActivity
+import com.devlog.article.presentation.sign_in.SignInActivity
 import com.google.gson.GsonBuilder
 import java.net.HttpURLConnection
 import java.net.URL
@@ -41,5 +50,32 @@ object UtilManager {
             // 예외가 발생하면 유효하지 않은 URL
             false
         }
+    }
+
+    fun keywordCheck(activity:Activity): Boolean {
+        if (PrefManager.userKeywordCheck) {
+            return true
+        } else {
+            Handler(Looper.getMainLooper()).postDelayed({
+                activity.startActivity(Intent(activity, MyKeywordSelectActivity::class.java))
+                activity.finish()
+
+
+            }, 1500)
+
+        }
+        return false
+    }
+
+    fun signInCheck(activity:Activity): Boolean {
+        if (PrefManager.userSignInCheck) {
+            return true
+        } else {
+            Handler(Looper.getMainLooper()).postDelayed({
+                activity.startActivity(Intent(activity, SignInActivity::class.java))
+
+            }, 1500)
+        }
+        return false
     }
 }

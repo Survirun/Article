@@ -1,10 +1,14 @@
 package com.devlog.article.presentation.main
 
 import android.Manifest
+import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.os.ResultReceiver
 import android.util.Log
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
@@ -22,8 +26,10 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ComposeView
@@ -51,6 +57,8 @@ import com.devlog.article.presentation.question_compensation.navigateQuestionCom
 import com.devlog.article.presentation.question_compensation.questionCompensationNavGraph
 import com.devlog.article.presentation.question_detail.navigateQuestionDetail
 import com.devlog.article.presentation.question_detail.questionDetailNavGraph
+import com.devlog.article.presentation.splash.SplashNCompensation
+import com.devlog.article.presentation.splash.splashNavGraph
 import com.devlog.article.presentation.ui.theme.BottomNavigationBar
 import com.devlog.article.utility.UtilManager.toJson
 import dagger.hilt.android.AndroidEntryPoint
@@ -74,17 +82,59 @@ class MainActivity() : AppCompatActivity() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             askNotificationPermission()
         }
-        getArticleData()
+        //getArticleData()
         startWebViewHandler()
 
-
         setContentView(ComposeView(this).apply {
+
+
             setContent {
 
                 val navController = rememberNavController()
 
                 // 현재 화면이 `home`이나 `profile`일 때만 바텀 네비게이션을 표시하기 위한 상태
-                val showBottomBar = remember { mutableStateOf(true) }
+                val showBottomBar = remember { mutableStateOf(false) }
+
+                val receiver = object : ResultReceiver(Handler(Looper.getMainLooper())) {
+                    override fun onReceiveResult(resultCode: Int, resultData: Bundle?) {
+                        if (resultCode == Activity.RESULT_OK) {
+                            val data = resultData?.getSerializable("data") as? Map<String, Data>
+                            data?.let {
+                                // 수신된 데이터를 처리 (예: Activity UI 업데이트 등)
+                                val getApiKeywordList = listOf(0, 12, 10, 3, 9, 4, 5, 6, 7, 8)
+                                Log.d("NextActivity", "Article Map: ${data!!.toJson()}")
+                                val totalArticles = ArrayList<ArticleTabState>()
+                                val sortedMap: Map<String, Data> = data.toList().sortedBy {
+                                    val index = getApiKeywordList.indexOf(it.first.toInt())
+                                    Log.d("polaris_index", index.toString())
+                                    // -1이 나오는 경우, 정렬 우선순위를 마지막으로 보내거나 다른 처리를 할 수 있음
+                                    if (index != -1) index else Int.MAX_VALUE
+                                }.toMap(LinkedHashMap())
+
+
+                                sortedMap.forEach { (key, date) ->
+
+                                    Log.d("polaris_key", key.toString())
+
+                                    totalArticles.add(
+                                        ArticleTabState(
+                                            date.articles,
+                                            key.toInt(),
+                                            date.maxPage
+                                        )
+                                    )
+
+                                }
+                                viewModel.articleArray.value = totalArticles
+                                println("Received data: $data")
+                                navController.navigateArticle()
+                            }
+                        } else {
+                            val error = resultData?.getString("error")
+                            println("Received error: $error")
+                        }
+                    }
+                }
 
                 // 현재 화면의 경로가 바뀔 때마다 상태 업데이트
                 LaunchedEffect(navController) {
@@ -92,25 +142,26 @@ class MainActivity() : AppCompatActivity() {
                         showBottomBar.value = destination.route in listOf("article", "question")
                     }
                 }
-
+                val articleArrayState by viewModel.articleArray
                 Scaffold(
                     bottomBar ={ BottomNavigationBar(navController = navController, showBottomBar = showBottomBar) }
                 ) { innerPadding ->
                     NavHost(
                         navController = navController,
-                        startDestination = MainRoute.route,
+                        startDestination = SplashNCompensation.route,
                         Modifier.padding(innerPadding)
                     ) {
 
                         navigation(startDestination = articleRoute.route, route = MainRoute.route) {
 
-                            articleNavGraph(viewModel.articleArray)
+                            articleNavGraph(viewModel)
                             questionNavGraph(onQuestionClick = { navController.navigateQuestionDetail() })
                         }
 
                         questionDetailNavGraph(onQuestionComplete = { navController.navigateQuestionCompensation()})
 
                         questionCompensationNavGraph(onComplete = { navController.navigateQuestion() })
+                        splashNavGraph(resultReceiver = receiver)
 
                     }
                 }
@@ -123,40 +174,6 @@ class MainActivity() : AppCompatActivity() {
     }
 
 
-    private fun getArticleData() {
-
-        // Bundle에서 map 가져오기
-        val bundle = intent.getBundleExtra("article_map")
-        val articleMap = bundle?.getSerializable("map") as? Map<String, Data>
-
-        // 로그 출력
-        val getApiKeywordList = listOf(0, 12, 10, 3, 9, 4, 5, 6, 7, 8)
-        Log.d("NextActivity", "Article Map: ${articleMap!!.toJson()}")
-        val totalArticles = ArrayList<ArticleTabState>()
-        val sortedMap: Map<String, Data> = articleMap.toList().sortedBy {
-            val index = getApiKeywordList.indexOf(it.first.toInt())
-            Log.d("polaris_index", index.toString())
-            // -1이 나오는 경우, 정렬 우선순위를 마지막으로 보내거나 다른 처리를 할 수 있음
-            if (index != -1) index else Int.MAX_VALUE
-        }.toMap(LinkedHashMap())
-
-
-        sortedMap.forEach { (key, date) ->
-
-            Log.d("polaris_key", key.toString())
-
-            totalArticles.add(
-                ArticleTabState(
-                    date.articles,
-                    key.toInt(),
-                    date.maxPage
-                )
-            )
-
-        }
-        viewModel.articleArray = totalArticles
-
-    }
 
     private fun askNotificationPermission() {
         // Android 13(API 33) 이상에서만 권한 확인 및 요청

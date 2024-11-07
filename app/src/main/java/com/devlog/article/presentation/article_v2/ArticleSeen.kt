@@ -80,13 +80,14 @@ import com.devlog.article.presentation.ui.theme.Gray30
 import com.devlog.article.presentation.ui.theme.Gray60
 import com.devlog.article.presentation.ui.theme.Gray70
 import com.devlog.article.utility.UtilManager.toDotDateFormat
+import com.devlog.article.utility.UtilManager.toJson
 import java.net.URI
 
 @Composable
 fun ArticleSeen(articles:ArrayList<ArticleTabState>,viewModel: ArticleListViewModel = hiltViewModel()) {
     val context = LocalContext.current // Context를 가져옴
     val activity = context as? Activity // Context를 Activity로 캐스팅
-
+    Log.d("polaris15",articles.toJson())
     viewModel.article.observe(activity as MainActivity) {
         val newArticles = it
         val uniqueNewArticles = newArticles.filterNot { newArticle ->

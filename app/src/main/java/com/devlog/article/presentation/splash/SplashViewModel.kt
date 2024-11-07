@@ -104,4 +104,6 @@ class SplashViewModel @Inject constructor(
     private fun setState(state: SplashState) {
         _profileSplashStateLiveData.postValue(state)
     }
+
+
 }

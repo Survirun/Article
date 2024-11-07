@@ -33,11 +33,7 @@
             android:name=".presentation.splash.SplashActivity"
             android:exported="true"
             android:theme="@style/Theme.Article">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
             android:name=".presentation.sign_in.SignInActivity"
@@ -47,7 +43,13 @@
             android:exported="false" />
         <activity
             android:name=".presentation.main.MainActivity"
-            android:exported="true" />
+            android:exported="true" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
 
 
         <receiver android:name=".presentation.app_widget_provider.AppWidgetProviderArticle"

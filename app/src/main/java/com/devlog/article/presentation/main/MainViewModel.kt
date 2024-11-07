@@ -3,6 +3,7 @@ package com.devlog.article.presentation.main
 import android.util.Log
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -32,8 +33,8 @@ class MainViewModel@Inject constructor(
     private val getArticleUseCase: GetArticleUseCase,
     private val getArticleKeywordUseCase : GetArticleKeywordUseCase):ViewModel() {
 
-    lateinit var articleArray: ArrayList<ArticleTabState>
 
+    var articleArray: MutableState<ArrayList<ArticleTabState>> = mutableStateOf(arrayListOf())
     var article= MutableLiveData<ArrayList<Article>>()
     var articles = ArrayList<ArticleTabState>()
 
