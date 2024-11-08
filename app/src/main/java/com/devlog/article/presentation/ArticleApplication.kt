@@ -62,7 +62,7 @@ class ArticleApplication : Application(), Configuration.Provider  {
         PrefManager.appAccessDate = getTodayToInt()
         MixPanelManager.init(applicationContext)
         createWorkRequest()
-        updateWidget()
+        //updateWidget()
         FirebaseApp.initializeApp(this)
         FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
             if (!task.isSuccessful) {
