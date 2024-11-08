@@ -44,8 +44,13 @@ fun SplashScreen2(viewModel: SplashViewModel2= hiltViewModel(),resultReceiver : 
 
     val apiState by viewModel.apiState.collectAsState()
     val uiState by viewModel.uiState.collectAsState()
+    val isApiFinished by viewModel.isUiFinished.collectAsState()
+    LaunchedEffect(isApiFinished) {
 
-
+        if (isApiFinished) {
+            viewModel.onAllApiSuccess()
+        }
+    }
     when (apiState) {
         is SplashApiState.GetArticleSuccess->{
 
@@ -65,24 +70,27 @@ fun SplashScreen2(viewModel: SplashViewModel2= hiltViewModel(),resultReceiver : 
         }
 
     }
-    when (uiState){
-        is SplashUiState.Loding->{
+    LaunchedEffect(uiState){
+        when (uiState){
+            is SplashUiState.Loding->{
 
-        }
-        is SplashUiState.Success->{
-
-            Log.d("polaris","Success")
-
-
-            val bundle = Bundle().apply {
-                putSerializable("data", HashMap(viewModel.article)) // Map을 Bundle에 저장할 수 있도록 변환
             }
-            resultReceiver.send(Activity.RESULT_OK, bundle)
+            is SplashUiState.Success->{
 
+                Log.d("polaris","Success")
+
+
+                val bundle = Bundle().apply {
+                    putSerializable("data", HashMap(viewModel.article)) // Map을 Bundle에 저장할 수 있도록 변환
+                }
+                resultReceiver.send(Activity.RESULT_OK, bundle)
+
+
+            }
 
         }
-
     }
+
 
     SplashTheme {
 
@@ -113,6 +121,8 @@ fun SplashScreenView2(viewModel: SplashViewModel2,resultReceiver:ResultReceiver)
     var backgroundColor by remember { mutableStateOf(Color(0xFF17161D)) }
 
 
+
+
     LaunchedEffect(viewModel.isApiFinished) {
         if (viewModel.isApiFinished) {
 
@@ -126,6 +136,7 @@ fun SplashScreenView2(viewModel: SplashViewModel2,resultReceiver:ResultReceiver)
                     if (progress == 1f) {
                         backgroundColor = (Color(0xFFFFFFFF))
                         showTransition = true
+                        viewModel.test()
 
                     }
                 }
@@ -133,6 +144,7 @@ fun SplashScreenView2(viewModel: SplashViewModel2,resultReceiver:ResultReceiver)
 
         }
     }
+
 
 
 
@@ -149,7 +161,7 @@ fun SplashScreenView2(viewModel: SplashViewModel2,resultReceiver:ResultReceiver)
                 modifier = Modifier.fillMaxSize(1f)
 
             )
-            viewModel.onAllApiSuccess()
+
 
 
         } else {

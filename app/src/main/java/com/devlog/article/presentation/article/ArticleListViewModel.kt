@@ -23,7 +23,6 @@ import com.devlog.article.data.response.ArticleLogResponse
 import com.devlog.article.domain.usecase.article.GetArticleKeywordUseCase
 import com.devlog.article.domain.usecase.article.GetArticleUseCase
 import com.devlog.article.presentation.my_keywords_select.Common
-import com.devlog.article.utility.UtilManager.toJson
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -82,7 +81,7 @@ class ArticleListViewModel@Inject constructor(
                 Log.d("polaris_onException",it.toString())
             }
         ).collect {
-           Log.d("polaris", "getAppTechInfo : ${it.toJson()}")
+
             article.value=it.data.articles
 
 

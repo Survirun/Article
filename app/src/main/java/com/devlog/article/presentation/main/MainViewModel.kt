@@ -68,7 +68,7 @@ class MainViewModel@Inject constructor(
                 Log.d("polaris_onException",it.toString())
             }
         ).collect {
-            Log.d("polaris", "getAppTechInfo : ${it.toJson()}")
+
             article.value=it.data.articles
 
 

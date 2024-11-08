@@ -30,6 +30,9 @@ class SplashViewModel2 @Inject constructor(
     private val coroutineExceptionHandler = CoroutineExceptionHandler { _, throwable ->
         throwable.printStackTrace() // throwable = SocketException or HttpException or UnknownHostException or else
     }
+    private val _isUiFinished = MutableStateFlow<Boolean>(false)
+    val isUiFinished: StateFlow<Boolean> = _isUiFinished
+
     var isApiFinished by mutableStateOf(false)
     private var apiCalled = false
     fun fetchDataOnce() {
@@ -46,8 +49,9 @@ class SplashViewModel2 @Inject constructor(
         Log.e("polaris","init")
         viewModelScope.launch {
 
-            isApiFinished = false
+
         }
+
         processIntent(SplashIntent.GetArticle)
         processIntent(SplashIntent.GetArticleKeywordList)
         processIntent(SplashIntent.GetBookMaker)
@@ -119,6 +123,7 @@ class SplashViewModel2 @Inject constructor(
         }).collect {
             article =  mapOf("0" to it.data)
             onAllApiSuccess()
+            Log.d("polaris_0428","polaris_0428")
 
 
         }
@@ -143,14 +148,20 @@ class SplashViewModel2 @Inject constructor(
 
 
      fun onAllApiSuccess() {
+
         count++
          if (count==2){
+             Log.d("polaris","010")
              isApiFinished = true
          }
         if (count==3){
             _uiState.value = SplashUiState.Success
         }
 
+    }
+
+    fun test(){
+        _isUiFinished.value =true
     }
 
 

@@ -2,6 +2,7 @@ package com.devlog.article.presentation.main
 
 import android.Manifest
 import android.app.Activity
+import android.app.ActivityOptions
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
@@ -57,9 +58,13 @@ import com.devlog.article.presentation.question_compensation.navigateQuestionCom
 import com.devlog.article.presentation.question_compensation.questionCompensationNavGraph
 import com.devlog.article.presentation.question_detail.navigateQuestionDetail
 import com.devlog.article.presentation.question_detail.questionDetailNavGraph
+import com.devlog.article.presentation.splash.SplashActivity
 import com.devlog.article.presentation.splash.SplashNCompensation
 import com.devlog.article.presentation.splash.splashNavGraph
+import com.devlog.article.presentation.splash.splashNavigationCompensation
 import com.devlog.article.presentation.ui.theme.BottomNavigationBar
+import com.devlog.article.utility.UtilManager.keywordCheck
+import com.devlog.article.utility.UtilManager.signInCheck
 import com.devlog.article.utility.UtilManager.toJson
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -84,7 +89,12 @@ class MainActivity() : AppCompatActivity() {
         }
         //getArticleData()
         startWebViewHandler()
+        if (signInCheck(this)) {
+            if (keywordCheck(this)) {
 
+            }
+
+        }
         setContentView(ComposeView(this).apply {
 
 
@@ -102,11 +112,11 @@ class MainActivity() : AppCompatActivity() {
                             data?.let {
                                 // 수신된 데이터를 처리 (예: Activity UI 업데이트 등)
                                 val getApiKeywordList = listOf(0, 12, 10, 3, 9, 4, 5, 6, 7, 8)
-                                Log.d("NextActivity", "Article Map: ${data!!.toJson()}")
+
                                 val totalArticles = ArrayList<ArticleTabState>()
                                 val sortedMap: Map<String, Data> = data.toList().sortedBy {
                                     val index = getApiKeywordList.indexOf(it.first.toInt())
-                                    Log.d("polaris_index", index.toString())
+
                                     // -1이 나오는 경우, 정렬 우선순위를 마지막으로 보내거나 다른 처리를 할 수 있음
                                     if (index != -1) index else Int.MAX_VALUE
                                 }.toMap(LinkedHashMap())
@@ -114,7 +124,7 @@ class MainActivity() : AppCompatActivity() {
 
                                 sortedMap.forEach { (key, date) ->
 
-                                    Log.d("polaris_key", key.toString())
+
 
                                     totalArticles.add(
                                         ArticleTabState(
@@ -126,7 +136,7 @@ class MainActivity() : AppCompatActivity() {
 
                                 }
                                 viewModel.articleArray.value = totalArticles
-                                println("Received data: $data")
+
                                 navController.navigateArticle()
                             }
                         } else {
@@ -142,7 +152,7 @@ class MainActivity() : AppCompatActivity() {
                         showBottomBar.value = destination.route in listOf("article", "question")
                     }
                 }
-                val articleArrayState by viewModel.articleArray
+
                 Scaffold(
                     bottomBar ={ BottomNavigationBar(navController = navController, showBottomBar = showBottomBar) }
                 ) { innerPadding ->
@@ -165,8 +175,8 @@ class MainActivity() : AppCompatActivity() {
 
                     }
                 }
-            
-              
+
+
             }
         })
 
@@ -210,6 +220,27 @@ class MainActivity() : AppCompatActivity() {
         if (intent.getStringExtra("title")?.isNotEmpty() == true && intent.getStringExtra("url")?.isNotEmpty() == true) {
             articleDetails(intent.getStringExtra("title")!!, intent.getStringExtra("url")!!)
         }
+    }
+    fun composeStartActivity(context: android.content.Context) {
+        Log.e("polris", "composeStartActivity")
+        val title =    (context as SplashActivity).intent.getStringExtra("title")
+        val url =  (context ).intent.getStringExtra("url")
+        if (title?.isNotEmpty() == true && url?.isNotEmpty() ==true){
+
+            (context ).intentCustom.putExtra("url", url)
+            (context ).intentCustom.putExtra("title", title)
+
+        }
+        Log.d("polaris",title.toString())
+        val options = ActivityOptions.makeCustomAnimation(context, 0, 0)
+        (context ).startActivity(
+            (context ).intentCustom,
+            options.toBundle()
+        )
+        (context).finish()
+
+
+
     }
 
 }
