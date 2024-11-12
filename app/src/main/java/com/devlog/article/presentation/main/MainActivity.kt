@@ -52,6 +52,8 @@ import com.devlog.article.presentation.article_v2.articleNavGraph
 import com.devlog.article.presentation.article_v2.articleRoute
 import com.devlog.article.presentation.article_v2.navigateArticle
 import com.devlog.article.presentation.article_webview.ArticleWebViewActivity
+import com.devlog.article.presentation.my_keywords_select.myKeywordSelectNavGraph
+import com.devlog.article.presentation.my_keywords_select.myKeywordSelectNavigationCompensation
 import com.devlog.article.presentation.question.navigateQuestion
 import com.devlog.article.presentation.question.questionNavGraph
 import com.devlog.article.presentation.question_compensation.navigateQuestionCompensation
@@ -89,12 +91,7 @@ class MainActivity() : AppCompatActivity() {
         }
         //getArticleData()
         startWebViewHandler()
-        if (signInCheck(this)) {
-            if (keywordCheck(this)) {
 
-            }
-
-        }
         setContentView(ComposeView(this).apply {
 
 
@@ -171,8 +168,19 @@ class MainActivity() : AppCompatActivity() {
                         questionDetailNavGraph(onQuestionComplete = { navController.navigateQuestionCompensation()})
 
                         questionCompensationNavGraph(onComplete = { navController.navigateQuestion() })
-                        splashNavGraph(resultReceiver = receiver)
+                        splashNavGraph(resultReceiver = receiver, onComplete = {
+                            Log.d("polaeis signInCheck","${signInCheck(this@MainActivity)}")
+                            Log.d("polaeis keywordCheck","${keywordCheck()}")
+                            if (!signInCheck(this@MainActivity)) {
+                                if (!keywordCheck()) {
+                                    navController.myKeywordSelectNavigationCompensation()
+                                }
 
+                            }else{
+
+                            }
+                        })
+                        myKeywordSelectNavGraph(onComplete = {navController.splashNavigationCompensation()})
                     }
                 }
 

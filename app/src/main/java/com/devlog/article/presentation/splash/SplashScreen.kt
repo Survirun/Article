@@ -40,11 +40,13 @@ import com.devlog.article.utility.UtilManager.signInCheck
 import dagger.hilt.android.qualifiers.ApplicationContext
 
 @Composable
-fun SplashScreen2(viewModel: SplashViewModel2= hiltViewModel(),resultReceiver : ResultReceiver){
+fun SplashScreen2(viewModel: SplashViewModel2= hiltViewModel(),resultReceiver : ResultReceiver,onComplete: () -> Unit){
 
     val apiState by viewModel.apiState.collectAsState()
     val uiState by viewModel.uiState.collectAsState()
     val isApiFinished by viewModel.isUiFinished.collectAsState()
+
+
     LaunchedEffect(isApiFinished) {
 
         if (isApiFinished) {
@@ -74,6 +76,8 @@ fun SplashScreen2(viewModel: SplashViewModel2= hiltViewModel(),resultReceiver : 
         when (uiState){
             is SplashUiState.Loding->{
 
+                onComplete()
+
             }
             is SplashUiState.Success->{
 
@@ -101,14 +105,14 @@ fun SplashScreen2(viewModel: SplashViewModel2= hiltViewModel(),resultReceiver : 
 
 
 
-            SplashScreenView2(viewModel,resultReceiver)
+            SplashScreenView2(viewModel)
         }
     }
 
 }
 
 @Composable
-fun SplashScreenView2(viewModel: SplashViewModel2,resultReceiver:ResultReceiver) {
+fun SplashScreenView2(viewModel: SplashViewModel2) {
     var showTransition by remember { mutableStateOf(false) }
     val spinningComposition by rememberLottieComposition(LottieCompositionSpec.Asset("splash_spinning.json"))
     val transitionComposition by rememberLottieComposition(LottieCompositionSpec.Asset("splash_transition.json"))

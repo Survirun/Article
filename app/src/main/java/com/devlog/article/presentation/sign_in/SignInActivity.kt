@@ -12,6 +12,7 @@ import androidx.fragment.app.viewModels
 import com.devlog.article.R
 import com.devlog.article.data.preference.PrefManager
 import com.devlog.article.databinding.ActivitySignInBinding
+import com.devlog.article.presentation.main.MainActivity
 import com.devlog.article.presentation.my_keywords_select.MyKeywordSelectActivity
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
@@ -73,7 +74,7 @@ class SignInActivity : AppCompatActivity() {
 
             PrefManager.userSignInCheck = true
 
-            startActivity(Intent(this, MyKeywordSelectActivity::class.java))
+            startActivity(Intent(this, MainActivity::class.java))
             finish()
         }
         loginViewModel.loginFailed ={

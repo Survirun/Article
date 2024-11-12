@@ -124,7 +124,7 @@
           {
             "id": 9,
             "category": "C언어",
-            "question": "다음 중 C언어에서 정수형 변수의 기본값은 무엇인가요?",
+            "question": "다음 중 C언어에서 int형 변수의 기본값은 무엇인가요?",
             "options": [
               0,
               -2147483648,
@@ -177,21 +177,8 @@
       },
       {
         "day": 4,
-        "title": "C언어 데이터 타입4",
+        "title": "C언어 데이터 타입5",
         "questions": [
-          {
-            "id": 13,
-            "category": "C언어",
-            "question": "다음 변수 선언이 올바르지 않은 것은?",
-            "options": [
-              "double height;",
-              "char firstName[50];",
-              " int total$;",
-              "float balance;"
-            ],
-            "answer": "int total$;",
-            "explanation": "변수 이름에 특수 문자인 '$'는 사용할 수 없습니다."
-          },
           {
             "id": 14,
             "category": "C언어",
@@ -340,7 +327,7 @@
             "question": "다음 중 변수 'total'을 int로 선언하는 올바른 방법은 무엇인가요?",
             "options": [
               "int total;",
-              " total int;",
+              "total int;",
               "int total();",
               " int = total;"
             ],

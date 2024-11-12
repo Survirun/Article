@@ -52,19 +52,9 @@ object UtilManager {
         }
     }
 
-    fun keywordCheck(activity:Activity): Boolean {
-        if (PrefManager.userKeywordCheck) {
-            return true
-        } else {
-            Handler(Looper.getMainLooper()).postDelayed({
-                activity.startActivity(Intent(activity, MyKeywordSelectActivity::class.java))
-                activity.finish()
+    fun keywordCheck(): Boolean {
+        return PrefManager.userKeywordCheck
 
-
-            }, 1500)
-
-        }
-        return false
     }
 
     fun signInCheck(activity:Activity): Boolean {

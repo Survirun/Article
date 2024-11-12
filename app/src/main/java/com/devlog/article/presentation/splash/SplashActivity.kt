@@ -115,7 +115,7 @@ class SplashActivity : ComponentActivity() {
             return true
         } else {
             Handler(Looper.getMainLooper()).postDelayed({
-                startActivity(Intent(this, MyKeywordSelectActivity::class.java))
+                startActivity(Intent(this, MainActivity::class.java))
                 finish()
 
 

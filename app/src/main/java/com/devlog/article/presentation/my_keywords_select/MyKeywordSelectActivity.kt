@@ -94,29 +94,10 @@ class MyKeywordSelectActivity : ComponentActivity() {
                     BaseColumn {
                         HeaderView()
                         Title()
-                        KeywordSelectList(keywordList)
+                       // KeywordSelectList(keywordList, viewModel2 = )
 
                     }
-                        KeywordSelectButton(){
-//                            var list:Array<String> = Array(10) {
-//                                keywordList.forEach{
-//                                    if (it.selectData.value){
-//                                        it.name
-//                                    }
-//                                }.toString()
-//                            }
-                            if(count.value >= 3){
-                                var list = arrayListOf<Int>()
-                                keywordList.forEach {
-                                    if (it.selectData.value){
-                                        list.add(it.code)
-                                    }
-                                }
-
-
-                                viewModel.pathMyKeywords(list.toTypedArray())
-                            }
-                        }
+                       // KeywordSelectButton(viewModel = )
                 }
             }
         }
@@ -149,13 +130,10 @@ class MyKeywordSelectActivity : ComponentActivity() {
             BaseColumn {
                 HeaderView()
                 Title()
-                KeywordSelectList(keywordList)
+               // KeywordSelectList(keywordList)
 
             }
-                KeywordSelectButton(){
-
-                }
-
+               // KeywordSelectButton()
         }
 
     }
@@ -174,7 +152,7 @@ class MyKeywordSelectActivity : ComponentActivity() {
 
 
     @Composable
-    fun Keywords(keywordSelectData: KeywordSelectData) {
+    fun Keywords(keywordSelectData: KeywordSelectData,viewModel2: MyKeywordSelectViewModel2) {
         val borderColor: Color
         val background: Color
         val fontColor: Color
@@ -199,10 +177,11 @@ class MyKeywordSelectActivity : ComponentActivity() {
                 modifier = Modifier.clickable {
                     keywordSelectData.selectData.value = !keywordSelectData.selectData.value
                     if (keywordSelectData.selectData.value) {
-                        count.value++
+                        
+                       viewModel2.countPlus()
 
                     } else {
-                        count.value--
+                        viewModel2.countMinus()
                     }
                 }, verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
@@ -218,7 +197,7 @@ class MyKeywordSelectActivity : ComponentActivity() {
         }
     }
     @Composable
-    fun KeywordSelectList(keywordList:List<KeywordSelectData>){
+    fun KeywordSelectList(keywordList:List<KeywordSelectData>,viewModel2: MyKeywordSelectViewModel2){
         LazyVerticalGrid(
             columns = GridCells.Fixed(2),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -226,38 +205,10 @@ class MyKeywordSelectActivity : ComponentActivity() {
         )
         {
             items(keywordList) {
-                Keywords(it)
+                Keywords(it,viewModel2)
             }
         }
-    }
-    @Composable
-    fun KeywordSelectButton(click :()->Unit){
-        val backgroundColor : Any
-        backgroundColor = if(count.value>=3) 0xFF000000
-        else 0xFFA0A0AB
-        val infoText : String = if(count.value>=3) "총 ${count.value}개 선택"
-        else "3가지 이상의 주제를 선택해주세요."
-        Column(
-            modifier = Modifier
-                .fillMaxSize(1f),
-            verticalArrangement = Arrangement.Bottom
-        ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth(1f)
-                    .height(60.dp)
-                    .background(Color(backgroundColor))
-                    .clickable(enabled = (count.value>=3)) {click() },
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
 
-                Text(
-                    text = infoText,
-                    color = Color.White,
-                    textAlign = TextAlign.Center
-                )
-            }
-        }
+
 
 }

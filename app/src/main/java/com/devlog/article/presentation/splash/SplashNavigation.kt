@@ -15,9 +15,9 @@ fun NavController.splashNavigationCompensation() {
     }
 }
 
-fun NavGraphBuilder.splashNavGraph(resultReceiver : ResultReceiver) {
+fun NavGraphBuilder.splashNavGraph(resultReceiver : ResultReceiver,onComplete: () -> Unit) {
     composable(route = SplashNCompensation.route) {
-        SplashScreen2(resultReceiver = resultReceiver)
+        SplashScreen2(resultReceiver = resultReceiver, onComplete = onComplete)
     }
 }
 
