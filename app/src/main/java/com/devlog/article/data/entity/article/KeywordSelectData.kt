@@ -1,4 +1,4 @@
-package com.devlog.article.presentation.my_keywords_select
+package com.devlog.article.data.entity.article
 
 import androidx.compose.runtime.MutableState
 
