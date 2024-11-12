@@ -2,7 +2,6 @@ package com.devlog.article.presentation.main
 
 import android.util.Log
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -11,7 +10,6 @@ import com.devlog.article.data.network.ApiService
 import com.devlog.article.data.network.buildOkHttpClient
 import com.devlog.article.data.network.provideGsonConverterFactory
 import com.devlog.article.data.network.provideProductRetrofit
-import com.devlog.article.data.preference.PrefManager
 import com.devlog.article.data.repository.ArticleRepository
 import com.devlog.article.data.repository.ArticleRepositoryImpl
 import com.devlog.article.data.request.ArticleKeywordRequest
@@ -20,8 +18,6 @@ import com.devlog.article.data.response.ArticleLogResponse
 import com.devlog.article.domain.usecase.article.GetArticleKeywordUseCase
 import com.devlog.article.domain.usecase.article.GetArticleUseCase
 import com.devlog.article.presentation.article.ArticleTabState
-import com.devlog.article.presentation.my_keywords_select.Common
-import com.devlog.article.utility.UtilManager.toJson
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job

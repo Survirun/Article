@@ -33,6 +33,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.devlog.article.data.entity.article.AIDevelopment
+import com.devlog.article.data.entity.article.ITNews
+import com.devlog.article.data.entity.article.PM
+import com.devlog.article.data.entity.article.UIUXDesign
+import com.devlog.article.data.entity.article.WebDevelopment
+import com.devlog.article.data.entity.article.androidDevelopment
+import com.devlog.article.data.entity.article.iOSDevelopment
+import com.devlog.article.data.entity.article.serverDevelopment
 import com.devlog.article.data.preference.PrefManager
 import com.devlog.article.presentation.splash.SplashActivity
 import com.devlog.article.presentation.ui.theme.ArticleTheme
@@ -65,14 +73,16 @@ class MyKeywordSelectActivity : ComponentActivity() {
                 mutableStateOf(0)
             }
             keywordList = listOf(
-                KeywordSelectData("IT 소식 📢", remember { mutableStateOf(false) },ITNews),
-                KeywordSelectData("Android 개발 📱", remember { mutableStateOf(false) },androidDevelopment),
-                KeywordSelectData("iOS 개발 🍎", remember { mutableStateOf(false) },iOSDevelopment),
-                KeywordSelectData("Web 개발 🌐", remember { mutableStateOf(false) },WebDevelopment),
-                KeywordSelectData("서버 개발 🎒", remember { mutableStateOf(false) },serverDevelopment),
-                KeywordSelectData("AI 개발 🤖", remember { mutableStateOf(false) },AIDevelopment),
-                KeywordSelectData("UIUX 디자인 🎨", remember { mutableStateOf(false) },UIUXDesign),
-                KeywordSelectData("기획 📃", remember { mutableStateOf(false) },PM),
+                KeywordSelectData("IT 소식 📢", remember { mutableStateOf(false) }, ITNews),
+                KeywordSelectData("Android 개발 📱", remember { mutableStateOf(false) },
+                    androidDevelopment
+                ),
+                KeywordSelectData("iOS 개발 🍎", remember { mutableStateOf(false) }, iOSDevelopment),
+                KeywordSelectData("Web 개발 🌐", remember { mutableStateOf(false) }, WebDevelopment),
+                KeywordSelectData("서버 개발 🎒", remember { mutableStateOf(false) }, serverDevelopment),
+                KeywordSelectData("AI 개발 🤖", remember { mutableStateOf(false) }, AIDevelopment),
+                KeywordSelectData("UIUX 디자인 🎨", remember { mutableStateOf(false) }, UIUXDesign),
+                KeywordSelectData("기획 📃", remember { mutableStateOf(false) }, PM),
             )
 
             ArticleTheme {
@@ -122,13 +132,15 @@ class MyKeywordSelectActivity : ComponentActivity() {
         }
         keywordList = listOf(
             KeywordSelectData("IT 소식 📢", remember { mutableStateOf(false) },10),
-            KeywordSelectData("Android 개발 📱", remember { mutableStateOf(false) },androidDevelopment),
+            KeywordSelectData("Android 개발 📱", remember { mutableStateOf(false) },
+                androidDevelopment
+            ),
             KeywordSelectData("iOS 개발 🍎", remember { mutableStateOf(false) },9),
-            KeywordSelectData("Web 개발 🌐", remember { mutableStateOf(false) },WebDevelopment),
-            KeywordSelectData("서버 개발 🎒", remember { mutableStateOf(false) },serverDevelopment),
-            KeywordSelectData("AI 개발 🤖", remember { mutableStateOf(false) },AIDevelopment),
-            KeywordSelectData("UIUX 디자인 🎨", remember { mutableStateOf(false) },UIUXDesign),
-            KeywordSelectData("기획 📃", remember { mutableStateOf(false) },PM),
+            KeywordSelectData("Web 개발 🌐", remember { mutableStateOf(false) }, WebDevelopment),
+            KeywordSelectData("서버 개발 🎒", remember { mutableStateOf(false) }, serverDevelopment),
+            KeywordSelectData("AI 개발 🤖", remember { mutableStateOf(false) }, AIDevelopment),
+            KeywordSelectData("UIUX 디자인 🎨", remember { mutableStateOf(false) }, UIUXDesign),
+            KeywordSelectData("기획 📃", remember { mutableStateOf(false) }, PM),
         )
 
         ArticleTheme {
