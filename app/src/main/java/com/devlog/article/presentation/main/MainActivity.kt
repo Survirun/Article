@@ -60,7 +60,6 @@ import com.devlog.article.presentation.question_compensation.navigateQuestionCom
 import com.devlog.article.presentation.question_compensation.questionCompensationNavGraph
 import com.devlog.article.presentation.question_detail.navigateQuestionDetail
 import com.devlog.article.presentation.question_detail.questionDetailNavGraph
-import com.devlog.article.presentation.splash.SplashActivity
 import com.devlog.article.presentation.splash.SplashNCompensation
 import com.devlog.article.presentation.splash.splashNavGraph
 import com.devlog.article.presentation.splash.splashNavigationCompensation
@@ -91,6 +90,10 @@ class MainActivity() : AppCompatActivity() {
         }
         //getArticleData()
         startWebViewHandler()
+        //composeStartActivity(this)
+        Log.e("polris", "composeStartActivity")
+        val title = intent.getStringExtra("title")
+        Log.d("polaris",title.toString())
 
         setContentView(ComposeView(this).apply {
 
@@ -229,27 +232,7 @@ class MainActivity() : AppCompatActivity() {
             articleDetails(intent.getStringExtra("title")!!, intent.getStringExtra("url")!!)
         }
     }
-    fun composeStartActivity(context: android.content.Context) {
-        Log.e("polris", "composeStartActivity")
-        val title =    (context as SplashActivity).intent.getStringExtra("title")
-        val url =  (context ).intent.getStringExtra("url")
-        if (title?.isNotEmpty() == true && url?.isNotEmpty() ==true){
 
-            (context ).intentCustom.putExtra("url", url)
-            (context ).intentCustom.putExtra("title", title)
-
-        }
-        Log.d("polaris",title.toString())
-        val options = ActivityOptions.makeCustomAnimation(context, 0, 0)
-        (context ).startActivity(
-            (context ).intentCustom,
-            options.toBundle()
-        )
-        (context).finish()
-
-
-
-    }
 
 }
 

@@ -3,6 +3,7 @@ package com.devlog.article.presentation.my_keywords_select
 import android.content.Intent
 import android.util.Log
 import android.widget.Toast
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -10,6 +11,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -22,8 +28,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat.startActivity
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.devlog.article.data.entity.article.AIDevelopment
@@ -36,20 +44,23 @@ import com.devlog.article.data.entity.article.androidDevelopment
 import com.devlog.article.data.entity.article.iOSDevelopment
 import com.devlog.article.data.entity.article.serverDevelopment
 import com.devlog.article.data.preference.PrefManager
-import com.devlog.article.presentation.splash.SplashActivity
 import com.devlog.article.presentation.ui.theme.BaseColumn
 import com.devlog.article.presentation.ui.theme.HeaderView
-import dagger.hilt.android.qualifiers.ApplicationContext
 
 
+var keywordList= arrayListOf<KeywordSelectData>()
 
 @Composable
-fun MyKeywordSelectSeen( viewModel:MyKeywordSelectViewModel2= hiltViewModel(),onComplete: () -> Unit) {
+fun MyKeywordSelectSeen(
+    viewModel: MyKeywordSelectViewModel2 = hiltViewModel(),
+    onComplete: () -> Unit
+) {
     val context = LocalContext.current
     val apiState by viewModel.apiState.collectAsState()
-    keywordList = listOf(
+    keywordList = arrayListOf(
         KeywordSelectData("IT 소식 📢", remember { mutableStateOf(false) }, ITNews),
-        KeywordSelectData("Android 개발 📱", remember { mutableStateOf(false) },
+        KeywordSelectData(
+            "Android 개발 📱", remember { mutableStateOf(false) },
             androidDevelopment
         ),
         KeywordSelectData("iOS 개발 🍎", remember { mutableStateOf(false) }, iOSDevelopment),
@@ -59,17 +70,19 @@ fun MyKeywordSelectSeen( viewModel:MyKeywordSelectViewModel2= hiltViewModel(),on
         KeywordSelectData("UIUX 디자인 🎨", remember { mutableStateOf(false) }, UIUXDesign),
         KeywordSelectData("기획 📃", remember { mutableStateOf(false) }, PM),
     )
-    when(apiState){
-       is  MyKeywordSelectApiState.keywordLoading ->{
+    when (apiState) {
+        is MyKeywordSelectApiState.keywordLoading -> {
 
-       }
-        is MyKeywordSelectApiState.postKeywordSuccess ->{
-            PrefManager.userKeywordCheck=true
+        }
+
+        is MyKeywordSelectApiState.postKeywordSuccess -> {
+            PrefManager.userKeywordCheck = true
             onComplete()
 
         }
-        is MyKeywordSelectApiState.postKeywordFail->{
-            Toast.makeText(context,"잠시후 다시 시도해주세요", Toast.LENGTH_SHORT).show()
+
+        is MyKeywordSelectApiState.postKeywordFail -> {
+            Toast.makeText(context, "잠시후 다시 시도해주세요", Toast.LENGTH_SHORT).show()
         }
     }
     Surface(
@@ -86,12 +99,86 @@ fun MyKeywordSelectSeen( viewModel:MyKeywordSelectViewModel2= hiltViewModel(),on
 }
 
 @Composable
-fun KeywordSelectButton(viewModel: MyKeywordSelectViewModel2){
+fun Title() {
+    Text(
+        modifier = Modifier.padding(top = 48.dp, bottom = 16.dp),
+        fontSize = 26.sp,
+        fontWeight = FontWeight(600),
+        lineHeight = 40.sp,
+        text = "최근 관심있는\n주제를 선택해주세요"
+    )
+
+}
+
+
+@Composable
+fun Keywords(keywordSelectData: KeywordSelectData, viewModel2: MyKeywordSelectViewModel2) {
+    val borderColor: Color
+    val background: Color
+    val fontColor: Color
+    if (keywordSelectData.selectData.value) {
+        background = Color(0xFF18171D)
+        borderColor = Color(0xFF18171D)
+        fontColor = Color(0xFFFFFFFF)
+
+    } else {
+        background = Color(0xFFFAFAFC)
+        borderColor = Color(0xFFEEEEF0)
+        fontColor = Color(0xFF3F3F46)
+    }
+
+    Surface(
+        shape = RoundedCornerShape(30.dp),
+        border = BorderStroke(1.dp, borderColor),
+        color = background,
+
+        ) {
+        Column(
+            modifier = Modifier.clickable {
+                keywordSelectData.selectData.value = !keywordSelectData.selectData.value
+                if (keywordSelectData.selectData.value) {
+
+                    viewModel2.countPlus()
+
+                } else {
+                    viewModel2.countMinus()
+                }
+            }, verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                modifier = Modifier.padding(vertical = 12.dp, horizontal = 16.dp),
+                text = keywordSelectData.name,
+                fontSize = 16.sp,
+                color = fontColor
+            )
+        }
+
+    }
+}
+
+@Composable
+fun KeywordSelectList(keywordList: List<KeywordSelectData>, viewModel2: MyKeywordSelectViewModel2) {
+    LazyVerticalGrid(
+        columns = GridCells.Fixed(2),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    )
+    {
+        items(keywordList) {
+            Keywords(it, viewModel2)
+        }
+    }
+}
+
+@Composable
+fun KeywordSelectButton(viewModel: MyKeywordSelectViewModel2) {
     val count = viewModel.count.collectAsState()
-    val backgroundColor : Any
-    Log.d("polaris",count.toString())
-    backgroundColor = if(count.value>=3) 0xFF000000 else 0xFFA0A0AB
-    val infoText : String = if(count.value>=3) "총 ${count.value}개 선택" else "3가지 이상의 주제를 선택해주세요."
+    val backgroundColor: Any
+    Log.d("polaris", count.toString())
+    backgroundColor = if (count.value >= 3) 0xFF000000 else 0xFFA0A0AB
+    val infoText: String =
+        if (count.value >= 3) "총 ${count.value}개 선택" else "3가지 이상의 주제를 선택해주세요."
     Column(
         modifier = Modifier
             .fillMaxSize(1f),
@@ -111,7 +198,11 @@ fun KeywordSelectButton(viewModel: MyKeywordSelectViewModel2){
                             }
                         }
 
-                        viewModel.processIntent(MyKeywordSelectIntent.postMyKeywordSelectPost(list.toTypedArray()))
+                        viewModel.processIntent(
+                            MyKeywordSelectIntent.postMyKeywordSelectPost(
+                                list.toTypedArray()
+                            )
+                        )
                     }
                 },
             verticalArrangement = Arrangement.Center,

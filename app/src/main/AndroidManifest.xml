@@ -25,17 +25,8 @@
         <activity
             android:name=".presentation.article_webview.ArticleWebViewActivity"
             android:exported="true" />
-        <activity
-            android:name=".presentation.my_keywords_select.MyKeywordSelectActivity"
-            android:exported="true"
-            android:label="@string/title_activity_my_keyword_select"
-            android:theme="@style/Theme.Article" />
-        <activity
-            android:name=".presentation.splash.SplashActivity"
-            android:exported="true"
-            android:theme="@style/Theme.Article">
 
-        </activity>
+
         <activity
             android:name=".presentation.sign_in.SignInActivity"
             android:exported="false" />

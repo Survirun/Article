@@ -5,9 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Handler
 import android.os.Looper
-import androidx.core.content.ContextCompat.startActivity
 import com.devlog.article.data.preference.PrefManager
-import com.devlog.article.presentation.my_keywords_select.MyKeywordSelectActivity
 import com.devlog.article.presentation.sign_in.SignInActivity
 import com.google.gson.GsonBuilder
 import java.net.HttpURLConnection
