@@ -1,9 +1,10 @@
-package com.devlog.article.presentation.article_v2
+package com.devlog.article.presentation.article.navigation
 
 import androidx.compose.runtime.getValue
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
+import com.devlog.article.presentation.article.ArticleSeen
 import com.devlog.article.presentation.main.MainRoute
 import com.devlog.article.presentation.main.MainViewModel
 import com.devlog.article.presentation.splash.navigation.SplashNCompensation

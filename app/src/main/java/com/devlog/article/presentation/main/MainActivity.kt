@@ -27,10 +27,10 @@ import androidx.navigation.navigation
 import com.devlog.article.data.mixpanel.MixPanelManager
 import com.devlog.article.data.response.Data
 
-import com.devlog.article.presentation.article.ArticleTabState
-import com.devlog.article.presentation.article_v2.articleNavGraph
-import com.devlog.article.presentation.article_v2.articleRoute
-import com.devlog.article.presentation.article_v2.navigateArticle
+import com.devlog.article.presentation.article.state.ArticleTabState
+import com.devlog.article.presentation.article.navigation.articleNavGraph
+import com.devlog.article.presentation.article.navigation.articleRoute
+import com.devlog.article.presentation.article.navigation.navigateArticle
 import com.devlog.article.presentation.article_webview.ArticleWebViewActivity
 import com.devlog.article.presentation.my_keywords_select.navigation.myKeywordSelectNavGraph
 import com.devlog.article.presentation.my_keywords_select.navigation.myKeywordSelectNavigationCompensation

@@ -1,12 +1,9 @@
 package com.devlog.article.presentation.article
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -50,7 +47,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.painterResource
@@ -65,11 +61,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.app.ActivityCompat.finishAffinity
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleEventObserver
-import androidx.lifecycle.LifecycleOwner
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
@@ -77,113 +69,56 @@ import com.devlog.article.R
 import com.devlog.article.data.mixpanel.MixPanelManager
 import com.devlog.article.data.preference.PrefManager
 import com.devlog.article.data.response.Article
-import com.devlog.article.data.response.ArticleLogResponse
+import com.devlog.article.presentation.article.state.ArticleTabState
 import com.devlog.article.presentation.article_webview.ArticleWebViewActivity
-import com.devlog.article.presentation.ui.theme.ArticleTheme
+import com.devlog.article.presentation.main.MainActivity
 import com.devlog.article.presentation.ui.theme.Gray30
 import com.devlog.article.presentation.ui.theme.Gray60
 import com.devlog.article.presentation.ui.theme.Gray70
 import com.devlog.article.utility.UtilManager.toDotDateFormat
-import dagger.hilt.android.AndroidEntryPoint
 import java.net.URI
 
-
-@AndroidEntryPoint
-class ArticleFragment : Fragment() {
-    lateinit var articleArray: ArrayList<ArticleTabState>
-    val viewModel: ArticleListViewModel by viewModels()
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-
-        viewModel.userSignCheck = PrefManager.userSignInCheck
-        viewModel.permission = PrefManager.userPermission
-        viewModel.articles = articleArray
-
-        viewModel.test = {
-            PrefManager.userName = ""
-            PrefManager.userUid = ""
-            PrefManager.userSignInCheck = false
-            PrefManager.userKeywordCheck = false
-            Toast.makeText(context, "앱 계정이 삭제 되었습니다", Toast.LENGTH_SHORT).show()
-            finishAffinity(requireActivity())
-
-        }
-        viewModel.test1 = {
-            Toast.makeText(context, "잠시 후 다시 시도해주세요", Toast.LENGTH_SHORT).show()
-        }
-        viewModel.article.observe(viewLifecycleOwner) {
-            val newArticles = it
-            val uniqueNewArticles = newArticles.filterNot { newArticle ->
-                viewModel.currentArticles.value!!.articles.any { currentArticle ->
-                    currentArticle._id == newArticle._id
-                }
-            }
-            val updatedArticles = viewModel.currentArticles.value!!.articles + uniqueNewArticles
-
-            viewModel.currentArticles.value =
-                viewModel.currentArticles.value!!.copy(articles = updatedArticles as ArrayList<Article>)
-            viewModel.articles[viewModel.tabIndex.value] =
-                viewModel.currentArticles.value!!.copy(articles = updatedArticles)
-        }
-        onStateChanged()
-        return ComposeView(requireContext()).apply {
-            setContent {
-                ArticleTheme {
-                    Main()
-                }
-            }
-        }
-    }
-
-    fun onStateChanged() {
-        val userBookmarkArticleId = arrayListOf<String>()
-        val bookmarArticleLogResponseList = arrayListOf<ArticleLogResponse>()
-        val viewArticleLogResponseList = arrayListOf<ArticleLogResponse>()
-        val shareArticleLogResponseList = arrayListOf<ArticleLogResponse>()
-        val userShareArticleId = arrayListOf<String>()
-        lifecycle.addObserver(object : LifecycleEventObserver {
-            override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
-                when (event) {
-                    Lifecycle.Event.ON_STOP -> {
-                        viewModel.userViewArticleId.forEach {
-                            viewArticleLogResponseList.add(ArticleLogResponse(it, "click"))
-                        }
-                        userShareArticleId.forEach {
-                            shareArticleLogResponseList.add(ArticleLogResponse(it, "share"))
-                        }
-                        userBookmarkArticleId.forEach {
-                            bookmarArticleLogResponseList.add(ArticleLogResponse(it, "bookmark"))
-                        }
-
-                        if (viewModel.userViewArticleId.size != 0) {
-                            viewModel.postArticleLog(viewArticleLogResponseList)
-                        }
-                        if (userShareArticleId.size != 0) {
-                            viewModel.postArticleLog(shareArticleLogResponseList)
-                        }
-                        if (userBookmarkArticleId.size != 0) {
-                            viewModel.postArticleLog(bookmarArticleLogResponseList)
-                        }
-                    }
-
-                    else -> {}
-                }
-            }
-        })
-
-
-    }
-}
-
-
 @Composable
-fun Main() {
-    var showDialog by remember { mutableStateOf(false) }
+fun ArticleSeen(articles:ArrayList<ArticleTabState>, viewModel: ArticleListViewModel = hiltViewModel()) {
+    val context = LocalContext.current // Context를 가져옴
+    val activity = context as? Activity // Context를 Activity로 캐스팅
 
+    viewModel.article.observe(activity as MainActivity) {
+        val newArticles = it
+        val uniqueNewArticles = newArticles.filterNot { newArticle ->
+            viewModel.currentArticles.value.articles.any { currentArticle ->
+                currentArticle._id == newArticle._id
+            }
+        }
+        val updatedArticles =
+            viewModel.currentArticles.value.articles + uniqueNewArticles
+
+        viewModel.currentArticles.value =
+            viewModel.currentArticles.value.copy(articles = updatedArticles as ArrayList<Article>)
+        viewModel.articles[viewModel.tabIndex.value] =
+            viewModel.currentArticles.value.copy(articles = updatedArticles)
+    }
+
+    viewModel.userSignCheck = PrefManager.userSignInCheck
+    viewModel.permission = PrefManager.userPermission
+
+
+    viewModel.test = {
+        PrefManager.userName = ""
+        PrefManager.userUid = ""
+        PrefManager.userSignInCheck = false
+        PrefManager.userKeywordCheck = false
+        Toast.makeText(context, "앱 계정이 삭제 되었습니다", Toast.LENGTH_SHORT).show()
+        finishAffinity(activity)
+
+    }
+    viewModel.test1 = {
+        Toast.makeText(context, "잠시 후 다시 시도해주세요", Toast.LENGTH_SHORT).show()
+    }
+
+    viewModel.articles = articles
+
+    var showDialog by remember { mutableStateOf(false) }
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = Color.White
@@ -198,6 +133,8 @@ fun Main() {
 
     }
 }
+
+
 
 @Composable
 fun Header(onShowDialogChange: (Boolean) -> Unit) {
@@ -235,6 +172,7 @@ fun articleDetails(viewModel: ArticleListViewModel, article: Article, context: C
     intent.putExtra("url", article.link)
     intent.putExtra("title", article.title)
     ContextCompat.startActivity(context, intent, null)
+
 }
 
 @Composable
@@ -243,8 +181,7 @@ fun ArticleScreen(
     showDialog: Boolean,
     onShowDialogChange: (Boolean) -> Unit
 ) {
-    viewModel.currentArticles =
-        remember(viewModel.tabIndex.value) { mutableStateOf(viewModel.articles[viewModel.tabIndex.value]) }
+    viewModel.currentArticles = remember(viewModel.tabIndex.value) { mutableStateOf(viewModel.articles[viewModel.tabIndex.value]) }
 
     if (showDialog) {
         AlertDialog(
@@ -266,18 +203,20 @@ fun ArticleScreen(
 
     Column(modifier = Modifier.fillMaxWidth()) {
         val context = LocalContext.current
-        TabLayout(viewModel)
-        ArticleList(
+        ArticleTabLayout(viewModel)
+        ArticleList2(
             viewModel.currentArticles.value!!,
             onClick = { articleDetails(viewModel, it, context) },
-            loadMore = { viewModel.addArticles(it) },
+            loadMore = {
+                viewModel.addArticles(it)
+                 },
             maxPage = {}
         )
     }
 }
 
 @Composable
-fun TabLayout(viewModel: ArticleListViewModel) {
+fun ArticleTabLayout(viewModel: ArticleListViewModel) {
     val tabs =
         listOf(
             "내 관심사",
@@ -336,7 +275,7 @@ fun TabLayout(viewModel: ArticleListViewModel) {
 
 
 @Composable
-fun ArticleList(
+fun ArticleList2(
     articleList: ArticleTabState,
     onClick: (i: Article) -> Unit,
     loadMore: (state: ArticleTabState) -> Unit,
@@ -356,7 +295,7 @@ fun ArticleList(
                 }
             }
             if (item.type == 2) {
-                CompanyArticleItem(item, onClick = { onClick(item) })
+                CompanyArticleItem2(item, onClick = { onClick(item) })
             } else {
                 ArticleItem(
                     item, onClick = { onClick(item) }
@@ -404,7 +343,7 @@ fun ArticleItem(
         )
         Spacer(modifier = Modifier.size(12.dp))
 
-        displayImage(article,isPreview)
+        displayImage2(article,isPreview)
 
         if (articleListViewModel?.isAdmin()==true) {
             reportButton(article._id)
@@ -413,7 +352,7 @@ fun ArticleItem(
 
 }
 @Composable
-fun displayImage(article: Article, isPreview: Boolean) {
+fun displayImage2(article: Article, isPreview: Boolean) {
     if (isPreview) {
         // 프리뷰 모드에서는 Image와 painterResource 사용
         Image(
@@ -437,7 +376,7 @@ fun displayImage(article: Article, isPreview: Boolean) {
     }
 }
 @Composable
-fun CompanyArticleItem(article: Article, onClick: () -> Unit) {
+fun CompanyArticleItem2(article: Article, onClick: () -> Unit) {
     val articleListViewModel: ArticleListViewModel = viewModel()
     Column(
         modifier = Modifier
@@ -489,7 +428,7 @@ fun reportButton(articleId: String = "") {
     Button(
         onClick = {
             reportArticle(articleListViewModel, articleId)
-                  },
+        },
         modifier = Modifier.wrapContentSize(),
     ) {
         Text("신고")
@@ -585,7 +524,7 @@ fun reportArticle(viewModel: ArticleListViewModel?, articleId: String) {
 
 @Preview(showBackground = true)
 @Composable
-fun DefaultPreview() {
+fun DefaultPreview2() {
 
     val (tabIndex, setTabIndex) = remember { mutableIntStateOf(0) }
     Surface(

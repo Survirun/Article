@@ -1,4 +1,4 @@
-package com.devlog.article.presentation.article
+package com.devlog.article.presentation.article.state
 
 import com.devlog.article.data.response.Article
 
