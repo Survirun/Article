@@ -4,11 +4,8 @@ import android.app.Activity
 import android.os.Bundle
 import android.os.ResultReceiver
 import android.util.Log
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -20,27 +17,21 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
-import com.devlog.article.R
+import com.devlog.article.presentation.splash.state.SplashApiState
+import com.devlog.article.presentation.splash.state.SplashUiState
 import com.devlog.article.presentation.ui.theme.SplashTheme
-import com.devlog.article.utility.UtilManager.keywordCheck
-import com.devlog.article.utility.UtilManager.signInCheck
-import dagger.hilt.android.qualifiers.ApplicationContext
 
 @Composable
-fun SplashScreen2(viewModel: SplashViewModel2= hiltViewModel(),resultReceiver : ResultReceiver,onComplete: () -> Unit){
+fun SplashScreen2(viewModel: SplashViewModel= hiltViewModel(), resultReceiver : ResultReceiver, onComplete: () -> Unit){
 
     val apiState by viewModel.apiState.collectAsState()
     val uiState by viewModel.uiState.collectAsState()
@@ -112,7 +103,7 @@ fun SplashScreen2(viewModel: SplashViewModel2= hiltViewModel(),resultReceiver : 
 }
 
 @Composable
-fun SplashScreenView2(viewModel: SplashViewModel2) {
+fun SplashScreenView2(viewModel: SplashViewModel) {
     var showTransition by remember { mutableStateOf(false) }
     val spinningComposition by rememberLottieComposition(LottieCompositionSpec.Asset("splash_spinning.json"))
     val transitionComposition by rememberLottieComposition(LottieCompositionSpec.Asset("splash_transition.json"))

@@ -2,7 +2,6 @@ package com.devlog.article.presentation.main
 
 import android.Manifest
 import android.app.Activity
-import android.app.ActivityOptions
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
@@ -15,38 +14,19 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.BottomAppBar
-import androidx.compose.material.BottomNavigation
-import androidx.compose.material.BottomNavigationItem
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ComposeView
 import androidx.core.content.ContextCompat
-import androidx.navigation.NavController
-import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navigation
 import com.devlog.article.data.mixpanel.MixPanelManager
 import com.devlog.article.data.response.Data
 
-import com.devlog.article.presentation.article.ArticleFragment
-import com.devlog.article.presentation.article_v2.ArticleSeen
 import com.devlog.article.presentation.article.ArticleTabState
 import com.devlog.article.presentation.article_v2.articleNavGraph
 import com.devlog.article.presentation.article_v2.articleRoute
@@ -60,13 +40,12 @@ import com.devlog.article.presentation.question_compensation.navigateQuestionCom
 import com.devlog.article.presentation.question_compensation.questionCompensationNavGraph
 import com.devlog.article.presentation.question_detail.navigateQuestionDetail
 import com.devlog.article.presentation.question_detail.questionDetailNavGraph
-import com.devlog.article.presentation.splash.SplashNCompensation
-import com.devlog.article.presentation.splash.splashNavGraph
-import com.devlog.article.presentation.splash.splashNavigationCompensation
+import com.devlog.article.presentation.splash.navigation.SplashNCompensation
+import com.devlog.article.presentation.splash.navigation.splashNavGraph
+import com.devlog.article.presentation.splash.navigation.splashNavigationCompensation
 import com.devlog.article.presentation.ui.theme.BottomNavigationBar
 import com.devlog.article.utility.UtilManager.keywordCheck
 import com.devlog.article.utility.UtilManager.signInCheck
-import com.devlog.article.utility.UtilManager.toJson
 import dagger.hilt.android.AndroidEntryPoint
 
 

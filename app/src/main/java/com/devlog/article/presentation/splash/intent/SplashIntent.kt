@@ -1,4 +1,4 @@
-package com.devlog.article.presentation.splash
+package com.devlog.article.presentation.splash.intent
 
 sealed  class SplashIntent {
 

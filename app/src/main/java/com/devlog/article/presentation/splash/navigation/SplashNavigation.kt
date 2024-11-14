@@ -1,11 +1,11 @@
-package com.devlog.article.presentation.splash
+package com.devlog.article.presentation.splash.navigation
 
 import android.os.ResultReceiver
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.devlog.article.presentation.main.MainRoute
-import com.devlog.article.presentation.question_compensation.QuestionCompensationSeen
+import com.devlog.article.presentation.splash.SplashScreen2
 
 
 fun NavController.splashNavigationCompensation() {

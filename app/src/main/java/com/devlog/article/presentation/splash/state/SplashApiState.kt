@@ -1,4 +1,4 @@
-package com.devlog.article.presentation.splash
+package com.devlog.article.presentation.splash.state
 
 
 import com.devlog.article.data.response.Article
