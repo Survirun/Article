@@ -32,8 +32,8 @@ import com.devlog.article.presentation.article_v2.articleNavGraph
 import com.devlog.article.presentation.article_v2.articleRoute
 import com.devlog.article.presentation.article_v2.navigateArticle
 import com.devlog.article.presentation.article_webview.ArticleWebViewActivity
-import com.devlog.article.presentation.my_keywords_select.myKeywordSelectNavGraph
-import com.devlog.article.presentation.my_keywords_select.myKeywordSelectNavigationCompensation
+import com.devlog.article.presentation.my_keywords_select.navigation.myKeywordSelectNavGraph
+import com.devlog.article.presentation.my_keywords_select.navigation.myKeywordSelectNavigationCompensation
 import com.devlog.article.presentation.question.navigateQuestion
 import com.devlog.article.presentation.question.questionNavGraph
 import com.devlog.article.presentation.question_compensation.navigateQuestionCompensation

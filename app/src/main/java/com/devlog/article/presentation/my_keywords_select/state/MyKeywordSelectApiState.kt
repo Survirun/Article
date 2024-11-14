@@ -1,4 +1,4 @@
-package com.devlog.article.presentation.my_keywords_select
+package com.devlog.article.presentation.my_keywords_select.state
 
 sealed class MyKeywordSelectApiState {
     object keywordLoading : MyKeywordSelectApiState()

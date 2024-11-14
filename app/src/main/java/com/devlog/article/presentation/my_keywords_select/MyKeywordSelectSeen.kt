@@ -1,6 +1,5 @@
 package com.devlog.article.presentation.my_keywords_select
 
-import android.content.Intent
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
@@ -32,7 +31,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.content.ContextCompat.startActivity
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.devlog.article.data.entity.article.AIDevelopment
 import com.devlog.article.data.entity.article.ITNews
@@ -44,25 +42,24 @@ import com.devlog.article.data.entity.article.androidDevelopment
 import com.devlog.article.data.entity.article.iOSDevelopment
 import com.devlog.article.data.entity.article.serverDevelopment
 import com.devlog.article.data.preference.PrefManager
+import com.devlog.article.presentation.my_keywords_select.intent.MyKeywordSelectIntent
+import com.devlog.article.presentation.my_keywords_select.state.MyKeywordSelectApiState
 import com.devlog.article.presentation.ui.theme.BaseColumn
 import com.devlog.article.presentation.ui.theme.HeaderView
 
 
-var keywordList= arrayListOf<KeywordSelectData>()
 
 @Composable
 fun MyKeywordSelectSeen(
-    viewModel: MyKeywordSelectViewModel2 = hiltViewModel(),
+    viewModel: MyKeywordSelectViewModel = hiltViewModel(),
     onComplete: () -> Unit
 ) {
     val context = LocalContext.current
     val apiState by viewModel.apiState.collectAsState()
-    keywordList = arrayListOf(
+
+   val keywordList = arrayListOf(
         KeywordSelectData("IT 소식 📢", remember { mutableStateOf(false) }, ITNews),
-        KeywordSelectData(
-            "Android 개발 📱", remember { mutableStateOf(false) },
-            androidDevelopment
-        ),
+        KeywordSelectData("Android 개발 📱", remember { mutableStateOf(false) }, androidDevelopment),
         KeywordSelectData("iOS 개발 🍎", remember { mutableStateOf(false) }, iOSDevelopment),
         KeywordSelectData("Web 개발 🌐", remember { mutableStateOf(false) }, WebDevelopment),
         KeywordSelectData("서버 개발 🎒", remember { mutableStateOf(false) }, serverDevelopment),
@@ -70,6 +67,7 @@ fun MyKeywordSelectSeen(
         KeywordSelectData("UIUX 디자인 🎨", remember { mutableStateOf(false) }, UIUXDesign),
         KeywordSelectData("기획 📃", remember { mutableStateOf(false) }, PM),
     )
+
     when (apiState) {
         is MyKeywordSelectApiState.keywordLoading -> {
 
@@ -94,7 +92,7 @@ fun MyKeywordSelectSeen(
             KeywordSelectList(keywordList, viewModel2 = viewModel)
 
         }
-        KeywordSelectButton(viewModel)
+        KeywordSelectButton(keywordList,viewModel)
     }
 }
 
@@ -112,7 +110,7 @@ fun Title() {
 
 
 @Composable
-fun Keywords(keywordSelectData: KeywordSelectData, viewModel2: MyKeywordSelectViewModel2) {
+fun Keywords(keywordSelectData: KeywordSelectData, viewModel2: MyKeywordSelectViewModel) {
     val borderColor: Color
     val background: Color
     val fontColor: Color
@@ -158,7 +156,7 @@ fun Keywords(keywordSelectData: KeywordSelectData, viewModel2: MyKeywordSelectVi
 }
 
 @Composable
-fun KeywordSelectList(keywordList: List<KeywordSelectData>, viewModel2: MyKeywordSelectViewModel2) {
+fun KeywordSelectList(keywordList: List<KeywordSelectData>, viewModel2: MyKeywordSelectViewModel) {
     LazyVerticalGrid(
         columns = GridCells.Fixed(2),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -171,8 +169,9 @@ fun KeywordSelectList(keywordList: List<KeywordSelectData>, viewModel2: MyKeywor
     }
 }
 
+
 @Composable
-fun KeywordSelectButton(viewModel: MyKeywordSelectViewModel2) {
+fun KeywordSelectButton(keywordList:ArrayList<KeywordSelectData>,viewModel: MyKeywordSelectViewModel) {
     val count = viewModel.count.collectAsState()
     val backgroundColor: Any
     Log.d("polaris", count.toString())
