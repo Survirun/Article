@@ -2,7 +2,9 @@ package com.devlog.article.presentation.article
 
 import android.util.Log
 import androidx.compose.runtime.MutableState
+
 import androidx.compose.runtime.mutableIntStateOf
+
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -23,10 +25,18 @@ import com.devlog.article.data.response.ArticleLogResponse
 import com.devlog.article.domain.usecase.article.GetArticleKeywordUseCase
 import com.devlog.article.domain.usecase.article.GetArticleUseCase
 import com.devlog.article.data.entity.article.Common
+import com.devlog.article.data.preference.PrefManager
+import com.devlog.article.presentation.article.intent.ArticleIntent
+import com.devlog.article.presentation.article.state.ArticleApiState
 import com.devlog.article.presentation.article.state.ArticleTabState
+import com.devlog.article.presentation.my_keywords_select.intent.MyKeywordSelectIntent
+import com.devlog.article.presentation.my_keywords_select.state.MyKeywordSelectApiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 @HiltViewModel
@@ -36,18 +46,37 @@ class ArticleListViewModel@Inject constructor(
 ): ViewModel(
 
 ) {
-    var userSignCheck =true
+    var userSignCheck = PrefManager.userSignInCheck
     var permission =""
+
+    private val _apiState = MutableStateFlow<ArticleApiState>(ArticleApiState.Initialize)
+    val apiState :StateFlow<ArticleApiState> = _apiState
+
+
+    fun processIntent(intent: ArticleIntent) {
+        when (intent) {
+            is ArticleIntent.getArticle->{
+                getArticle(intent.page)
+            }
+            is  ArticleIntent.getArticleKeyword->{
+                getArticleKeyword(intent.page,intent.keyword)
+            }
+            is ArticleIntent.postDeleteAccount ->{
+                deleteUser()
+            }
+
+
+            else -> {}
+        }
+    }
 
     lateinit var reportSucceed: () -> Unit
     lateinit var reportFailed: () -> Unit
-    var article=MutableLiveData<ArrayList<Article>>()
-    lateinit var bookmark: ArrayList<ArticleEntity>
 
-    lateinit var test: () -> Unit
-    lateinit var test1: () -> Unit
 
-    lateinit var currentArticles:MutableState<ArticleTabState>
+
+
+    lateinit var currentArticles: MutableState<ArticleTabState>
     var tabIndex= mutableIntStateOf(0)
 
     var articles = ArrayList<ArticleTabState>()
@@ -61,7 +90,8 @@ class ArticleListViewModel@Inject constructor(
         }, onComplete = {
 
         }).collect{
-            article.value = it.data.articles
+
+            _apiState.value = ArticleApiState.GetArticleSuccess(it.data.articles)
 
         }
 
@@ -82,8 +112,7 @@ class ArticleListViewModel@Inject constructor(
                 Log.d("polaris_onException",it.toString())
             }
         ).collect {
-
-            article.value=it.data.articles
+            _apiState.value = ArticleApiState.GetArticleKeywordSuccess(it.data.articles)
 
 
         }
@@ -155,18 +184,20 @@ class ArticleListViewModel@Inject constructor(
             DefaultRepository.getInstance(api, ioDispatcher = Dispatchers.IO)
         val serverCode = repository.deleteUser()
         if (serverCode==200) {
-            test()
+            _apiState.value = ArticleApiState.PostDeleteAccountSuccess
         } else {
-            test1()
+            _apiState.value = ArticleApiState.PostDeleteAccountFail
         }
     }
 
     fun addArticles(articleTabState: ArticleTabState) {
         articleTabState.page += 1
         if (userSignCheck && articleTabState.keyword == Common) {
+            processIntent(ArticleIntent.getArticle(articleTabState.page))
             getArticle(articleTabState.page)
         } else {
-            getArticleKeyword(articleTabState.page, articleTabState.keyword)
+            processIntent(ArticleIntent.getArticleKeyword(articleTabState.page, articleTabState.keyword))
+
         }
 
 
@@ -176,4 +207,7 @@ class ArticleListViewModel@Inject constructor(
         return permission == "admin"
     }
 
+    fun stateComplete(){
+        _apiState.value  =  ArticleApiState.Initialize
+    }
 }

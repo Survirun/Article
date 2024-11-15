@@ -37,6 +37,7 @@ import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -69,52 +70,96 @@ import com.devlog.article.R
 import com.devlog.article.data.mixpanel.MixPanelManager
 import com.devlog.article.data.preference.PrefManager
 import com.devlog.article.data.response.Article
+import com.devlog.article.presentation.article.state.ArticleApiState
 import com.devlog.article.presentation.article.state.ArticleTabState
 import com.devlog.article.presentation.article_webview.ArticleWebViewActivity
 import com.devlog.article.presentation.main.MainActivity
+import com.devlog.article.presentation.splash.state.SplashApiState
 import com.devlog.article.presentation.ui.theme.Gray30
 import com.devlog.article.presentation.ui.theme.Gray60
 import com.devlog.article.presentation.ui.theme.Gray70
 import com.devlog.article.utility.UtilManager.toDotDateFormat
+import com.devlog.article.utility.UtilManager.toJson
 import java.net.URI
 
 @Composable
 fun ArticleSeen(articles:ArrayList<ArticleTabState>, viewModel: ArticleListViewModel = hiltViewModel()) {
     val context = LocalContext.current // Context를 가져옴
     val activity = context as? Activity // Context를 Activity로 캐스팅
+    val apiState by viewModel.apiState.collectAsState()
 
-    viewModel.article.observe(activity as MainActivity) {
-        val newArticles = it
-        val uniqueNewArticles = newArticles.filterNot { newArticle ->
-            viewModel.currentArticles.value.articles.any { currentArticle ->
-                currentArticle._id == newArticle._id
-            }
+    when(apiState){
+        ArticleApiState.Initialize -> {
+
         }
-        val updatedArticles =
-            viewModel.currentArticles.value.articles + uniqueNewArticles
+        is ArticleApiState.GetArticleSuccess -> {
 
-        viewModel.currentArticles.value =
-            viewModel.currentArticles.value.copy(articles = updatedArticles as ArrayList<Article>)
-        viewModel.articles[viewModel.tabIndex.value] =
-            viewModel.currentArticles.value.copy(articles = updatedArticles)
+            val newArticles =  (apiState as  ArticleApiState.GetArticleSuccess).articles
+            val uniqueNewArticles = newArticles.filterNot { newArticle ->
+                viewModel.currentArticles.value.articles.any { currentArticle ->
+                    currentArticle._id == newArticle._id
+                }
+            }
+            val updatedArticles = viewModel.currentArticles.value.articles + uniqueNewArticles
+
+            viewModel.currentArticles.value = viewModel.currentArticles.value.copy(articles = updatedArticles as ArrayList<Article>)
+            viewModel.articles[viewModel.tabIndex.value] = viewModel.currentArticles.value.copy(articles = updatedArticles)
+            viewModel.stateComplete()
+        }
+        ArticleApiState.GetArticleFailed -> {
+
+        }
+        is ArticleApiState.GetArticleKeywordSuccess->{
+            val newArticles =  (apiState as  ArticleApiState.GetArticleKeywordSuccess).articles
+            val uniqueNewArticles = newArticles.filterNot { newArticle ->
+                viewModel.currentArticles.value.articles.any { currentArticle ->
+                    currentArticle._id == newArticle._id
+                }
+            }
+            val updatedArticles = viewModel.currentArticles.value.articles + uniqueNewArticles
+
+            viewModel.currentArticles.value = viewModel.currentArticles.value.copy(articles = updatedArticles as ArrayList<Article>)
+            viewModel.articles[viewModel.tabIndex.value] = viewModel.currentArticles.value.copy(articles = updatedArticles)
+            viewModel.stateComplete()
+
+        }
+        ArticleApiState.GetArticleKeywordFailed->{
+
+        }
+        ArticleApiState.PostDeleteAccountSuccess ->{
+            PrefManager.userName = ""
+            PrefManager.userUid = ""
+            PrefManager.userSignInCheck = false
+            PrefManager.userKeywordCheck = false
+            Toast.makeText(context, "앱 계정이 삭제 되었습니다", Toast.LENGTH_SHORT).show()
+            activity?.finish()
+        }
+        ArticleApiState.PostDeleteAccountFail ->{
+            Toast.makeText(context, "잠시 후 다시 시도해주세요", Toast.LENGTH_SHORT).show()
+
+        }
+
+
     }
 
-    viewModel.userSignCheck = PrefManager.userSignInCheck
-    viewModel.permission = PrefManager.userPermission
+//    viewModel.article.observe(activity as MainActivity) {
+//        val newArticles = it
+//        val uniqueNewArticles = newArticles.filterNot { newArticle ->
+//            viewModel.currentArticles.value.articles.any { currentArticle ->
+//                currentArticle._id == newArticle._id
+//            }
+//        }
+//        val updatedArticles =
+//            viewModel.currentArticles.value.articles + uniqueNewArticles
+//
+//        viewModel.currentArticles.value =
+//            viewModel.currentArticles.value.copy(articles = updatedArticles as ArrayList<Article>)
+//        viewModel.articles[viewModel.tabIndex.value] =
+//            viewModel.currentArticles.value.copy(articles = updatedArticles)
+//    }
 
 
-    viewModel.test = {
-        PrefManager.userName = ""
-        PrefManager.userUid = ""
-        PrefManager.userSignInCheck = false
-        PrefManager.userKeywordCheck = false
-        Toast.makeText(context, "앱 계정이 삭제 되었습니다", Toast.LENGTH_SHORT).show()
-        finishAffinity(activity)
 
-    }
-    viewModel.test1 = {
-        Toast.makeText(context, "잠시 후 다시 시도해주세요", Toast.LENGTH_SHORT).show()
-    }
 
     viewModel.articles = articles
 
@@ -204,7 +249,7 @@ fun ArticleScreen(
     Column(modifier = Modifier.fillMaxWidth()) {
         val context = LocalContext.current
         ArticleTabLayout(viewModel)
-        ArticleList2(
+        ArticleList(
             viewModel.currentArticles.value!!,
             onClick = { articleDetails(viewModel, it, context) },
             loadMore = {
@@ -275,7 +320,7 @@ fun ArticleTabLayout(viewModel: ArticleListViewModel) {
 
 
 @Composable
-fun ArticleList2(
+fun ArticleList(
     articleList: ArticleTabState,
     onClick: (i: Article) -> Unit,
     loadMore: (state: ArticleTabState) -> Unit,
@@ -286,9 +331,7 @@ fun ArticleList2(
             if (idx >= articleList.articles.size - 1) {
                 if (isMaxPage(articleList)) {
                     maxPage()
-                    Log.d("poalris", "max")
                 } else {
-                    Log.d("poalris", "min")
                     LaunchedEffect(articleList.page) {
                         loadMore(articleList)
                     }
