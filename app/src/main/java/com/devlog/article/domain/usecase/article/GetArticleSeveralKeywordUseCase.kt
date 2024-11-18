@@ -18,7 +18,7 @@ class GetArticleSeveralKeywordUseCase @Inject constructor(
     private val apiRepository: ApiRepository
 ) {
     suspend fun execute(
-        keywordList: List<Int>,
+        keywordList:ArrayList<Int>,
         page:Int,
         onComplete: () -> Unit,
         onError: (Response) -> Unit,

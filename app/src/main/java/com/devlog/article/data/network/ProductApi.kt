@@ -45,6 +45,7 @@ object NetworkModule {
             Log.d("polaris", PrefManager.userUid)
             val builder = chain.request().newBuilder()
                 .addHeader("uid", PrefManager.userUid)
+                .addHeader("guest-mode","true")
                 //.addHeader("uuid", CredentialPreference.getInstance().uuid)
 //                .addHeader("uuid", CredentialPreference.getInstance().uuid)
 //                .addHeader("User-Agent", System.getProperty("http.agent").toString())

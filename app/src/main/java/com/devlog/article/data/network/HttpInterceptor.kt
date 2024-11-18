@@ -15,7 +15,7 @@ class HttpInterceptor :
     override fun intercept(chain: Interceptor.Chain): Response {
         val request = chain.request().newBuilder()
             .addHeader("uid", PrefManager.userUid)
-
+            .addHeader("guest-mode","true")
             .build()
         return chain.proceed(request)
     }

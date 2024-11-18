@@ -60,7 +60,7 @@ class SplashViewModel @Inject constructor(
     }
 
 
-    lateinit var article:Map<String, Data>
+    var article:Map<String, Data> = mapOf()
     var count =0
 
     private val _apiState = MutableStateFlow<SplashApiState>(SplashApiState.Loading)
@@ -79,7 +79,8 @@ class SplashViewModel @Inject constructor(
 
             }
             is SplashIntent.GetArticleKeywordList -> {
-                val getApiKeywordList = listOf( 12, 10, 3,9, 4, 5, 6, 7, 8)
+
+                val getApiKeywordList = arrayListOf(12,10,3,9,4,5,6,7,8)
                 getArticleSeveralKeyword(getApiKeywordList)
 
 
@@ -96,7 +97,7 @@ class SplashViewModel @Inject constructor(
 
 
 
-    fun getArticleSeveralKeyword(keywordList: List<Int>): Job =
+    fun getArticleSeveralKeyword(keywordList:ArrayList<Int>): Job =
         viewModelScope.launch ( coroutineExceptionHandler ) {
 
             getArticleSeveralKeywordUseCase.execute(keywordList = keywordList, page = 1,

@@ -30,7 +30,7 @@ class ArticleRepositoryImpl private constructor(
 
     override suspend fun getArticle(page: Int, passed: ArrayList<String>): ApiResponse<ArticleResponse>  =
         withContext(ioDispatcher) {
-            val response = api.getArticle(page, Passed(passed))
+            val response = api.getArticle(page)
             return@withContext response
         }
 

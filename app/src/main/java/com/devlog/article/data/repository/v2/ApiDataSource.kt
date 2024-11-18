@@ -19,15 +19,14 @@ class ApiDataSource @Inject constructor(
         return apiService.postLogin(loginEntity)
     }
     suspend fun getArticle(page:Int,passed: Passed):ApiResponse<ArticleResponse>{
-        return apiService.getArticle(page = page , passed =passed)
+        return apiService.getArticle(page = page)
     }
     suspend fun getArticleKeyword(articleKeywordRequest: ArticleKeywordRequest): ApiResponse<ArticleResponse> {
         return  apiService.getArticleKeyword(articleKeywordRequest.keyword,articleKeywordRequest.page)
     }
 
-    suspend fun getArticleSeveralKeywordUseCase(keywords:List<Int>,page: Int):ApiResponse<ArticleSeveralKeywordResponse>{
-
-        return apiService.getArticleSeveralKeyword(ArticleSeveralKeywordRequest(keywords),page)
+    suspend fun getArticleSeveralKeywordUseCase(keywords:ArrayList<Int>,page: Int):ApiResponse<ArticleSeveralKeywordResponse>{
+        return apiService.getArticleSeveralKeyword(keywords,page)
     }
 
     suspend fun getBookMaker(): ApiResponse<BookmarkResponse>{

@@ -40,10 +40,9 @@ interface ApiService {
     suspend fun getUserInfo(): Response<UserInfoEntity>
 
     //유저 기사 가져오기
-    @POST("article")
+    @GET("v2/article")
     suspend fun getArticle(
         @Query("page") page: Int,
-        @Body passed: Passed
     ): ApiResponse<ArticleResponse>
 
     //북마크 삭제 또는 추가 서버에서 판단함
@@ -63,15 +62,15 @@ interface ApiService {
     @DELETE("user/my")
     suspend fun userDelete(): Response<Any>
 
-    @POST("article/{keyword}")
+    @POST("/v2/article/{keyword}")
     suspend fun getArticleKeyword(
         @Path("keyword") keyword: Int,
         @Query("page") page: Int
     ) : ApiResponse<ArticleResponse>
 
     //TODO 양현준
-    @POST("article/keywords")
-    suspend fun getArticleSeveralKeyword(@Body articleSeveralKeywordRequest: ArticleSeveralKeywordRequest, @Query("page") page: Int):ApiResponse<ArticleSeveralKeywordResponse>
+    @GET("v2/article/keywords")
+    suspend fun getArticleSeveralKeyword(@Query("keywords") keywords:ArrayList<Int>, @Query("page") page: Int):ApiResponse<ArticleSeveralKeywordResponse>
 
 
     companion object {
