@@ -73,36 +73,6 @@ interface ApiService {
     suspend fun getArticleSeveralKeyword(@Query("keywords") keywords:ArrayList<Int>, @Query("page") page: Int):ApiResponse<ArticleSeveralKeywordResponse>
 
 
-    companion object {
-
-        val logging = HttpLoggingInterceptor().apply {
-            level = HttpLoggingInterceptor.Level.BODY
-        }
-
-        val httpClient = OkHttpClient.Builder()
-            .addInterceptor(logging)
-            .build()
-        fun provideOkHttpClient(): OkHttpClient {
-            return OkHttpClient.Builder()
-                .connectTimeout(300, TimeUnit.SECONDS)
-                .readTimeout(300, TimeUnit.SECONDS)
-                .writeTimeout(300, TimeUnit.SECONDS)
-                .addInterceptor(logging)
-                .addInterceptor(AddHeaderInterceptor())
-//            .addInterceptor(ReceivedHeaderInterceptor())
-                .build()
-        }
-        fun create(): ApiService {
-            val retrofit = Retrofit.Builder()
-                .client(provideOkHttpClient())
-                .baseUrl(PRODUCT_BASE_URL)  // 실제 API의 기본 URL로 변경해야 합니다.
-                .addConverterFactory(GsonConverterFactory.create())
-                .client(httpClient)
-                .build()
-
-            return retrofit.create(ApiService::class.java)
-        }
-    }
 
 
 }

@@ -140,10 +140,7 @@ internal fun ApiService(retrofit: Retrofit): ApiService {
     return retrofit.create(ApiService::class.java)
 }
 
-//fun test(){
-//    var s= ApiService(provideProductRetrofit(buildOkHttpClient(),provideGsonConverterFactory()))
-//
-//}
+
 internal fun provideProductRetrofit(
     okHttpClient: OkHttpClient,
     gsonConverterFactory: GsonConverterFactory
@@ -161,20 +158,7 @@ internal fun provideGsonConverterFactory(): GsonConverterFactory {
     )
 }
 
-//로그인 할 때 만 사용
-internal fun LoginBuildOkHttpClient(): OkHttpClient {
-    val interceptor = HttpLoggingInterceptor()
-    if (BuildConfig.DEBUG) {
-        interceptor.level = HttpLoggingInterceptor.Level.BODY
 
-    } else {
-        interceptor.level = HttpLoggingInterceptor.Level.BODY
-    }
-    return OkHttpClient.Builder()
-        .connectTimeout(5, TimeUnit.SECONDS)
-        .addInterceptor(interceptor)
-        .build()
-}
 
 internal fun buildOkHttpClient(): OkHttpClient {
     val interceptor = HttpLoggingInterceptor()
