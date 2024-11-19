@@ -102,7 +102,7 @@ fun QuestionDetailView(question: Question,click: (String) -> Unit ={}) {
 @Preview(showBackground = true)
 fun PreView() {
     val dummyQuestion = Question(
-        1,
+        "1",
         category = "HTML",
         question = "<h1> 태그의 역할은 무엇인가요?",
         options = listOf("페이지 제목", "이미지 삽입", "하이퍼링크", "본문 텍스트"),

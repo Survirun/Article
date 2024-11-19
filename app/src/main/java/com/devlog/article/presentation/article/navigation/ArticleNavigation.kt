@@ -14,14 +14,14 @@ fun NavController.navigateArticle() {
         popUpTo(SplashNCompensation.route) { inclusive = true }
         launchSingleTop = true
     }
-    navigate(articleRoute.route){
-        popUpTo(MainRoute.route) { inclusive = true } // 'home' 화면으로 돌아가도 스택을 초기화
-        launchSingleTop = true // 이미 'home'에 있으면 새 항목을 추가하지 않음
-    }
-    navigate(articleRoute.route) {
-        popUpTo(SplashNCompensation.route) { inclusive = true }
-        launchSingleTop = true
-    }
+//    navigate(articleRoute.route){
+//        popUpTo(MainRoute.route) { inclusive = true } // 'home' 화면으로 돌아가도 스택을 초기화
+//        launchSingleTop = true // 이미 'home'에 있으면 새 항목을 추가하지 않음
+//    }
+//    navigate(articleRoute.route) {
+//        popUpTo(SplashNCompensation.route) { inclusive = true }
+//        launchSingleTop = true
+//    }
 }
 
 fun NavGraphBuilder.articleNavGraph(

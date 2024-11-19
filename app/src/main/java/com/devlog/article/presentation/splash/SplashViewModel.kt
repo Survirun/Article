@@ -6,6 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.devlog.article.data.preference.PrefManager
 import com.devlog.article.data.response.Data
 import com.devlog.article.domain.usecase.article.GetArticleKeywordUseCase
 import com.devlog.article.domain.usecase.article.GetArticleSeveralKeywordUseCase
@@ -45,19 +46,7 @@ class SplashViewModel @Inject constructor(
 
         }
     }
-    init {
-        // Simulate API call
 
-        Log.e("polaris","init")
-        viewModelScope.launch {
-
-
-        }
-
-        processIntent(SplashIntent.GetArticle)
-        processIntent(SplashIntent.GetArticleKeywordList)
-        processIntent(SplashIntent.GetBookMaker)
-    }
 
 
     var article:Map<String, Data> = mapOf()

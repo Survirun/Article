@@ -6,6 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.devlog.article.data.entity.article.LoginEntity
 import com.devlog.article.data.network.ApiService
 import com.devlog.article.data.network.buildOkHttpClient
 import com.devlog.article.data.network.provideGsonConverterFactory
@@ -17,6 +18,7 @@ import com.devlog.article.data.response.Article
 import com.devlog.article.data.response.ArticleLogResponse
 import com.devlog.article.domain.usecase.article.GetArticleKeywordUseCase
 import com.devlog.article.domain.usecase.article.GetArticleUseCase
+import com.devlog.article.domain.usecase.article.PostLoginUseCase
 import com.devlog.article.presentation.article.state.ArticleTabState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -27,14 +29,37 @@ import javax.inject.Inject
 @HiltViewModel
 class MainViewModel@Inject constructor(
     private val getArticleUseCase: GetArticleUseCase,
-    private val getArticleKeywordUseCase : GetArticleKeywordUseCase):ViewModel() {
+    private val getArticleKeywordUseCase : GetArticleKeywordUseCase,
+    private val postLoginUseCase:PostLoginUseCase):ViewModel() {
 
 
     var articleArray: MutableState<ArrayList<ArticleTabState>> = mutableStateOf(arrayListOf())
     var article= MutableLiveData<ArrayList<Article>>()
     var articles = ArrayList<ArticleTabState>()
+    lateinit var loginSucceed :()->Unit
+    lateinit var loginFailed :()->Unit
+
+    fun login(uid:String,email:String,name:String):Job =viewModelScope.launch {
+
+        postLoginUseCase.execute(
+            LoginEntity(uid = uid , email =email ,name=name),
+            onError = {
+                loginFailed()
+            },
+            onException = {
+                loginFailed()
+            },
+            onComplete = {
+            }
+        ).collect {
+            loginSucceed()
+
+        }
 
 
+
+
+    }
     fun getArticle(page : Int): Job = viewModelScope.launch {
         getArticleUseCase.execute(page = page, onError = {
 
@@ -52,6 +77,8 @@ class MainViewModel@Inject constructor(
 
 
     }
+
+
     fun getArticleKeyword(page: Int, keyword: Int): Job = viewModelScope.launch {
         val articleKeywordRequest= ArticleKeywordRequest(keyword=keyword,page=page)
         getArticleKeywordUseCase.execute(

@@ -36,7 +36,7 @@ class QuestionDetailViewModel @Inject constructor(
     private val _currentQuestionIndex = MutableStateFlow<Int>(0)
     val currentQuestionIndex :MutableStateFlow<Int> get() = _currentQuestionIndex
 
-    val dummyQuestion = Question(0,"","", listOf("","","",""),"","")
+    val dummyQuestion = Question("0","","", listOf("","","",""),"","")
 
 
 

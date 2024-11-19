@@ -10,6 +10,7 @@ import android.os.Handler
 import android.os.Looper
 import android.os.ResultReceiver
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -24,7 +25,9 @@ import androidx.core.content.ContextCompat
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navigation
+import com.devlog.article.R
 import com.devlog.article.data.mixpanel.MixPanelManager
+import com.devlog.article.data.preference.PrefManager
 import com.devlog.article.data.response.Data
 
 import com.devlog.article.presentation.article.state.ArticleTabState
@@ -41,17 +44,19 @@ import com.devlog.article.presentation.question_compensation.questionCompensatio
 import com.devlog.article.presentation.question_detail.navigateQuestionDetail
 import com.devlog.article.presentation.question_detail.questionDetailNavGraph
 import com.devlog.article.presentation.sign_in.SignInActivity
+import com.devlog.article.presentation.sign_in.navigation.navigateSignIn
+import com.devlog.article.presentation.sign_in.navigation.signInNavGraph
 import com.devlog.article.presentation.splash.navigation.SplashNCompensation
 import com.devlog.article.presentation.splash.navigation.splashNavGraph
 import com.devlog.article.presentation.splash.navigation.splashNavigationCompensation
 import com.devlog.article.presentation.ui.theme.BottomNavigationBar
-import com.devlog.article.utility.UtilManager.keywordCheck
-import com.devlog.article.utility.UtilManager.signInCheck
+import com.devlog.article.utility.GoogleSignInHelper
 import dagger.hilt.android.AndroidEntryPoint
 
 
 @AndroidEntryPoint
 class MainActivity() : AppCompatActivity() {
+    private lateinit var googleSignInHelper: GoogleSignInHelper
     private val viewModel: MainViewModel by viewModels()
     private val requestPermissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
@@ -63,14 +68,29 @@ class MainActivity() : AppCompatActivity() {
             }
         }
 
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             askNotificationPermission()
         }
-        //getArticleData()
-        startWebViewHandler()
-        //composeStartActivity(this)
+
+        googleSignInHelper = GoogleSignInHelper(
+            activity = this,
+            onSignInSuccess = { task->
+                PrefManager.userUid=task.result.user!!.uid
+                // 로그인 성공
+                PrefManager.userName=task.result.user!!.displayName.toString()
+
+                viewModel.login( PrefManager.userUid,task.result.user!!.email.toString(),task.result.user!!.displayName.toString())
+
+            },
+            onSignInFailure = { exception ->
+
+               // viewModel.onGoogleSignInFailure(exception)
+            }
+        )
         Log.e("polris", "composeStartActivity")
         val title = intent.getStringExtra("title")
         Log.d("polaris",title.toString())
@@ -84,7 +104,15 @@ class MainActivity() : AppCompatActivity() {
 
                 // 현재 화면이 `home`이나 `profile`일 때만 바텀 네비게이션을 표시하기 위한 상태
                 val showBottomBar = remember { mutableStateOf(false) }
+                //TODO MVI  아키텍쳐로 변경 하기
+                viewModel.loginSucceed = {
+                    navController.myKeywordSelectNavigationCompensation()
+                    PrefManager.userSignInCheck = true
 
+                }
+                viewModel.loginFailed ={
+
+                }
                 val receiver = object : ResultReceiver(Handler(Looper.getMainLooper())) {
                     override fun onReceiveResult(resultCode: Int, resultData: Bundle?) {
                         if (resultCode == Activity.RESULT_OK) {
@@ -116,7 +144,7 @@ class MainActivity() : AppCompatActivity() {
 
                                 }
                                 viewModel.articleArray.value = totalArticles
-
+                               // navController.navigateMain()
                                 navController.navigateArticle()
                             }
                         } else {
@@ -148,14 +176,19 @@ class MainActivity() : AppCompatActivity() {
                             questionNavGraph(onQuestionClick = { navController.navigateQuestionDetail() })
                         }
 
+                        questionNavGraph(onQuestionClick = { navController.navigateQuestionDetail() })
                         questionDetailNavGraph(onQuestionComplete = { navController.navigateQuestionCompensation()})
 
                         questionCompensationNavGraph(onComplete = { navController.navigateQuestion() })
-                        splashNavGraph(resultReceiver = receiver, loginCheck = {
-
+                        splashNavGraph(resultReceiver = receiver,
+                            loginCheck = {
+                            navController.navigateSignIn()
                         } , keywordCheck = {
                             navController.myKeywordSelectNavigationCompensation()
 
+                        })
+                        signInNavGraph(login = {
+                            googleSignInHelper.startGoogleSignIn()
                         })
                         myKeywordSelectNavGraph(onComplete = {navController.splashNavigationCompensation()})
                     }
@@ -206,6 +239,8 @@ class MainActivity() : AppCompatActivity() {
             articleDetails(intent.getStringExtra("title")!!, intent.getStringExtra("url")!!)
         }
     }
+
+
 
 
 }

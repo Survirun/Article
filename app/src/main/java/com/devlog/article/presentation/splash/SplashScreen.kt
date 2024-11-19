@@ -27,10 +27,11 @@ import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.devlog.article.data.preference.PrefManager
+import com.devlog.article.presentation.splash.intent.SplashIntent
 import com.devlog.article.presentation.splash.state.SplashApiState
 import com.devlog.article.presentation.splash.state.SplashUiState
 import com.devlog.article.presentation.ui.theme.SplashTheme
-
+//TODO 디자인 적용하기
 @Composable
 fun SplashScreen(viewModel: SplashViewModel= hiltViewModel(), resultReceiver : ResultReceiver, loginCheck:()->Unit,keywordCheck:()->Unit){
 
@@ -47,6 +48,9 @@ fun SplashScreen(viewModel: SplashViewModel= hiltViewModel(), resultReceiver : R
     }
     when (apiState) {
 
+        is SplashApiState.Loading ->{
+
+        }
         is SplashApiState.GetArticleSuccess->{
 
             viewModel.article += (apiState as SplashApiState.GetArticleSuccess).articleResponseMap
@@ -67,13 +71,20 @@ fun SplashScreen(viewModel: SplashViewModel= hiltViewModel(), resultReceiver : R
     }
     LaunchedEffect(uiState){
         when (uiState){
+
             is SplashUiState.Loding->{
                 if (!PrefManager.userSignInCheck){
+                    Log.e("polaris","로그인 안되있음")
+                    loginCheck()
 
-                }else if (PrefManager.userKeywordCheck){
+                }else if (!PrefManager.userKeywordCheck){
+                    Log.e("polaris","키워드 체크 안되있음")
                     keywordCheck()
                 }else{
 
+                    viewModel.processIntent(SplashIntent.GetArticle)
+                    viewModel.processIntent(SplashIntent.GetArticleKeywordList)
+                    viewModel.processIntent(SplashIntent.GetBookMaker)
                 }
 
 
