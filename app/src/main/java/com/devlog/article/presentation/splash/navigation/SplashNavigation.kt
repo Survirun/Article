@@ -5,7 +5,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.devlog.article.presentation.main.MainRoute
-import com.devlog.article.presentation.splash.SplashScreen2
+import com.devlog.article.presentation.splash.SplashScreen
 
 
 fun NavController.splashNavigationCompensation() {
@@ -15,9 +15,9 @@ fun NavController.splashNavigationCompensation() {
     }
 }
 
-fun NavGraphBuilder.splashNavGraph(resultReceiver : ResultReceiver,onComplete: () -> Unit) {
+fun NavGraphBuilder.splashNavGraph(resultReceiver : ResultReceiver, loginCheck:()->Unit,keywordCheck:()->Unit) {
     composable(route = SplashNCompensation.route) {
-        SplashScreen2(resultReceiver = resultReceiver, onComplete = onComplete)
+        SplashScreen(resultReceiver = resultReceiver, loginCheck = loginCheck , keywordCheck = keywordCheck)
     }
 }
 

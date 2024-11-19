@@ -40,6 +40,7 @@ import com.devlog.article.presentation.question_compensation.navigateQuestionCom
 import com.devlog.article.presentation.question_compensation.questionCompensationNavGraph
 import com.devlog.article.presentation.question_detail.navigateQuestionDetail
 import com.devlog.article.presentation.question_detail.questionDetailNavGraph
+import com.devlog.article.presentation.sign_in.SignInActivity
 import com.devlog.article.presentation.splash.navigation.SplashNCompensation
 import com.devlog.article.presentation.splash.navigation.splashNavGraph
 import com.devlog.article.presentation.splash.navigation.splashNavigationCompensation
@@ -150,17 +151,11 @@ class MainActivity() : AppCompatActivity() {
                         questionDetailNavGraph(onQuestionComplete = { navController.navigateQuestionCompensation()})
 
                         questionCompensationNavGraph(onComplete = { navController.navigateQuestion() })
-                        splashNavGraph(resultReceiver = receiver, onComplete = {
-                            Log.d("polaeis signInCheck","${signInCheck(this@MainActivity)}")
-                            Log.d("polaeis keywordCheck","${keywordCheck()}")
-                            if (!signInCheck(this@MainActivity)) {
-                                if (!keywordCheck()) {
-                                    navController.myKeywordSelectNavigationCompensation()
-                                }
+                        splashNavGraph(resultReceiver = receiver, loginCheck = {
 
-                            }else{
+                        } , keywordCheck = {
+                            navController.myKeywordSelectNavigationCompensation()
 
-                            }
                         })
                         myKeywordSelectNavGraph(onComplete = {navController.splashNavigationCompensation()})
                     }

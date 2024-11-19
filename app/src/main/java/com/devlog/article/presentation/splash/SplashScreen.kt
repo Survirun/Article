@@ -26,12 +26,13 @@ import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
+import com.devlog.article.data.preference.PrefManager
 import com.devlog.article.presentation.splash.state.SplashApiState
 import com.devlog.article.presentation.splash.state.SplashUiState
 import com.devlog.article.presentation.ui.theme.SplashTheme
 
 @Composable
-fun SplashScreen2(viewModel: SplashViewModel= hiltViewModel(), resultReceiver : ResultReceiver, onComplete: () -> Unit){
+fun SplashScreen(viewModel: SplashViewModel= hiltViewModel(), resultReceiver : ResultReceiver, loginCheck:()->Unit,keywordCheck:()->Unit){
 
     val apiState by viewModel.apiState.collectAsState()
     val uiState by viewModel.uiState.collectAsState()
@@ -45,6 +46,7 @@ fun SplashScreen2(viewModel: SplashViewModel= hiltViewModel(), resultReceiver : 
         }
     }
     when (apiState) {
+
         is SplashApiState.GetArticleSuccess->{
 
             viewModel.article += (apiState as SplashApiState.GetArticleSuccess).articleResponseMap
@@ -66,8 +68,15 @@ fun SplashScreen2(viewModel: SplashViewModel= hiltViewModel(), resultReceiver : 
     LaunchedEffect(uiState){
         when (uiState){
             is SplashUiState.Loding->{
+                if (!PrefManager.userSignInCheck){
 
-                onComplete()
+                }else if (PrefManager.userKeywordCheck){
+                    keywordCheck()
+                }else{
+
+                }
+
+
 
             }
             is SplashUiState.Success->{
