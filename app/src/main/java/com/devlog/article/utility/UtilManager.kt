@@ -56,14 +56,7 @@ object UtilManager {
     }
 
     fun signInCheck(activity:Activity): Boolean {
-        if (PrefManager.userSignInCheck) {
-            return true
-        } else {
-            Handler(Looper.getMainLooper()).postDelayed({
-                activity.startActivity(Intent(activity, SignInActivity::class.java))
+        return PrefManager.userSignInCheck
 
-            }, 1500)
-        }
-        return false
     }
 }

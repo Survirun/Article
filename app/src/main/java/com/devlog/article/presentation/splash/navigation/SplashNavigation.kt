@@ -4,7 +4,7 @@ import android.os.ResultReceiver
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
-import com.devlog.article.presentation.main.MainRoute
+import com.devlog.article.presentation.main.navigation.MainRoute
 import com.devlog.article.presentation.splash.SplashScreen
 
 

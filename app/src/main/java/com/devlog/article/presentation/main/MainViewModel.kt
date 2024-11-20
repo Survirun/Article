@@ -19,10 +19,16 @@ import com.devlog.article.data.response.ArticleLogResponse
 import com.devlog.article.domain.usecase.article.GetArticleKeywordUseCase
 import com.devlog.article.domain.usecase.article.GetArticleUseCase
 import com.devlog.article.domain.usecase.article.PostLoginUseCase
+import com.devlog.article.presentation.article.intent.ArticleIntent
 import com.devlog.article.presentation.article.state.ArticleTabState
+import com.devlog.article.presentation.main.intent.MainIntent
+import com.devlog.article.presentation.main.state.MainApiState
+import com.devlog.article.presentation.sign_in.state.SignInState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -32,27 +38,40 @@ class MainViewModel@Inject constructor(
     private val getArticleKeywordUseCase : GetArticleKeywordUseCase,
     private val postLoginUseCase:PostLoginUseCase):ViewModel() {
 
+    private val _apiState = MutableStateFlow<MainApiState>(MainApiState.Initialize)
+    val apiState : StateFlow<MainApiState> = _apiState
 
     var articleArray: MutableState<ArrayList<ArticleTabState>> = mutableStateOf(arrayListOf())
     var article= MutableLiveData<ArrayList<Article>>()
     var articles = ArrayList<ArticleTabState>()
-    lateinit var loginSucceed :()->Unit
-    lateinit var loginFailed :()->Unit
 
-    fun login(uid:String,email:String,name:String):Job =viewModelScope.launch {
+    fun processIntent(intent: MainIntent) {
+        when (intent) {
+            is MainIntent.PostSignIn->{
+                postSignIn(uid = intent.uid, email = intent.email, name = intent.name)
+            }
+
+
+            else -> {}
+        }
+    }
+     fun postSignIn(uid:String,email:String,name:String):Job =viewModelScope.launch {
 
         postLoginUseCase.execute(
             LoginEntity(uid = uid , email =email ,name=name),
             onError = {
-                loginFailed()
+                _apiState.value = MainApiState.SignInError(it.code.toString())
+
             },
             onException = {
-                loginFailed()
+              _apiState.value = MainApiState.SignIException(it.message.toString())
             },
             onComplete = {
+
             }
         ).collect {
-            loginSucceed()
+            _apiState.value = MainApiState.SignInSuccess
+
 
         }
 

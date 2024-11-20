@@ -10,13 +10,13 @@ import android.os.Handler
 import android.os.Looper
 import android.os.ResultReceiver
 import android.util.Log
-import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -25,7 +25,6 @@ import androidx.core.content.ContextCompat
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navigation
-import com.devlog.article.R
 import com.devlog.article.data.mixpanel.MixPanelManager
 import com.devlog.article.data.preference.PrefManager
 import com.devlog.article.data.response.Data
@@ -35,6 +34,9 @@ import com.devlog.article.presentation.article.navigation.articleNavGraph
 import com.devlog.article.presentation.article.navigation.articleRoute
 import com.devlog.article.presentation.article.navigation.navigateArticle
 import com.devlog.article.presentation.article_webview.ArticleWebViewActivity
+import com.devlog.article.presentation.main.intent.MainIntent
+import com.devlog.article.presentation.main.navigation.MainRoute
+import com.devlog.article.presentation.main.state.MainApiState
 import com.devlog.article.presentation.my_keywords_select.navigation.myKeywordSelectNavGraph
 import com.devlog.article.presentation.my_keywords_select.navigation.myKeywordSelectNavigationCompensation
 import com.devlog.article.presentation.question.navigateQuestion
@@ -43,9 +45,9 @@ import com.devlog.article.presentation.question_compensation.navigateQuestionCom
 import com.devlog.article.presentation.question_compensation.questionCompensationNavGraph
 import com.devlog.article.presentation.question_detail.navigateQuestionDetail
 import com.devlog.article.presentation.question_detail.questionDetailNavGraph
-import com.devlog.article.presentation.sign_in.SignInActivity
 import com.devlog.article.presentation.sign_in.navigation.navigateSignIn
 import com.devlog.article.presentation.sign_in.navigation.signInNavGraph
+import com.devlog.article.presentation.sign_in.state.SignInState
 import com.devlog.article.presentation.splash.navigation.SplashNCompensation
 import com.devlog.article.presentation.splash.navigation.splashNavGraph
 import com.devlog.article.presentation.splash.navigation.splashNavigationCompensation
@@ -82,8 +84,8 @@ class MainActivity() : AppCompatActivity() {
                 PrefManager.userUid=task.result.user!!.uid
                 // 로그인 성공
                 PrefManager.userName=task.result.user!!.displayName.toString()
+                viewModel.processIntent(MainIntent.PostSignIn(PrefManager.userUid,task.result.user!!.email.toString(),task.result.user!!.displayName.toString()))
 
-                viewModel.login( PrefManager.userUid,task.result.user!!.email.toString(),task.result.user!!.displayName.toString())
 
             },
             onSignInFailure = { exception ->
@@ -104,15 +106,25 @@ class MainActivity() : AppCompatActivity() {
 
                 // 현재 화면이 `home`이나 `profile`일 때만 바텀 네비게이션을 표시하기 위한 상태
                 val showBottomBar = remember { mutableStateOf(false) }
-                //TODO MVI  아키텍쳐로 변경 하기
-                viewModel.loginSucceed = {
-                    navController.myKeywordSelectNavigationCompensation()
-                    PrefManager.userSignInCheck = true
 
-                }
-                viewModel.loginFailed ={
+                val apiState = viewModel.apiState.collectAsState().value
+                when(apiState){
+                     is MainApiState.Initialize ->{
 
+                    }
+                    is MainApiState.SignInSuccess ->{
+                        navController.myKeywordSelectNavigationCompensation()
+                        PrefManager.userSignInCheck = true
+
+                    }
+                    is MainApiState.SignInError->{
+
+                    }
+                    is MainApiState.SignIException->{
+
+                    }
                 }
+
                 val receiver = object : ResultReceiver(Handler(Looper.getMainLooper())) {
                     override fun onReceiveResult(resultCode: Int, resultData: Bundle?) {
                         if (resultCode == Activity.RESULT_OK) {

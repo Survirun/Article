@@ -1,4 +1,4 @@
-package com.devlog.article.presentation.main
+package com.devlog.article.presentation.main.navigation
 
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
