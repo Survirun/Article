@@ -1,7 +1,7 @@
 package com.devlog.article.domain.usecase.article
 
 import android.util.Log
-import com.devlog.article.data.repository.v2.ApiRepository
+import com.devlog.article.data.repository.v2.aticle.ApiRepository
 import com.devlog.article.data.response.BookmarkResponse
 import com.skydoves.sandwich.suspendOnError
 import com.skydoves.sandwich.suspendOnException

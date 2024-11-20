@@ -1,10 +1,9 @@
-package com.devlog.article.data.repository.v2
+package com.devlog.article.data.repository.v2.aticle
 
 import com.devlog.article.data.entity.article.LoginEntity
 import com.devlog.article.data.entity.article.Passed
 import com.devlog.article.data.network.ApiService
 import com.devlog.article.data.request.ArticleKeywordRequest
-import com.devlog.article.data.request.ArticleSeveralKeywordRequest
 import com.devlog.article.data.response.ArticleResponse
 import com.devlog.article.data.response.ArticleSeveralKeywordResponse
 import com.devlog.article.data.response.BookmarkResponse

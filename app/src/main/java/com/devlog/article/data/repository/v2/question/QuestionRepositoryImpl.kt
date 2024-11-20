@@ -1,6 +1,5 @@
-package com.devlog.article.data.repository
+package com.devlog.article.data.repository.v2.question
 
-import android.app.Application
 import android.util.Log
 import com.devlog.article.data.entity.question.Question
 import com.devlog.article.data.entity.question.Week

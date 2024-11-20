@@ -6,7 +6,6 @@ import android.content.Intent
 import android.os.Handler
 import android.os.Looper
 import com.devlog.article.data.preference.PrefManager
-import com.devlog.article.presentation.sign_in.SignInActivity
 import com.google.gson.GsonBuilder
 import java.net.HttpURLConnection
 import java.net.URL

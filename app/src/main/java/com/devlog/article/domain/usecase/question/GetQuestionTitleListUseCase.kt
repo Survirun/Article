@@ -1,8 +1,7 @@
 package com.devlog.article.domain.usecase.question
 
 import android.util.Log
-import com.devlog.article.data.entity.question.Question
-import com.devlog.article.data.repository.QuestionRepository
+import com.devlog.article.data.repository.v2.question.QuestionRepository
 import com.skydoves.sandwich.suspendOnError
 import com.skydoves.sandwich.suspendOnException
 import com.skydoves.sandwich.suspendOnSuccess

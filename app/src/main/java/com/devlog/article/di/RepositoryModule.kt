@@ -3,9 +3,8 @@ package com.devlog.article.di
 import android.content.Context
 import android.util.Log
 import com.devlog.article.data.entity.question.Week
-import com.devlog.article.data.repository.QuestionRepository
-import com.devlog.article.data.repository.QuestionRepositoryImpl
-import com.devlog.article.utility.UtilManager.toJson
+import com.devlog.article.data.repository.v2.question.QuestionRepository
+import com.devlog.article.data.repository.v2.question.QuestionRepositoryImpl
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import dagger.Module

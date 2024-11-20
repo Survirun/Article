@@ -3,7 +3,6 @@ package com.devlog.article.presentation
 import android.app.Application
 import android.appwidget.AppWidgetManager
 import android.content.ComponentName
-import android.content.Context
 import android.content.Intent
 import android.util.Log
 import androidx.hilt.work.HiltWorkerFactory
@@ -16,9 +15,8 @@ import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import com.devlog.article.data.mixpanel.MixPanelManager
 import com.devlog.article.data.preference.PrefManager
-import com.devlog.article.data.repository.v2.ApiRepository
+import com.devlog.article.data.repository.v2.aticle.ApiRepository
 import com.devlog.article.presentation.app_widget_provider.AppWidgetProviderArticle
-import com.devlog.article.presentation.app_widget_provider.WidgetUpdateWorker
 import com.devlog.article.utility.NotificationWorker
 import com.devlog.article.utility.UtilManager.getTodayToInt
 import com.google.firebase.FirebaseApp

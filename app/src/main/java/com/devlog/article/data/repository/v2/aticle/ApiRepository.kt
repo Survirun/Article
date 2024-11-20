@@ -1,4 +1,4 @@
-package com.devlog.article.data.repository.v2
+package com.devlog.article.data.repository.v2.aticle
 
 import com.devlog.article.data.entity.article.LoginEntity
 import com.devlog.article.data.entity.article.Passed

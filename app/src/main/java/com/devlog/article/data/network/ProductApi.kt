@@ -1,13 +1,10 @@
 package com.devlog.article.data.network
 
-import android.app.Application
 import android.util.Log
 import com.devlog.article.data.preference.PrefManager
-import com.devlog.article.data.repository.v2.ApiDataSource
-import com.devlog.article.data.repository.v2.ApiRepository
-import com.devlog.article.presentation.ArticleApplication
+import com.devlog.article.data.repository.v2.aticle.ApiDataSource
+import com.devlog.article.data.repository.v2.aticle.ApiRepository
 import com.google.firebase.BuildConfig
-import com.google.gson.FieldNamingPolicy
 import com.google.gson.GsonBuilder
 import com.skydoves.sandwich.adapters.ApiResponseCallAdapterFactory
 import dagger.Module
@@ -22,7 +19,6 @@ import okhttp3.ResponseBody
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import java.util.Locale
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
