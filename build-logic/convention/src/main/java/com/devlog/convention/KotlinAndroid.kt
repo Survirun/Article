@@ -4,7 +4,6 @@ package com.devlog.convention
 
 import org.gradle.api.JavaVersion
 import org.gradle.api.Project
-import org.gradle.kotlin.dsl.dependencies
 import org.gradle.kotlin.dsl.provideDelegate
 import org.gradle.kotlin.dsl.withType
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
@@ -26,9 +25,9 @@ internal fun Project.configureKotlinAndroid() {
         }
 
         compileOptions {
-            sourceCompatibility = JavaVersion.VERSION_17
-            targetCompatibility = JavaVersion.VERSION_17
-            isCoreLibraryDesugaringEnabled = true
+            sourceCompatibility = JavaVersion.VERSION_18
+            targetCompatibility = JavaVersion.VERSION_18
+           // isCoreLibraryDesugaringEnabled = true
         }
 
         buildTypes {
@@ -46,15 +45,15 @@ internal fun Project.configureKotlinAndroid() {
 
     val libs = extensions.libs
 
-    dependencies {
-        add("coreLibraryDesugaring", libs.findLibrary("android.desugarJdkLibs").get())
-    }
+//    dependencies {
+//        add("coreLibraryDesugaring", libs.findLibrary("android.desugarJdkLibs").get())
+//    }
 }
 
 internal fun Project.configureKotlin() {
     tasks.withType<KotlinCompile>().configureEach {
         kotlinOptions {
-            jvmTarget = JavaVersion.VERSION_17.toString()
+            jvmTarget = JavaVersion.VERSION_18.toString()
             // Treat all Kotlin warnings as errors (disabled by default)
             // Override by setting warningsAsErrors=true in your ~/.gradle/gradle.properties
             val warningsAsErrors: String? by project

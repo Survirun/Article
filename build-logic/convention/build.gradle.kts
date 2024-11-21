@@ -12,17 +12,21 @@ dependencies {
 
 gradlePlugin {
     plugins {
+        register("androidApplication") {
+            id = "devlog.android.application"
+            implementationClass = "KotlinAndroid"
+        }
         register("androidHilt") {
-            id = "jun.android.hilt"
-            implementationClass = "com.devlog.AndroidMultiModuleExample.HiltAndroidPlugin"
+            id = "devlog.android.hilt"
+            implementationClass = "com.devlog.Article.HiltAndroidPlugin"
         }
         register("kotlinHilt") {
             id = "devlog.kotlin.hilt"
-            implementationClass = "com.devlog.AndroidMultiModuleExample.HiltKotlinPlugin"
+            implementationClass = "com.devlog.Article.HiltKotlinPlugin"
         }
         register("androidRoom") {
-            id = "jun.android.room"
-            implementationClass = "com.devlog.AndroidMultiModuleExample.AndroidRoomPlugin"
+            id = "devlog.android.room"
+            implementationClass = "com.devlog.Article.AndroidRoomPlugin"
         }
 
     }
