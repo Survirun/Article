@@ -1,7 +1,6 @@
 package com.devlog.article.data.repository.v2.aticle
 
 import com.devlog.article.data.entity.article.LoginEntity
-import com.devlog.article.data.entity.article.Passed
 import com.devlog.article.data.network.ApiService
 import com.devlog.article.data.request.ArticleKeywordRequest
 import com.devlog.article.data.response.ArticleResponse
@@ -17,7 +16,7 @@ class ApiDataSource @Inject constructor(
     suspend fun postLogin(loginEntity: LoginEntity):ApiResponse<DefaultResponse>{
         return apiService.postLogin(loginEntity)
     }
-    suspend fun getArticle(page:Int,passed: Passed):ApiResponse<ArticleResponse>{
+    suspend fun getArticle(page:Int):ApiResponse<ArticleResponse>{
         return apiService.getArticle(page = page)
     }
     suspend fun getArticleKeyword(articleKeywordRequest: ArticleKeywordRequest): ApiResponse<ArticleResponse> {

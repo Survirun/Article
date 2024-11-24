@@ -1,7 +1,6 @@
 package com.devlog.article.data.repository.v2.aticle
 
 import com.devlog.article.data.entity.article.LoginEntity
-import com.devlog.article.data.entity.article.Passed
 import com.devlog.article.data.request.ArticleKeywordRequest
 import com.devlog.article.data.response.ArticleResponse
 import com.devlog.article.data.response.ArticleSeveralKeywordResponse
@@ -18,8 +17,8 @@ class ApiRepository @Inject constructor(
     suspend fun postLogin(loginEntity: LoginEntity):ApiResponse<DefaultResponse>{
         return apiDataSource.postLogin(loginEntity =loginEntity )
     }
-    suspend fun getArticle(page:Int,passed: Passed):ApiResponse<ArticleResponse>{
-        return apiDataSource.getArticle(page,passed)
+    suspend fun getArticle(page:Int):ApiResponse<ArticleResponse>{
+        return apiDataSource.getArticle(page)
     }
 
     suspend fun getArticleKeyword(articleKeywordRequest: ArticleKeywordRequest): ApiResponse<ArticleResponse> {

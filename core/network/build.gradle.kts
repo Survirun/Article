@@ -50,5 +50,10 @@ dependencies {
     kapt(libs.hilt.android.compiler)
     implementation(libs.hilt.android)
     implementation (libs.androidx.hilt.common)
-            implementation (libs.androidx.hilt.work)
+    implementation (libs.androidx.hilt.work)
+    // kotlin serialization
+    implementation (libs.kotlin.stdlib) // or "kotlin-stdlib-jdk8"
+    implementation (libs.kotlinx.serialization.json) // JVM dependency
+
+    implementation(libs.retrofit2.kotlinx.serialization.converter)
 }

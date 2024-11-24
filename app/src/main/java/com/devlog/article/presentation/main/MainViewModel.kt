@@ -19,11 +19,9 @@ import com.devlog.article.data.response.ArticleLogResponse
 import com.devlog.article.domain.usecase.article.GetArticleKeywordUseCase
 import com.devlog.article.domain.usecase.article.GetArticleUseCase
 import com.devlog.article.domain.usecase.article.PostLoginUseCase
-import com.devlog.article.presentation.article.intent.ArticleIntent
 import com.devlog.article.presentation.article.state.ArticleTabState
 import com.devlog.article.presentation.main.intent.MainIntent
 import com.devlog.article.presentation.main.state.MainApiState
-import com.devlog.article.presentation.sign_in.state.SignInState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -60,10 +58,12 @@ class MainViewModel@Inject constructor(
         postLoginUseCase.execute(
             LoginEntity(uid = uid , email =email ,name=name),
             onError = {
+                Log.d("polaris_onError",it.toString())
                 _apiState.value = MainApiState.SignInError(it.code.toString())
 
             },
             onException = {
+                Log.d("polaris_onException",it.toString())
               _apiState.value = MainApiState.SignIException(it.message.toString())
             },
             onComplete = {
@@ -81,9 +81,9 @@ class MainViewModel@Inject constructor(
     }
     fun getArticle(page : Int): Job = viewModelScope.launch {
         getArticleUseCase.execute(page = page, onError = {
-
+            Log.d("polaris_onError",it.toString())
         }, onException = {
-
+            Log.d("polaris_onError",it.toString())
         }, onComplete = {
 
         }).collect{

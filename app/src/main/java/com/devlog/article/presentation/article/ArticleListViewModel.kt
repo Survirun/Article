@@ -1,44 +1,36 @@
 package com.devlog.article.presentation.article
 
+
 import android.util.Log
 import androidx.compose.runtime.MutableState
-
 import androidx.compose.runtime.mutableIntStateOf
-
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.devlog.article.data.entity.article.ArticleEntity
+import com.devlog.article.data.entity.article.Common
 import com.devlog.article.data.network.ApiService
 import com.devlog.article.data.network.buildOkHttpClient
 import com.devlog.article.data.network.provideGsonConverterFactory
 import com.devlog.article.data.network.provideProductRetrofit
-
-
+import com.devlog.article.data.preference.PrefManager
 import com.devlog.article.data.repository.ArticleRepository
 import com.devlog.article.data.repository.ArticleRepositoryImpl
 import com.devlog.article.data.repository.DefaultRepository
 import com.devlog.article.data.repository.UserRepository
 import com.devlog.article.data.request.ArticleKeywordRequest
-import com.devlog.article.data.response.Article
 import com.devlog.article.data.response.ArticleLogResponse
 import com.devlog.article.domain.usecase.article.GetArticleKeywordUseCase
 import com.devlog.article.domain.usecase.article.GetArticleUseCase
-import com.devlog.article.data.entity.article.Common
-import com.devlog.article.data.preference.PrefManager
 import com.devlog.article.presentation.article.intent.ArticleIntent
 import com.devlog.article.presentation.article.state.ArticleApiState
 import com.devlog.article.presentation.article.state.ArticleTabState
-import com.devlog.article.presentation.my_keywords_select.intent.MyKeywordSelectIntent
-import com.devlog.article.presentation.my_keywords_select.state.MyKeywordSelectApiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+
 @HiltViewModel
 class ArticleListViewModel@Inject constructor(
     private val getArticleUseCase: GetArticleUseCase,
@@ -84,9 +76,9 @@ class ArticleListViewModel@Inject constructor(
 
     fun getArticle(page : Int): Job = viewModelScope.launch {
         getArticleUseCase.execute(page = page, onError = {
-
+            Log.d("polaris_onError",it.toString())
         }, onException = {
-
+            Log.d("polaris_onException",it.toString())
         }, onComplete = {
 
         }).collect{

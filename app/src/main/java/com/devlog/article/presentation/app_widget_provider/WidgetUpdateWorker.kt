@@ -10,8 +10,6 @@ import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.devlog.article.R
-import com.devlog.article.data.entity.article.Passed
-
 import com.devlog.article.data.response.Article
 import com.devlog.article.presentation.ArticleApplication
 import com.skydoves.sandwich.suspendMapSuccess
@@ -33,7 +31,7 @@ class WidgetUpdateWorker  @AssistedInject constructor(
         // LiveData의 값을 관찰하고 데이터 업데이트
         val response =
 
-        ArticleApplication.instance.apiRepository.getArticle(1, Passed(arrayListOf()))
+        ArticleApplication.instance.apiRepository.getArticle(1, )
         Log.d("polaris","시작")
         if (response != null) {
             response.suspendMapSuccess {
