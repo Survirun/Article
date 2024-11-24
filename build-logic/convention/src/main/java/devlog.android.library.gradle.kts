@@ -5,7 +5,8 @@ import com.devlog.convention.configureKotestAndroid
 
 
 plugins {
-    id("com.android.library")
+
+    id("com.android.application")
 }
 
 configureKotlinAndroid()

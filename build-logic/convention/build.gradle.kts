@@ -9,12 +9,17 @@ dependencies {
 
 }
 
+dependencies {
+    compileOnly(libs.android.gradlePlugin)
+   
+    compileOnly(libs.kotlin.gradlePlugin)
 
+}
 gradlePlugin {
     plugins {
         register("androidApplication") {
             id = "devlog.android.application"
-            implementationClass = "KotlinAndroid"
+            implementationClass = "Devlog_android_applicationPlugin"
         }
         register("androidHilt") {
             id = "devlog.android.hilt"
