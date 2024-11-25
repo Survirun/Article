@@ -3,7 +3,6 @@ package com.devlog.article.presentation.article
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -60,7 +59,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.app.ActivityCompat.finishAffinity
 import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -73,13 +71,10 @@ import com.devlog.article.data.response.Article
 import com.devlog.article.presentation.article.state.ArticleApiState
 import com.devlog.article.presentation.article.state.ArticleTabState
 import com.devlog.article.presentation.article_webview.ArticleWebViewActivity
-import com.devlog.article.presentation.main.MainActivity
-import com.devlog.article.presentation.splash.state.SplashApiState
 import com.devlog.article.presentation.ui.theme.Gray30
 import com.devlog.article.presentation.ui.theme.Gray60
 import com.devlog.article.presentation.ui.theme.Gray70
 import com.devlog.article.utility.UtilManager.toDotDateFormat
-import com.devlog.article.utility.UtilManager.toJson
 import java.net.URI
 
 @Composable
@@ -552,13 +547,8 @@ fun isMaxPage(articleList: ArticleTabState): Boolean {
 
 fun reportArticle(viewModel: ArticleListViewModel?, articleId: String) {
     viewModel?.run{
-        postReport(articleId)
-        reportSucceed = {
-            Log.e("test", "성공")
-        }
-        reportFailed = {
-            Log.e("test", "실패")
-        }
+        postArticleReport(articleId)
+
     }
 
 

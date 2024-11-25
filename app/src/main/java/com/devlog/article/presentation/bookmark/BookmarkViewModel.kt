@@ -3,30 +3,19 @@ package com.devlog.article.presentation.bookmark
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.devlog.article.data.entity.article.ArticleEntity
-import com.devlog.article.data.network.ApiService
-import com.devlog.article.data.network.buildOkHttpClient
-import com.devlog.article.data.network.provideGsonConverterFactory
-import com.devlog.article.data.network.provideProductRetrofit
-import com.devlog.article.data.repository.ArticleRepository
-import com.devlog.article.data.repository.ArticleRepositoryImpl
-import kotlinx.coroutines.Dispatchers
+import com.devlog.article.domain.usecase.article.PostBookMakerUseCase
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class BookmarkViewModel : ViewModel() {
+@HiltViewModel
+class BookmarkViewModel @Inject constructor( private val postBookMakerUseCase: PostBookMakerUseCase): ViewModel() {
 
     var article = ArrayList<ArticleEntity>()
 
     fun postBookmark(articleEntity: ArticleEntity): Job = viewModelScope.launch {
-        val api = ApiService(
-            provideProductRetrofit(
-                buildOkHttpClient(),
-                provideGsonConverterFactory()
-            )
-        )
-        val repository: ArticleRepository =
-            ArticleRepositoryImpl.getInstance(api, ioDispatcher = Dispatchers.IO)
-        val serverCode = repository.postBookmark(articleEntity.articleId)
+        postBookMakerUseCase.execute(articleId = articleEntity.articleId, onComplete = {}, onError = {}, onException = {})
 
 
     }

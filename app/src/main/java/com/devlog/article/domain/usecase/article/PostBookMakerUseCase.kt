@@ -1,8 +1,7 @@
 package com.devlog.article.domain.usecase.article
 
 import android.util.Log
-import com.devlog.article.data.entity.article.LoginEntity
-import com.devlog.article.data.repository.v2.aticle.ApiRepository
+import com.devlog.article.data.repository.v3.ArticleRepository
 import com.devlog.article.data.response.DefaultResponse
 import com.skydoves.sandwich.suspendOnError
 import com.skydoves.sandwich.suspendOnException
@@ -15,19 +14,18 @@ import kotlinx.coroutines.flow.onCompletion
 import okhttp3.Response
 import javax.inject.Inject
 
-class PostLoginUseCase @Inject constructor(
-    private val apiRepository: ApiRepository
+class PostBookMakerUseCase  @Inject constructor(
+    private val apiRepository: ArticleRepository
 ) {
     suspend fun execute(
-        loginEntity: LoginEntity,
+        articleId:String,
         onComplete: () -> Unit,
         onError: (Response) -> Unit,
         onException: (Throwable) -> Unit
     ): Flow<DefaultResponse> {
 
-
         return flow {
-            val response = apiRepository.postLogin(loginEntity)
+            val response = apiRepository.postBookmark(articleId)
             response.suspendOnSuccess {
                 emit(data)
             }.suspendOnError {
@@ -35,6 +33,7 @@ class PostLoginUseCase @Inject constructor(
                 Log.d("polaris", "raw : ${raw}")
                 onError(raw)
             }.suspendOnException {
+                Log.d("polaris", "onError : ${this}")
                 Log.d("polaris", exception.toString())
                 onException(exception)
             }

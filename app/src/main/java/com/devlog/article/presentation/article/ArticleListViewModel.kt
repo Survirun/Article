@@ -7,24 +7,19 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.devlog.article.data.entity.article.Common
-import com.devlog.article.data.network.ApiService
-import com.devlog.article.data.network.buildOkHttpClient
-import com.devlog.article.data.network.provideGsonConverterFactory
-import com.devlog.article.data.network.provideProductRetrofit
 import com.devlog.article.data.preference.PrefManager
-import com.devlog.article.data.repository.ArticleRepository
-import com.devlog.article.data.repository.ArticleRepositoryImpl
-import com.devlog.article.data.repository.DefaultRepository
-import com.devlog.article.data.repository.UserRepository
 import com.devlog.article.data.request.ArticleKeywordRequest
 import com.devlog.article.data.response.ArticleLogResponse
 import com.devlog.article.domain.usecase.article.GetArticleKeywordUseCase
 import com.devlog.article.domain.usecase.article.GetArticleUseCase
+import com.devlog.article.domain.usecase.article.PostBookMakerUseCase
+import com.devlog.article.domain.usecase.user.PostDeleteUserUseCase
+import com.devlog.article.domain.usecase.article.postArticleLogUseCase
+import com.devlog.article.domain.usecase.article.postArticleReportUseCase
 import com.devlog.article.presentation.article.intent.ArticleIntent
 import com.devlog.article.presentation.article.state.ArticleApiState
 import com.devlog.article.presentation.article.state.ArticleTabState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -34,7 +29,11 @@ import javax.inject.Inject
 @HiltViewModel
 class ArticleListViewModel@Inject constructor(
     private val getArticleUseCase: GetArticleUseCase,
-    private val getArticleKeywordUseCase : GetArticleKeywordUseCase
+    private val getArticleKeywordUseCase : GetArticleKeywordUseCase,
+    private val postArticleLogUseCase: postArticleLogUseCase,
+    private val postBookMakerUseCase: PostBookMakerUseCase,
+    private val postArticleReportUseCase: postArticleReportUseCase,
+    private val postDeleteUserUseCase: PostDeleteUserUseCase
 ): ViewModel(
 
 ) {
@@ -62,8 +61,6 @@ class ArticleListViewModel@Inject constructor(
         }
     }
 
-    lateinit var reportSucceed: () -> Unit
-    lateinit var reportFailed: () -> Unit
 
 
 
@@ -111,76 +108,33 @@ class ArticleListViewModel@Inject constructor(
 
     }
 
-    fun postArticleLog(postArticleLogResponse: ArrayList<ArticleLogResponse>): Job =
-        viewModelScope.launch {
-            val api = ApiService(
-                provideProductRetrofit(
-                    buildOkHttpClient(),
-                    provideGsonConverterFactory()
-                )
-            )
-            val repository: ArticleRepository =
-                ArticleRepositoryImpl.getInstance(api, ioDispatcher = Dispatchers.IO)
-            val serverCode = repository.postArticleLog(postArticleLogResponse)
-            if (serverCode != null) {
-
-            } else {
-            }
-
+    fun postArticleLog(postArticleLogResponse: ArrayList<ArticleLogResponse>): Job = viewModelScope.launch {
+            postArticleLogUseCase.execute(postArticleLogResponse, onComplete = {}, onError = {}, onException = {})
         }
 
     fun postBookmark(articleId: String): Job = viewModelScope.launch {
-        val api = ApiService(
-            provideProductRetrofit(
-                buildOkHttpClient(),
-                provideGsonConverterFactory()
-            )
-        )
-        val repository: ArticleRepository =
-            ArticleRepositoryImpl.getInstance(api, ioDispatcher = Dispatchers.IO)
-        val serverCode = repository.postBookmark(articleId)
-        if (serverCode) {
+        postBookMakerUseCase.execute(articleId, onComplete = {}, onError = {}, onException = {})
 
-        } else {
-
-        }
 
     }
 
-    fun postReport(articleId: String): Job = viewModelScope.launch {
-        val api = ApiService(
-            provideProductRetrofit(
-                buildOkHttpClient(),
-                provideGsonConverterFactory()
-            )
-        )
-        val repository: ArticleRepository =
-            ArticleRepositoryImpl.getInstance(api, ioDispatcher = Dispatchers.IO)
-        val serverCode = repository.postReport(articleId)
-        if (serverCode) {
-            reportSucceed()
-        } else {
-            reportFailed()
-        }
+    fun postArticleReport(articleId: String): Job = viewModelScope.launch {
+        postArticleReportUseCase.execute(articleId = articleId, onComplete = {}, onError = {}, onException = {})
+
+
 
     }
 
     fun deleteUser(): Job = viewModelScope.launch {
-        val api = ApiService(
-            provideProductRetrofit(
-                buildOkHttpClient(),
-                provideGsonConverterFactory()
-            )
-        )
-        val repository: UserRepository =
-            DefaultRepository.getInstance(api, ioDispatcher = Dispatchers.IO)
-        val serverCode = repository.deleteUser()
-        if (serverCode==200) {
-            _apiState.value = ArticleApiState.PostDeleteAccountSuccess
-        } else {
+        postDeleteUserUseCase.execute(onComplete = {}, onError = {
             _apiState.value = ArticleApiState.PostDeleteAccountFail
+        }, onException = {
+            _apiState.value = ArticleApiState.PostDeleteAccountFail
+        }).collect {
+            _apiState.value = ArticleApiState.PostDeleteAccountSuccess
         }
     }
+
 
     fun addArticles(articleTabState: ArticleTabState) {
         articleTabState.page += 1

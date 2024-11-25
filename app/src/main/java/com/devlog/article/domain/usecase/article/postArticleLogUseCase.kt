@@ -2,8 +2,8 @@ package com.devlog.article.domain.usecase.article
 
 import android.util.Log
 import com.devlog.article.data.repository.v3.ArticleRepository
-import com.devlog.article.data.request.ArticleKeywordRequest
-import com.devlog.article.data.response.ArticleResponse
+import com.devlog.article.data.response.ArticleLogResponse
+import com.devlog.article.data.response.DefaultResponse
 import com.skydoves.sandwich.suspendOnError
 import com.skydoves.sandwich.suspendOnException
 import com.skydoves.sandwich.suspendOnSuccess
@@ -15,19 +15,18 @@ import kotlinx.coroutines.flow.onCompletion
 import okhttp3.Response
 import javax.inject.Inject
 
-class GetArticleKeywordUseCase @Inject constructor(
+class postArticleLogUseCase @Inject constructor(
     private val apiRepository: ArticleRepository
 ) {
     suspend fun execute(
-        articleKeywordRequest: ArticleKeywordRequest,
+        articleLogResponse: ArrayList<ArticleLogResponse>,
         onComplete: () -> Unit,
         onError: (Response) -> Unit,
         onException: (Throwable) -> Unit
-    ): Flow<ArticleResponse> {
-
+    ): Flow<DefaultResponse> {
 
         return flow {
-            val response = apiRepository.getArticleKeyword(articleKeywordRequest)
+            val response = apiRepository.postArticleLog(articleLogResponse=articleLogResponse)
             response.suspendOnSuccess {
                 emit(data)
             }.suspendOnError {
@@ -35,10 +34,10 @@ class GetArticleKeywordUseCase @Inject constructor(
                 Log.d("polaris", "raw : ${raw}")
                 onError(raw)
             }.suspendOnException {
+                Log.d("polaris", "onError : ${this}")
                 Log.d("polaris", exception.toString())
                 onException(exception)
             }
         }.onCompletion { onComplete() }.flowOn(Dispatchers.IO)
     }
-
 }

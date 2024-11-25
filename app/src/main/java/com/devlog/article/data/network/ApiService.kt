@@ -3,28 +3,18 @@ package com.devlog.article.data.network
 import com.devlog.article.data.entity.article.ArticleLogEntity
 import com.devlog.article.data.entity.article.LoginEntity
 import com.devlog.article.data.entity.article.MyKeyword
-import com.devlog.article.data.entity.article.Passed
-import com.devlog.article.data.network.NetworkModule.AddHeaderInterceptor
-import com.devlog.article.data.network.Url.PRODUCT_BASE_URL
-import com.devlog.article.data.request.ArticleSeveralKeywordRequest
 import com.devlog.article.data.response.ArticleResponse
 import com.devlog.article.data.response.ArticleSeveralKeywordResponse
 import com.devlog.article.data.response.BookmarkResponse
 import com.devlog.article.data.response.DefaultResponse
 import com.devlog.article.data.response.UserInfoEntity
 import com.skydoves.sandwich.ApiResponse
-import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
-import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path
 import retrofit2.http.Query
-import java.util.concurrent.TimeUnit
 
 interface ApiService {
     //로그인
@@ -33,11 +23,11 @@ interface ApiService {
     //내 키워드 관심사 수정
 
     @POST("user/my/keywords")
-    suspend fun pathMyKeywords(@Body keywords: MyKeyword): Response<DefaultResponse>
+    suspend fun pathMyKeywords(@Body keywords: MyKeyword): ApiResponse<DefaultResponse>
 
     //유저 정보 가져오기
     @GET("user/my")
-    suspend fun getUserInfo(): Response<UserInfoEntity>
+    suspend fun getUserInfo(): ApiResponse<UserInfoEntity>
 
     //유저 기사 가져오기
     @GET("v2/article")
@@ -47,20 +37,20 @@ interface ApiService {
 
     //북마크 삭제 또는 추가 서버에서 판단함
     @POST("bookmark/{articleId}")
-    suspend fun postBookmark(@Path("articleId") articleId: String): Response<DefaultResponse>
+    suspend fun postBookmark(@Path("articleId") articleId: String): ApiResponse<DefaultResponse>
 
     //북마크 가져오기
     @GET("bookmark")
     suspend fun getBookMaker(): ApiResponse<BookmarkResponse>
 
     @POST("log/multi")
-    suspend fun postArticleLog(@Body logs: ArticleLogEntity): Response<DefaultResponse>
+    suspend fun postArticleLog(@Body logs: ArticleLogEntity): ApiResponse<DefaultResponse>
 
     @POST("article/report/{articleId}")
-    suspend fun postReport(@Path("articleId") articleId: String): Response<DefaultResponse>
+    suspend fun postReport(@Path("articleId") articleId: String): ApiResponse<DefaultResponse>
 
     @DELETE("user/my")
-    suspend fun userDelete(): Response<Any>
+    suspend fun userDelete(): ApiResponse<DefaultResponse>
 
     @POST("/v2/article/{keyword}")
     suspend fun getArticleKeyword(

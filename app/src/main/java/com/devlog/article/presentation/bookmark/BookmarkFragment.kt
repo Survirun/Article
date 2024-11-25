@@ -42,17 +42,19 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat.startActivity
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import coil.compose.AsyncImage
 import com.devlog.article.R
 import com.devlog.article.data.entity.article.ArticleEntity
 import com.devlog.article.presentation.article_webview.ArticleWebViewActivity
 import com.devlog.article.presentation.ui.theme.ArticleTheme
 import com.devlog.article.presentation.ui.theme.HeaderView
+import dagger.hilt.android.AndroidEntryPoint
 
-
+@AndroidEntryPoint
 class BookmarkFragment : Fragment() {
     lateinit var articleList: MutableState<MutableList<ArticleEntity>>
-    private var viewModel = BookmarkViewModel()
+    private val viewModel:BookmarkViewModel by viewModels()
     lateinit var bookmarkSharedPreferencesHelper: BookmarkSharedPreferencesHelper
     lateinit var deleteItem: ArticleEntity
 
@@ -294,3 +296,4 @@ class BookmarkFragment : Fragment() {
     }
 
 }
+

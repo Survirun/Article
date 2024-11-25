@@ -1,9 +1,9 @@
-package com.devlog.article.domain.usecase.article
+package com.devlog.article.domain.usecase.user
 
 import android.util.Log
-import com.devlog.article.data.repository.v3.ArticleRepository
-import com.devlog.article.data.request.ArticleKeywordRequest
-import com.devlog.article.data.response.ArticleResponse
+import com.devlog.article.data.entity.article.LoginEntity
+import com.devlog.article.data.repository.v3.UserRepository
+import com.devlog.article.data.response.DefaultResponse
 import com.skydoves.sandwich.suspendOnError
 import com.skydoves.sandwich.suspendOnException
 import com.skydoves.sandwich.suspendOnSuccess
@@ -15,19 +15,19 @@ import kotlinx.coroutines.flow.onCompletion
 import okhttp3.Response
 import javax.inject.Inject
 
-class GetArticleKeywordUseCase @Inject constructor(
-    private val apiRepository: ArticleRepository
+class PostLoginUseCase @Inject constructor(
+    private val apiRepository: UserRepository
 ) {
     suspend fun execute(
-        articleKeywordRequest: ArticleKeywordRequest,
+        loginEntity: LoginEntity,
         onComplete: () -> Unit,
         onError: (Response) -> Unit,
         onException: (Throwable) -> Unit
-    ): Flow<ArticleResponse> {
+    ): Flow<DefaultResponse> {
 
 
         return flow {
-            val response = apiRepository.getArticleKeyword(articleKeywordRequest)
+            val response = apiRepository.postLogin(loginEntity)
             response.suspendOnSuccess {
                 emit(data)
             }.suspendOnError {
@@ -40,5 +40,4 @@ class GetArticleKeywordUseCase @Inject constructor(
             }
         }.onCompletion { onComplete() }.flowOn(Dispatchers.IO)
     }
-
 }

@@ -7,23 +7,17 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.devlog.article.data.entity.article.LoginEntity
-import com.devlog.article.data.network.ApiService
-import com.devlog.article.data.network.buildOkHttpClient
-import com.devlog.article.data.network.provideGsonConverterFactory
-import com.devlog.article.data.network.provideProductRetrofit
-import com.devlog.article.data.repository.ArticleRepository
-import com.devlog.article.data.repository.ArticleRepositoryImpl
 import com.devlog.article.data.request.ArticleKeywordRequest
 import com.devlog.article.data.response.Article
 import com.devlog.article.data.response.ArticleLogResponse
 import com.devlog.article.domain.usecase.article.GetArticleKeywordUseCase
 import com.devlog.article.domain.usecase.article.GetArticleUseCase
-import com.devlog.article.domain.usecase.article.PostLoginUseCase
+import com.devlog.article.domain.usecase.user.PostLoginUseCase
+import com.devlog.article.domain.usecase.article.postArticleLogUseCase
 import com.devlog.article.presentation.article.state.ArticleTabState
 import com.devlog.article.presentation.main.intent.MainIntent
 import com.devlog.article.presentation.main.state.MainApiState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -34,7 +28,8 @@ import javax.inject.Inject
 class MainViewModel@Inject constructor(
     private val getArticleUseCase: GetArticleUseCase,
     private val getArticleKeywordUseCase : GetArticleKeywordUseCase,
-    private val postLoginUseCase:PostLoginUseCase):ViewModel() {
+    private val postLoginUseCase: PostLoginUseCase,
+    private val postArticleLogUseCase: postArticleLogUseCase):ViewModel() {
 
     private val _apiState = MutableStateFlow<MainApiState>(MainApiState.Initialize)
     val apiState : StateFlow<MainApiState> = _apiState
@@ -120,19 +115,7 @@ class MainViewModel@Inject constructor(
 
     fun postArticleLog(postArticleLogResponse: ArrayList<ArticleLogResponse>): Job =
         viewModelScope.launch {
-            val api = ApiService(
-                provideProductRetrofit(
-                    buildOkHttpClient(),
-                    provideGsonConverterFactory()
-                )
-            )
-            val repository: ArticleRepository =
-                ArticleRepositoryImpl.getInstance(api, ioDispatcher = Dispatchers.IO)
-            val serverCode = repository.postArticleLog(postArticleLogResponse)
-            if (serverCode != null) {
-
-            } else {
-            }
+            postArticleLogUseCase.execute(articleLogResponse = postArticleLogResponse, onComplete = {}, onError = {}, onException = {})
 
         }
 

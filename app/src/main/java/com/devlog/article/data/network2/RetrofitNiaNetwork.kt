@@ -2,12 +2,18 @@ package com.devlog.article.data.network2
 
 import androidx.core.os.trace
 import com.devlog.article.data.entity.article.ArticleLogEntity
+import com.devlog.article.data.entity.article.LoginEntity
+import com.devlog.article.data.entity.article.MyKeyword
 import com.devlog.article.data.network.ApiService
 import com.devlog.article.data.network.Url
 import com.devlog.article.data.preference.PrefManager
 import com.devlog.article.data.request.ArticleKeywordRequest
 import com.devlog.article.data.response.ArticleLogResponse
 import com.devlog.article.data.response.ArticleResponse
+import com.devlog.article.data.response.ArticleSeveralKeywordResponse
+import com.devlog.article.data.response.BookmarkResponse
+import com.devlog.article.data.response.DefaultResponse
+import com.devlog.article.data.response.UserInfoEntity
 import com.skydoves.sandwich.ApiResponse
 import com.skydoves.sandwich.adapters.ApiResponseCallAdapterFactory
 import kotlinx.serialization.json.Json
@@ -23,7 +29,7 @@ import javax.inject.Singleton
 internal class RetrofitNetwork @Inject constructor(
     networkJson: Json,
     okhttpCallFactory: dagger.Lazy<Call.Factory>,
-): ArticleDataSource{
+): DataSource{
     val loggingInterceptor = HttpLoggingInterceptor().apply {
         level = HttpLoggingInterceptor.Level.BODY // 응답 본문까지 로깅
     }
@@ -53,6 +59,10 @@ internal class RetrofitNetwork @Inject constructor(
             .create(ApiService::class.java)
     }
 
+    override suspend fun postLogin(loginEntity: LoginEntity): ApiResponse<DefaultResponse> {
+        return  api.postLogin(loginEntity= loginEntity)
+    }
+
 
     override suspend fun getArticle(page: Int): ApiResponse<ArticleResponse> {
 
@@ -62,22 +72,22 @@ internal class RetrofitNetwork @Inject constructor(
     }
 
 
-    override suspend fun postBookmark(articleId: String): Boolean  {
+    override suspend fun postBookmark(articleId: String):ApiResponse<DefaultResponse>  {
         val response = api.postBookmark(articleId)
-        return response.isSuccessful
+        return response
     }
 
 
 
-    override suspend fun postArticleLog(articleLogResponse: ArrayList<ArticleLogResponse>): Boolean {
+    override suspend fun postArticleLog(articleLogResponse: ArrayList<ArticleLogResponse>): ApiResponse<DefaultResponse> {
         val response = api.postArticleLog(ArticleLogEntity(articleLogResponse))
-        return response.isSuccessful
+        return response
     }
 
 
-    override suspend fun postReport(articleId: String): Boolean  {
+    override suspend fun postReport(articleId: String): ApiResponse<DefaultResponse>  {
         val response = api.postReport(articleId)
-        return response.isSuccessful
+        return response
     }
 
     override suspend fun getArticleKeyword(
@@ -87,8 +97,28 @@ internal class RetrofitNetwork @Inject constructor(
         return response
     }
 
+    override suspend fun pathMyKeywords(keywords: Array<Int>): ApiResponse<DefaultResponse> {
+       return api.pathMyKeywords(keywords= MyKeyword(keywords))
+    }
 
+    override suspend fun getUserInfo(): ApiResponse<UserInfoEntity> {
+        return  api.getUserInfo()
+    }
 
+    override suspend fun deleteUser(): ApiResponse<DefaultResponse> {
+        return  api.userDelete()
+    }
+
+    override suspend fun getBookMaker(): ApiResponse<BookmarkResponse> {
+        return  api.getBookMaker()
+    }
+
+    override suspend fun getArticleSeveralKeyword(
+        keywords: ArrayList<Int>,
+        page: Int
+    ): ApiResponse<ArticleSeveralKeywordResponse> {
+        return  api.getArticleSeveralKeyword(keywords,page)
+    }
 
 
 }

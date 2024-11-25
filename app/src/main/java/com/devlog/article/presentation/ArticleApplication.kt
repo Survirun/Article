@@ -6,7 +6,6 @@ import android.content.ComponentName
 import android.content.Intent
 import android.util.Log
 import androidx.hilt.work.HiltWorkerFactory
-
 import androidx.work.Configuration
 import androidx.work.Constraints
 import androidx.work.Data
@@ -15,7 +14,7 @@ import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import com.devlog.article.data.mixpanel.MixPanelManager
 import com.devlog.article.data.preference.PrefManager
-import com.devlog.article.data.repository.v2.aticle.ApiRepository
+import com.devlog.article.data.repository.v3.ArticleRepository
 import com.devlog.article.presentation.app_widget_provider.AppWidgetProviderArticle
 import com.devlog.article.utility.NotificationWorker
 import com.devlog.article.utility.UtilManager.getTodayToInt
@@ -44,7 +43,7 @@ class ArticleApplication : Application(), Configuration.Provider  {
 
     }
     @Inject
-    lateinit var apiRepository: ApiRepository
+    lateinit var apiRepository: ArticleRepository
     @Inject
     lateinit var workerFactory: HiltWorkerFactory
 
