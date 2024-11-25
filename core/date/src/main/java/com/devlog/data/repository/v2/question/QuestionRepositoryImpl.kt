@@ -1,7 +1,7 @@
-package com.devlog.article.data.repository.v2.question
+package com.devlog.data.repository.v2.question
 
 import android.util.Log
-import com.devlog.data.repository.v2.question.QuestionRepository
+import com.devlog.article.data.repository.v2.question.QuestionRepository
 import com.devlog.date.entity.question.Week
 import com.devlog.model.data.entity.question.Question
 import com.skydoves.sandwich.ApiResponse

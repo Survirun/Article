@@ -26,9 +26,11 @@ include(":feature")
 include(":core:design_system")
 
 
-include ':core:domain'
+
 
 include ':core:network'
 include ':core:preference'
 include ':core:model'
 include ':core:date'
+
+include ':core:domain'
