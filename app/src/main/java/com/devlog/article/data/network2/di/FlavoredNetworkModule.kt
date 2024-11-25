@@ -1,6 +1,6 @@
 package com.devlog.article.data.network2.di
 
-import com.devlog.article.data.network2.ArticleRepository
+import com.devlog.article.data.network2.ArticleDataSource
 import com.devlog.article.data.network2.RetrofitNetwork
 import dagger.Binds
 import dagger.Module
@@ -12,5 +12,5 @@ import dagger.hilt.components.SingletonComponent
 internal interface FlavoredNetworkModule {
 
     @Binds
-    fun binds(impl: RetrofitNetwork): ArticleRepository
+    fun binds(impl: RetrofitNetwork): ArticleDataSource
 }

@@ -5,7 +5,7 @@ import com.devlog.article.data.response.ArticleLogResponse
 import com.devlog.article.data.response.ArticleResponse
 import com.skydoves.sandwich.ApiResponse
 
-interface ArticleRepository {
+interface ArticleDataSource {
 
     suspend fun getArticle(page:Int): ApiResponse<ArticleResponse>
 
@@ -17,4 +17,5 @@ interface ArticleRepository {
     suspend fun postReport(articleId: String): Boolean
 
     suspend fun getArticleKeyword(articleKeywordRequest : ArticleKeywordRequest) : ApiResponse<ArticleResponse>
+
 }

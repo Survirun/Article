@@ -20,10 +20,10 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class RetrofitNetwork @Inject constructor(
+internal class RetrofitNetwork @Inject constructor(
     networkJson: Json,
     okhttpCallFactory: dagger.Lazy<Call.Factory>,
-): ArticleRepository{
+): ArticleDataSource{
     val loggingInterceptor = HttpLoggingInterceptor().apply {
         level = HttpLoggingInterceptor.Level.BODY // 응답 본문까지 로깅
     }
@@ -86,6 +86,9 @@ class RetrofitNetwork @Inject constructor(
         val response = api.getArticleKeyword(articleKeywordRequest.keyword, articleKeywordRequest.page)
         return response
     }
+
+
+
 
 
 }
