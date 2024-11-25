@@ -1,8 +1,8 @@
-package com.devlog.date.response
+package com.devlog.model.data.entity.response
 
 import java.io.Serializable
 
-data class ArticleResponse(val status: Boolean, val data:Data): Serializable {
+data class ArticleResponse(val status: Boolean, val data: Data): Serializable {
     fun toEntity(): ArticleResponse = ArticleResponse(status = status, data = data)
 
 }

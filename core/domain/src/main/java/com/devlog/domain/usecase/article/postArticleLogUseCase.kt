@@ -1,7 +1,7 @@
 package com.devlog.domain.usecase.article
 
 import android.util.Log
-import com.devlog.article.data.repository.v3.ArticleRepository
+import com.devlog.data.repository.v3.ArticleRepository2
 import com.devlog.date.response.DefaultResponse
 import com.devlog.model.data.entity.response.ArticleLogResponse
 import com.skydoves.sandwich.suspendOnError
@@ -16,7 +16,7 @@ import okhttp3.Response
 import javax.inject.Inject
 
 class postArticleLogUseCase @Inject constructor(
-    private val apiRepository: ArticleRepository
+    private val apiRepository: ArticleRepository2
 ) {
     suspend fun execute(
         articleLogResponse: ArrayList<ArticleLogResponse>,

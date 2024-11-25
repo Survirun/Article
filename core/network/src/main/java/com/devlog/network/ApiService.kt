@@ -2,7 +2,7 @@ package com.devlog.network
 
 import com.devlog.date.entity.article.LoginEntity
 import com.devlog.date.entity.article.MyKeyword
-import com.devlog.date.response.ArticleResponse
+import com.devlog.model.data.entity.response.ArticleResponse
 import com.devlog.date.response.ArticleSeveralKeywordResponse
 import com.devlog.date.response.BookmarkResponse
 import com.devlog.date.response.DefaultResponse

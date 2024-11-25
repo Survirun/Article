@@ -57,6 +57,9 @@ class ArticleApplication : Application(), Configuration.Provider  {
         super.onCreate()
         PrefManager.init(applicationContext)
         PrefManager.appAccessDate = getTodayToInt()
+        com.devlog.preference.PrefManager.init(applicationContext)
+        com.devlog.preference.PrefManager.appAccessDate = getTodayToInt()
+
         MixPanelManager.init(applicationContext)
         createWorkRequest()
         //updateWidget()

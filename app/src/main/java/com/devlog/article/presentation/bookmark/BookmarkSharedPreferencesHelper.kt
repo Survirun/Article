@@ -3,7 +3,8 @@ package com.devlog.article.presentation.bookmark
 import android.content.Context
 import android.preference.PreferenceManager
 import com.devlog.article.data.entity.article.ArticleEntity
-import com.devlog.article.data.response.Article
+import com.devlog.model.data.entity.response.Article
+
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
 

@@ -1,4 +1,4 @@
-package com.devlog.article.data.network.di
+package com.devlog.network.di
 
 import com.devlog.network.DataSource
 import com.devlog.network.RetrofitNetwork

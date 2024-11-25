@@ -7,11 +7,11 @@ import com.devlog.article.data.entity.article.MyKeyword
 import com.devlog.article.data.preference.PrefManager
 import com.devlog.article.data.request.ArticleKeywordRequest
 import com.devlog.article.data.response.ArticleLogResponse
-import com.devlog.article.data.response.ArticleResponse
 import com.devlog.article.data.response.ArticleSeveralKeywordResponse
 import com.devlog.article.data.response.BookmarkResponse
 import com.devlog.article.data.response.DefaultResponse
 import com.devlog.article.data.response.UserInfoEntity
+import com.devlog.model.data.entity.response.ArticleResponse
 import com.skydoves.sandwich.ApiResponse
 import com.skydoves.sandwich.adapters.ApiResponseCallAdapterFactory
 import kotlinx.serialization.json.Json

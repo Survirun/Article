@@ -67,7 +67,7 @@ import coil.request.ImageRequest
 import com.devlog.article.R
 import com.devlog.article.data.mixpanel.MixPanelManager
 import com.devlog.article.data.preference.PrefManager
-import com.devlog.article.data.response.Article
+
 import com.devlog.article.presentation.article.state.ArticleApiState
 import com.devlog.article.presentation.article.state.ArticleTabState
 import com.devlog.article.presentation.article_webview.ArticleWebViewActivity
@@ -75,6 +75,7 @@ import com.devlog.article.presentation.ui.theme.Gray30
 import com.devlog.article.presentation.ui.theme.Gray60
 import com.devlog.article.presentation.ui.theme.Gray70
 import com.devlog.article.utility.UtilManager.toDotDateFormat
+import com.devlog.model.data.entity.response.Article
 import java.net.URI
 
 @Composable

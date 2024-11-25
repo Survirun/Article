@@ -3,11 +3,11 @@ package com.devlog.article.data.network
 import com.devlog.article.data.entity.article.ArticleLogEntity
 import com.devlog.article.data.entity.article.LoginEntity
 import com.devlog.article.data.entity.article.MyKeyword
-import com.devlog.article.data.response.ArticleResponse
 import com.devlog.article.data.response.ArticleSeveralKeywordResponse
 import com.devlog.article.data.response.BookmarkResponse
 import com.devlog.article.data.response.DefaultResponse
 import com.devlog.article.data.response.UserInfoEntity
+import com.devlog.model.data.entity.response.ArticleResponse
 import com.skydoves.sandwich.ApiResponse
 import retrofit2.http.Body
 import retrofit2.http.DELETE

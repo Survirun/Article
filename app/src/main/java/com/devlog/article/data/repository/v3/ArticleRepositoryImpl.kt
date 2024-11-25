@@ -3,10 +3,10 @@ package com.devlog.article.data.repository.v3
 import com.devlog.article.data.network.DataSource
 import com.devlog.article.data.request.ArticleKeywordRequest
 import com.devlog.article.data.response.ArticleLogResponse
-import com.devlog.article.data.response.ArticleResponse
 import com.devlog.article.data.response.ArticleSeveralKeywordResponse
 import com.devlog.article.data.response.BookmarkResponse
 import com.devlog.article.data.response.DefaultResponse
+import com.devlog.model.data.entity.response.ArticleResponse
 import com.skydoves.sandwich.ApiResponse
 import javax.inject.Inject
 

@@ -23,7 +23,7 @@ include(":feature")
 
 
 
-include(":core:design_system")
+
 
 
 
@@ -34,3 +34,6 @@ include ':core:model'
 include ':core:date'
 
 include ':core:domain'
+include ':core:designsystem'
+include ':feature:feature_splash'
+

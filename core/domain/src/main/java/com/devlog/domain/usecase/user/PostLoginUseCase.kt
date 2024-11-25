@@ -1,7 +1,7 @@
-package com.devlog.article.domain.usecase.user
+package com.devlog.domain.usecase.user
 
 import android.util.Log
-import com.devlog.article.data.repository.v3.UserRepository
+import com.devlog.article.data.repository.v3.UserRepository2
 import com.devlog.date.entity.article.LoginEntity
 import com.devlog.date.response.DefaultResponse
 import com.skydoves.sandwich.suspendOnError
@@ -16,7 +16,7 @@ import okhttp3.Response
 import javax.inject.Inject
 
 class PostLoginUseCase @Inject constructor(
-    private val apiRepository: UserRepository
+    private val apiRepository: UserRepository2
 ) {
     suspend fun execute(
         loginEntity: LoginEntity,

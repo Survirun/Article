@@ -27,12 +27,10 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navigation
 import com.devlog.article.data.mixpanel.MixPanelManager
 import com.devlog.article.data.preference.PrefManager
-import com.devlog.article.data.response.Data
-
-import com.devlog.article.presentation.article.state.ArticleTabState
 import com.devlog.article.presentation.article.navigation.articleNavGraph
 import com.devlog.article.presentation.article.navigation.articleRoute
 import com.devlog.article.presentation.article.navigation.navigateArticle
+import com.devlog.article.presentation.article.state.ArticleTabState
 import com.devlog.article.presentation.article_webview.ArticleWebViewActivity
 import com.devlog.article.presentation.main.intent.MainIntent
 import com.devlog.article.presentation.main.navigation.MainRoute
@@ -47,12 +45,12 @@ import com.devlog.article.presentation.question_detail.navigateQuestionDetail
 import com.devlog.article.presentation.question_detail.questionDetailNavGraph
 import com.devlog.article.presentation.sign_in.navigation.navigateSignIn
 import com.devlog.article.presentation.sign_in.navigation.signInNavGraph
-import com.devlog.article.presentation.sign_in.state.SignInState
-import com.devlog.article.presentation.splash.navigation.SplashNCompensation
-import com.devlog.article.presentation.splash.navigation.splashNavGraph
-import com.devlog.article.presentation.splash.navigation.splashNavigationCompensation
 import com.devlog.article.presentation.ui.theme.BottomNavigationBar
 import com.devlog.article.utility.GoogleSignInHelper
+import com.devlog.model.data.entity.response.Data
+import com.devlog.feature_splash.navigation.SplashNCompensation
+import com.devlog.feature_splash.navigation.splashNavGraph
+import com.devlog.feature_splash.navigation.splashNavigationCompensation
 import dagger.hilt.android.AndroidEntryPoint
 
 
@@ -202,7 +200,7 @@ class MainActivity() : AppCompatActivity() {
                         signInNavGraph(login = {
                             googleSignInHelper.startGoogleSignIn()
                         })
-                        myKeywordSelectNavGraph(onComplete = {navController.splashNavigationCompensation()})
+                        myKeywordSelectNavGraph(onComplete = {navController.splashNavigationCompensation(mainRoute = MainRoute.route)})
                     }
                 }
 

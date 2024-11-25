@@ -10,8 +10,8 @@ import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.devlog.article.R
-import com.devlog.article.data.response.Article
 import com.devlog.article.presentation.ArticleApplication
+import com.devlog.model.data.entity.response.Article
 import com.skydoves.sandwich.suspendMapSuccess
 import com.skydoves.sandwich.suspendOnError
 import com.skydoves.sandwich.suspendOnFailure
@@ -34,6 +34,7 @@ class WidgetUpdateWorker  @AssistedInject constructor(
         ArticleApplication.instance.apiRepository.getArticle(1, )
         Log.d("polaris","시작")
         if (response != null) {
+            response
             response.suspendMapSuccess {
                 Log.d("polaris","성공")
                 updateWidget(data.articles)

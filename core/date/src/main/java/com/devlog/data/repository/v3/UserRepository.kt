@@ -5,7 +5,7 @@ import com.devlog.date.response.DefaultResponse
 import com.devlog.date.response.UserInfoEntity
 import com.skydoves.sandwich.ApiResponse
 
-interface UserRepository {
+interface UserRepository2 {
     suspend fun postLogin(loginEntity: LoginEntity):ApiResponse<DefaultResponse>
 
     suspend fun pathMyKeywords(keywords: Array<Int>): ApiResponse<DefaultResponse>

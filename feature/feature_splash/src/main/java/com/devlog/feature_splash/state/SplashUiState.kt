@@ -1,4 +1,4 @@
-package com.devlog.article.presentation.splash.state
+package com.devlog.feature_splash.state
 
 sealed class SplashUiState {
     object Loding : SplashUiState()

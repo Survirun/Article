@@ -1,7 +1,7 @@
 package com.devlog.domain.usecase.article
 
 import android.util.Log
-import com.devlog.article.data.repository.v3.ArticleRepository
+import com.devlog.data.repository.v3.ArticleRepository2
 import com.devlog.date.response.BookmarkResponse
 import com.skydoves.sandwich.suspendOnError
 import com.skydoves.sandwich.suspendOnException
@@ -14,8 +14,8 @@ import kotlinx.coroutines.flow.onCompletion
 import okhttp3.Response
 import javax.inject.Inject
 
-class GetBookMakerUseCase @Inject constructor(
-    private val apiRepository: ArticleRepository
+class GetBookMakerUseCase2 @Inject constructor(
+    private val apiRepository: ArticleRepository2
 ) {
     suspend fun execute(
         onComplete: () -> Unit,

@@ -1,7 +1,7 @@
 package com.devlog.domain.usecase.question
 
 import android.util.Log
-import com.devlog.article.data.repository.v2.question.QuestionRepository
+import com.devlog.data.repository.v2.question.QuestionRepository2
 import com.skydoves.sandwich.suspendOnError
 import com.skydoves.sandwich.suspendOnException
 import com.skydoves.sandwich.suspendOnSuccess
@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.onCompletion
 import okhttp3.Response
 import javax.inject.Inject
 
-class GetQuestionTitleListUseCase  @Inject constructor(private val questionRepository: QuestionRepository){
+class GetQuestionTitleListUseCase  @Inject constructor(private val questionRepository: QuestionRepository2){
 
     suspend fun execute(
         onComplete: () -> Unit,

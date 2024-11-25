@@ -1,6 +1,6 @@
-package com.devlog.article.data.repository.v3
+package com.devlog.data.repository.v3
 
-import com.devlog.date.response.ArticleResponse
+import com.devlog.model.data.entity.response.ArticleResponse
 import com.devlog.date.response.ArticleSeveralKeywordResponse
 import com.devlog.date.response.BookmarkResponse
 import com.devlog.date.response.DefaultResponse
@@ -8,7 +8,7 @@ import com.devlog.model.data.entity.request.ArticleKeywordRequest
 import com.devlog.model.data.entity.response.ArticleLogResponse
 import com.skydoves.sandwich.ApiResponse
 
-interface ArticleRepository {
+interface ArticleRepository2 {
 
     suspend fun getArticle(page:Int): ApiResponse<ArticleResponse>
 

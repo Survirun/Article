@@ -1,4 +1,4 @@
-package com.devlog.article.presentation.splash
+package com.devlog.feature_splash
 
 import android.app.Activity
 import android.os.Bundle
@@ -26,14 +26,16 @@ import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
-import com.devlog.article.data.preference.PrefManager
 import com.devlog.article.presentation.splash.intent.SplashIntent
-import com.devlog.article.presentation.splash.state.SplashApiState
-import com.devlog.article.presentation.splash.state.SplashUiState
 import com.devlog.article.presentation.ui.theme.SplashTheme
+
+import com.devlog.feature_splash.state.SplashApiState
+import com.devlog.feature_splash.state.SplashUiState
+import com.devlog.preference.PrefManager
+
 //TODO 디자인 적용하기
 @Composable
-fun SplashScreen(viewModel: SplashViewModel= hiltViewModel(), resultReceiver : ResultReceiver, loginCheck:()->Unit,keywordCheck:()->Unit){
+fun SplashScreen(viewModel: SplashViewModel2 = hiltViewModel(), resultReceiver : ResultReceiver, loginCheck:()->Unit, keywordCheck:()->Unit){
 
     val apiState by viewModel.apiState.collectAsState()
     val uiState by viewModel.uiState.collectAsState()
@@ -58,7 +60,7 @@ fun SplashScreen(viewModel: SplashViewModel= hiltViewModel(), resultReceiver : R
         }
         is SplashApiState.GetArticleKeywordsSuccess ->{
 
-            viewModel.article+= (apiState as SplashApiState.GetArticleKeywordsSuccess).articleResponseMap
+            viewModel.article += (apiState as SplashApiState.GetArticleKeywordsSuccess).articleResponseMap
 
         }
         is SplashApiState.Failure ->{
@@ -123,7 +125,7 @@ fun SplashScreen(viewModel: SplashViewModel= hiltViewModel(), resultReceiver : R
 }
 
 @Composable
-fun SplashScreenView2(viewModel: SplashViewModel) {
+fun SplashScreenView2(viewModel: SplashViewModel2) {
     var showTransition by remember { mutableStateOf(false) }
     val spinningComposition by rememberLottieComposition(LottieCompositionSpec.Asset("splash_spinning.json"))
     val transitionComposition by rememberLottieComposition(LottieCompositionSpec.Asset("splash_transition.json"))

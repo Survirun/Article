@@ -1,6 +1,7 @@
 package com.devlog.article.presentation.article.state
 
-import com.devlog.article.data.response.Article
+import com.devlog.model.data.entity.response.Article
+
 
 data class ArticleTabState(
     var articles: ArrayList<Article> = ArrayList(),

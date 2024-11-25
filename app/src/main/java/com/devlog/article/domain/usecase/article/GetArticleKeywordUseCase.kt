@@ -3,7 +3,7 @@ package com.devlog.article.domain.usecase.article
 import android.util.Log
 import com.devlog.article.data.repository.v3.ArticleRepository
 import com.devlog.article.data.request.ArticleKeywordRequest
-import com.devlog.article.data.response.ArticleResponse
+import com.devlog.model.data.entity.response.ArticleResponse
 import com.skydoves.sandwich.suspendOnError
 import com.skydoves.sandwich.suspendOnException
 import com.skydoves.sandwich.suspendOnSuccess

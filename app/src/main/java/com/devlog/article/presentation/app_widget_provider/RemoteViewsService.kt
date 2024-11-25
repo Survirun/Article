@@ -1,29 +1,14 @@
 package com.devlog.article.presentation.app_widget_provider
 
 import android.appwidget.AppWidgetManager
-import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.drawable.Drawable
 import android.util.Log
 import android.widget.RemoteViews
 import android.widget.RemoteViewsService
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.DataSource
-import com.bumptech.glide.load.engine.GlideException
-import com.bumptech.glide.request.RequestListener
-import com.bumptech.glide.request.RequestOptions
-import com.bumptech.glide.request.target.AppWidgetTarget
-import com.bumptech.glide.request.target.CustomTarget
-import com.bumptech.glide.request.transition.Transition
 import com.devlog.article.R
-import com.devlog.article.data.response.Article
-import com.devlog.article.utility.UtilManager.isImageUrlValid
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import com.devlog.model.data.entity.response.Article
 import java.util.UUID
 
 class RemoteViewsService : RemoteViewsService() {

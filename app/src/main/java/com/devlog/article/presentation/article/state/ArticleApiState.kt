@@ -1,6 +1,6 @@
 package com.devlog.article.presentation.article.state
 
-import com.devlog.article.data.response.Article
+import com.devlog.model.data.entity.response.Article
 
 sealed class ArticleApiState {
     data object Initialize : ArticleApiState()

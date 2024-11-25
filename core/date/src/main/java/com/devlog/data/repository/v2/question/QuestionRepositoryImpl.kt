@@ -1,7 +1,6 @@
 package com.devlog.data.repository.v2.question
 
 import android.util.Log
-import com.devlog.article.data.repository.v2.question.QuestionRepository
 import com.devlog.date.entity.question.Week
 import com.devlog.model.data.entity.question.Question
 import com.skydoves.sandwich.ApiResponse
@@ -9,7 +8,7 @@ import retrofit2.Response
 
 class QuestionRepositoryImpl  constructor(
     private val weeks: List<Week>
-) : QuestionRepository {
+) : QuestionRepository2 {
 
     override suspend fun getQuestionsForDay(day: Int): ApiResponse<List<Question>> {
         for (week in weeks) {

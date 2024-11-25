@@ -1,4 +1,4 @@
-package com.devlog.article.presentation.splash
+package com.devlog.feature_splash
 
 import android.util.Log
 import androidx.compose.runtime.getValue
@@ -6,15 +6,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.devlog.article.data.preference.PrefManager
-import com.devlog.article.data.response.Data
-import com.devlog.article.domain.usecase.article.GetArticleKeywordUseCase
-import com.devlog.article.domain.usecase.article.GetArticleSeveralKeywordUseCase
-import com.devlog.article.domain.usecase.article.GetArticleUseCase
-import com.devlog.article.domain.usecase.article.GetBookMakerUseCase
 import com.devlog.article.presentation.splash.intent.SplashIntent
-import com.devlog.article.presentation.splash.state.SplashApiState
-import com.devlog.article.presentation.splash.state.SplashUiState
+import com.devlog.model.data.entity.response.Data
+import com.devlog.domain.usecase.article.GetArticleKeywordUseCase2
+import com.devlog.domain.usecase.article.GetArticleSeveralKeywordUseCase2
+import com.devlog.domain.usecase.article.GetArticleUseCase2
+import com.devlog.domain.usecase.article.GetBookMakerUseCase2
+import com.devlog.feature_splash.state.SplashApiState
+import com.devlog.feature_splash.state.SplashUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Job
@@ -24,11 +23,11 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class SplashViewModel @Inject constructor(
-    private val getArticleUseCase: GetArticleUseCase,
-    private val getArticleKeywordUseCase: GetArticleKeywordUseCase,
-    private val getArticleSeveralKeywordUseCase: GetArticleSeveralKeywordUseCase,
-    private val getBookMakerUseCase: GetBookMakerUseCase
+class SplashViewModel2 @Inject constructor(
+    private val getArticleUseCase: GetArticleUseCase2,
+    private val getArticleKeywordUseCase: GetArticleKeywordUseCase2,
+    private val getArticleSeveralKeywordUseCase: GetArticleSeveralKeywordUseCase2,
+    private val getBookMakerUseCase: GetBookMakerUseCase2
 ) : ViewModel() {
     private val coroutineExceptionHandler = CoroutineExceptionHandler { _, throwable ->
         throwable.printStackTrace() // throwable = SocketException or HttpException or UnknownHostException or else

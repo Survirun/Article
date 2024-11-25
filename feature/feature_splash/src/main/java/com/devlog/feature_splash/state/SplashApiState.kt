@@ -1,8 +1,8 @@
-package com.devlog.article.presentation.splash.state
+package com.devlog.feature_splash.state
 
 
-import com.devlog.article.data.response.Article
-import com.devlog.article.data.response.Data
+import com.devlog.model.data.entity.response.Article
+import com.devlog.model.data.entity.response.Data
 
 sealed class SplashApiState() {
 
