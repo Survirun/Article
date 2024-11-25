@@ -1,6 +1,6 @@
 package com.devlog.article.data.repository.v3
 
-import com.devlog.article.data.network2.DataSource
+import com.devlog.article.data.network.DataSource
 import com.devlog.article.data.request.ArticleKeywordRequest
 import com.devlog.article.data.response.ArticleLogResponse
 import com.devlog.article.data.response.ArticleResponse

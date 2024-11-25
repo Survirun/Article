@@ -1,4 +1,4 @@
-package com.devlog.article.data.network2
+package com.devlog.article.data.network
 
 import com.devlog.article.data.entity.article.LoginEntity
 import com.devlog.article.data.request.ArticleKeywordRequest

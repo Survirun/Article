@@ -1,11 +1,9 @@
-package com.devlog.article.data.network2
+package com.devlog.article.data.network
 
 import androidx.core.os.trace
 import com.devlog.article.data.entity.article.ArticleLogEntity
 import com.devlog.article.data.entity.article.LoginEntity
 import com.devlog.article.data.entity.article.MyKeyword
-import com.devlog.article.data.network.ApiService
-import com.devlog.article.data.network.Url
 import com.devlog.article.data.preference.PrefManager
 import com.devlog.article.data.request.ArticleKeywordRequest
 import com.devlog.article.data.response.ArticleLogResponse
@@ -29,7 +27,7 @@ import javax.inject.Singleton
 internal class RetrofitNetwork @Inject constructor(
     networkJson: Json,
     okhttpCallFactory: dagger.Lazy<Call.Factory>,
-): DataSource{
+): DataSource {
     val loggingInterceptor = HttpLoggingInterceptor().apply {
         level = HttpLoggingInterceptor.Level.BODY // 응답 본문까지 로깅
     }

@@ -1,7 +1,7 @@
 package com.devlog.article.data.repository.v3
 
 import com.devlog.article.data.entity.article.LoginEntity
-import com.devlog.article.data.network2.DataSource
+import com.devlog.article.data.network.DataSource
 import com.devlog.article.data.response.DefaultResponse
 import com.devlog.article.data.response.UserInfoEntity
 import com.skydoves.sandwich.ApiResponse

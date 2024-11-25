@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.devlog.article.data.network2.di
+package com.devlog.article.data.network.di
 
 import androidx.compose.ui.util.trace
 import dagger.Module

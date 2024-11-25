@@ -1,7 +1,7 @@
-package com.devlog.article.data.network2.di
+package com.devlog.article.data.network.di
 
-import com.devlog.article.data.network2.DataSource
-import com.devlog.article.data.network2.RetrofitNetwork
+import com.devlog.article.data.network.DataSource
+import com.devlog.article.data.network.RetrofitNetwork
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
