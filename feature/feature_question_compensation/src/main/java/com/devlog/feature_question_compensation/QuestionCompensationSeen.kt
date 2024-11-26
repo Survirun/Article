@@ -1,4 +1,4 @@
-package com.devlog.article.presentation.question_compensation
+package com.devlog.feature_question_compensation
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -8,7 +8,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import com.devlog.article.data.preference.PrefManager
+import com.devlog.preference.PrefManager
 
 
 @Composable

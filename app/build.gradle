@@ -62,6 +62,7 @@ dependencies {
     implementation(projects.feature.featureSplash)
     implementation(projects.feature.featureQuestionList)
     implementation(projects.feature.featureArticleList)
+    implementation(projects.feature.featureQuestionCompensation)
     implementation(projects.core.preference)
     implementation libs.androidx.core.ktx
     implementation libs.androidx.appcompat

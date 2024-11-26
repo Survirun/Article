@@ -33,7 +33,6 @@ import com.devlog.article.presentation.main.navigation.MainRoute
 import com.devlog.article.presentation.main.state.MainApiState
 import com.devlog.article.presentation.my_keywords_select.navigation.myKeywordSelectNavGraph
 import com.devlog.article.presentation.my_keywords_select.navigation.myKeywordSelectNavigationCompensation
-import com.devlog.article.presentation.question_compensation.navigateQuestionCompensation
 import com.devlog.article.presentation.question_detail.navigateQuestionDetail
 import com.devlog.article.presentation.question_detail.questionDetailNavGraph
 import com.devlog.article.presentation.sign_in.navigation.navigateSignIn
@@ -44,6 +43,7 @@ import com.devlog.feature_article_list.navigation.articleNavGraph
 import com.devlog.feature_article_list.navigation.articleRoute
 import com.devlog.feature_article_list.navigation.navigateArticle
 import com.devlog.feature_article_list.state.ArticleTabState
+import com.devlog.feature_question_compensation.navigateQuestionCompensation
 import com.devlog.feature_splash.navigation.SplashNCompensation
 import com.devlog.feature_splash.navigation.splashNavGraph
 import com.devlog.feature_splash.navigation.splashNavigationCompensation
