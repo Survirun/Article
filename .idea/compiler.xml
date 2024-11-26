@@ -4,6 +4,8 @@
     <bytecodeTargetLevel target="1.8">
       <module name="Article.core.domin" target="17" />
       <module name="Article.domain" target="17" />
+      <module name="Article.feature.article" target="17" />
+      <module name="Article.feature.main" target="17" />
     </bytecodeTargetLevel>
   </component>
 </project>

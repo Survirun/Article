@@ -2,8 +2,8 @@ package com.devlog.domain.usecase.article
 
 import android.util.Log
 import com.devlog.data.repository.v3.ArticleRepository2
-import com.devlog.model.data.entity.response.ArticleResponse
 import com.devlog.model.data.entity.request.ArticleKeywordRequest
+import com.devlog.model.data.entity.response.ArticleResponse
 import com.skydoves.sandwich.suspendOnError
 import com.skydoves.sandwich.suspendOnException
 import com.skydoves.sandwich.suspendOnSuccess
@@ -15,7 +15,7 @@ import kotlinx.coroutines.flow.onCompletion
 import okhttp3.Response
 import javax.inject.Inject
 
-class GetArticleKeywordUseCase2 @Inject constructor(
+class GetArticleKeywordUseCase @Inject constructor(
     private val apiRepository: ArticleRepository2
 ) {
     suspend fun execute(

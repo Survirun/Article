@@ -2,12 +2,12 @@ package com.devlog.network
 
 import com.devlog.date.entity.article.LoginEntity
 import com.devlog.date.entity.article.MyKeyword
-import com.devlog.model.data.entity.response.ArticleResponse
 import com.devlog.date.response.ArticleSeveralKeywordResponse
 import com.devlog.date.response.BookmarkResponse
 import com.devlog.date.response.DefaultResponse
 import com.devlog.date.response.UserInfoEntity
 import com.devlog.model.data.entity.article.ArticleLogEntity
+import com.devlog.model.data.entity.response.ArticleResponse
 import com.skydoves.sandwich.ApiResponse
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -52,7 +52,7 @@ interface ApiService {
     @DELETE("user/my")
     suspend fun userDelete(): ApiResponse<DefaultResponse>
 
-    @POST("/v2/article/{keyword}")
+    @POST("article/{keyword}")
     suspend fun getArticleKeyword(
         @Path("keyword") keyword: Int,
         @Query("page") page: Int

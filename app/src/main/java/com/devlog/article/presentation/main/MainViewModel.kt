@@ -13,9 +13,9 @@ import com.devlog.article.domain.usecase.article.GetArticleKeywordUseCase
 import com.devlog.article.domain.usecase.article.GetArticleUseCase
 import com.devlog.article.domain.usecase.article.postArticleLogUseCase
 import com.devlog.article.domain.usecase.user.PostLoginUseCase
-import com.devlog.article.presentation.article.state.ArticleTabState
 import com.devlog.article.presentation.main.intent.MainIntent
 import com.devlog.article.presentation.main.state.MainApiState
+import com.devlog.feature_article_list.state.ArticleTabState
 import com.devlog.model.data.entity.response.Article
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job

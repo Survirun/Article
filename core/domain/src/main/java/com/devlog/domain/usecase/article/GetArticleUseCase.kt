@@ -14,7 +14,7 @@ import kotlinx.coroutines.flow.onCompletion
 import okhttp3.Response
 import javax.inject.Inject
 
-class GetArticleUseCase2 @Inject constructor(
+class GetArticleUseCase @Inject constructor(
     private val apiRepository: ArticleRepository2
 ) {
     suspend fun execute(

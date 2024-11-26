@@ -7,13 +7,13 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.devlog.article.presentation.splash.intent.SplashIntent
-import com.devlog.model.data.entity.response.Data
-import com.devlog.domain.usecase.article.GetArticleKeywordUseCase2
-import com.devlog.domain.usecase.article.GetArticleSeveralKeywordUseCase2
-import com.devlog.domain.usecase.article.GetArticleUseCase2
+import com.devlog.domain.usecase.article.GetArticleKeywordUseCase
+import com.devlog.domain.usecase.article.GetArticleSeveralKeywordUseCase
+import com.devlog.domain.usecase.article.GetArticleUseCase
 import com.devlog.domain.usecase.article.GetBookMakerUseCase2
 import com.devlog.feature_splash.state.SplashApiState
 import com.devlog.feature_splash.state.SplashUiState
+import com.devlog.model.data.entity.response.Data
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Job
@@ -24,9 +24,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SplashViewModel2 @Inject constructor(
-    private val getArticleUseCase: GetArticleUseCase2,
-    private val getArticleKeywordUseCase: GetArticleKeywordUseCase2,
-    private val getArticleSeveralKeywordUseCase: GetArticleSeveralKeywordUseCase2,
+    private val getArticleUseCase: GetArticleUseCase,
+    private val getArticleKeywordUseCase: GetArticleKeywordUseCase,
+    private val getArticleSeveralKeywordUseCase: GetArticleSeveralKeywordUseCase,
     private val getBookMakerUseCase: GetBookMakerUseCase2
 ) : ViewModel() {
     private val coroutineExceptionHandler = CoroutineExceptionHandler { _, throwable ->

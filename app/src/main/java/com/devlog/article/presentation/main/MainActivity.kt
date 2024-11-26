@@ -27,10 +27,6 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navigation
 import com.devlog.article.data.mixpanel.MixPanelManager
 import com.devlog.article.data.preference.PrefManager
-import com.devlog.article.presentation.article.navigation.articleNavGraph
-import com.devlog.article.presentation.article.navigation.articleRoute
-import com.devlog.article.presentation.article.navigation.navigateArticle
-import com.devlog.article.presentation.article.state.ArticleTabState
 import com.devlog.article.presentation.article_webview.ArticleWebViewActivity
 import com.devlog.article.presentation.main.intent.MainIntent
 import com.devlog.article.presentation.main.navigation.MainRoute
@@ -44,11 +40,15 @@ import com.devlog.article.presentation.sign_in.navigation.navigateSignIn
 import com.devlog.article.presentation.sign_in.navigation.signInNavGraph
 import com.devlog.article.presentation.ui.theme.BottomNavigationBar
 import com.devlog.article.utility.GoogleSignInHelper
+import com.devlog.feature_article_list.navigation.articleNavGraph
+import com.devlog.feature_article_list.navigation.articleRoute
+import com.devlog.feature_article_list.navigation.navigateArticle
+import com.devlog.feature_article_list.state.ArticleTabState
 import com.devlog.feature_splash.navigation.SplashNCompensation
 import com.devlog.feature_splash.navigation.splashNavGraph
 import com.devlog.feature_splash.navigation.splashNavigationCompensation
 import com.devlog.model.data.entity.response.Data
-import com.devlog.question_list.navgation.questionNavGraph
+import com.devlog.question_list.questionNavGraph
 import dagger.hilt.android.AndroidEntryPoint
 
 
@@ -179,8 +179,13 @@ class MainActivity() : AppCompatActivity() {
                     ) {
 
                         navigation(startDestination = articleRoute.route, route = MainRoute.route) {
+                            articleNavGraph(provideArticleArray = { viewModel.articleArray.value }, onComplete = { title, url ->
+                                    val intent = Intent(context, ArticleWebViewActivity::class.java)
+                                intent.putExtra("title", title)
+                                    intent.putExtra("url", url)
 
-                            articleNavGraph(viewModel)
+                                    ContextCompat.startActivity(context, intent, null)
+                            })
                             questionNavGraph(onQuestionClick = { navController.navigateQuestionDetail() })
                         }
 

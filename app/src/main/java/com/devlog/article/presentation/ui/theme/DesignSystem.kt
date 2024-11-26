@@ -38,8 +38,8 @@ import coil.decode.ImageDecoderDecoder
 import coil.request.ImageRequest
 import coil.size.Size
 import com.devlog.article.R
-import com.devlog.article.presentation.article.navigation.navigateArticle
-import com.devlog.question_list.navgation.navigateQuestion
+import com.devlog.feature_article_list.navigation.navigateArticle
+import com.devlog.question_list.navigateQuestion
 
 
 @Composable

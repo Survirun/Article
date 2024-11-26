@@ -1,11 +1,5 @@
 package com.devlog.article.utility
 
-import android.app.Activity
-import android.content.Context
-import android.content.Intent
-import android.os.Handler
-import android.os.Looper
-import com.devlog.article.data.preference.PrefManager
 import com.google.gson.GsonBuilder
 import java.net.HttpURLConnection
 import java.net.URL
@@ -49,13 +43,5 @@ object UtilManager {
         }
     }
 
-    fun keywordCheck(): Boolean {
-        return PrefManager.userKeywordCheck
 
-    }
-
-    fun signInCheck(activity:Activity): Boolean {
-        return PrefManager.userSignInCheck
-
-    }
 }
