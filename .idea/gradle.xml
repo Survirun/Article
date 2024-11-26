@@ -35,8 +35,8 @@
             <option value="$PROJECT_DIR$/feature" />
             <option value="$PROJECT_DIR$/feature/feature_article_list" />
             <option value="$PROJECT_DIR$/feature/feature_main" />
+            <option value="$PROJECT_DIR$/feature/feature_question_list" />
             <option value="$PROJECT_DIR$/feature/feature_splash" />
-            <option value="$PROJECT_DIR$/feature/question_list" />
           </set>
         </option>
         <option name="resolveExternalAnnotations" value="false" />

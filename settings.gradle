@@ -37,7 +37,7 @@ include ':core:domain'
 include ':core:designsystem'
 include ':feature:feature_splash'
 
-include ':feature:question_list'
+include ':feature:feature_question_list'
 include ':feature:feature_article_list'
 include ':feature:feature_main'
 include ':core:util'
