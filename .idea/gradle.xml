@@ -33,6 +33,7 @@
             <option value="$PROJECT_DIR$/core/preference" />
             <option value="$PROJECT_DIR$/feature" />
             <option value="$PROJECT_DIR$/feature/feature_splash" />
+            <option value="$PROJECT_DIR$/feature/question_list" />
           </set>
         </option>
         <option name="resolveExternalAnnotations" value="false" />

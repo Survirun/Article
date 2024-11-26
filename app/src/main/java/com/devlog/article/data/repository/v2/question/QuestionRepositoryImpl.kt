@@ -1,8 +1,8 @@
 package com.devlog.article.data.repository.v2.question
 
 import android.util.Log
-import com.devlog.article.data.entity.question.Question
-import com.devlog.article.data.entity.question.Week
+import com.devlog.date.entity.question.Week
+import com.devlog.model.data.entity.question.Question
 import com.skydoves.sandwich.ApiResponse
 import retrofit2.Response
 

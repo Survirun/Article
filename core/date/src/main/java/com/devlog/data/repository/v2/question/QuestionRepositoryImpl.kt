@@ -6,7 +6,7 @@ import com.devlog.model.data.entity.question.Question
 import com.skydoves.sandwich.ApiResponse
 import retrofit2.Response
 
-class QuestionRepositoryImpl  constructor(
+class QuestionRepositoryImpl2  constructor(
     private val weeks: List<Week>
 ) : QuestionRepository2 {
 

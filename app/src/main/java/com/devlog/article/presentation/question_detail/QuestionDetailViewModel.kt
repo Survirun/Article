@@ -1,14 +1,9 @@
 package com.devlog.article.presentation.question_detail
 
-import android.util.Log
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.devlog.article.data.entity.question.Question
-import com.devlog.article.domain.usecase.question.GetQuestionUseCase
+import com.devlog.domain.usecase.question.GetQuestionUseCase
+import com.devlog.model.data.entity.question.Question
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow

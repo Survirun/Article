@@ -22,9 +22,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.devlog.article.data.entity.question.Question
-import kotlinx.coroutines.delay
 import com.devlog.article.data.preference.PrefManager
+import com.devlog.model.data.entity.question.Question
+import kotlinx.coroutines.delay
 
 
 @Composable
@@ -75,7 +75,7 @@ fun AnswerOptions(choiceTitle: String,  onClick:(String) -> Unit ) {
 }
 
 @Composable
-fun QuestionDetailView(question: Question,click: (String) -> Unit ={}) {
+fun QuestionDetailView(question: Question, click: (String) -> Unit ={}) {
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,

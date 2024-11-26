@@ -37,20 +37,18 @@ import com.devlog.article.presentation.main.navigation.MainRoute
 import com.devlog.article.presentation.main.state.MainApiState
 import com.devlog.article.presentation.my_keywords_select.navigation.myKeywordSelectNavGraph
 import com.devlog.article.presentation.my_keywords_select.navigation.myKeywordSelectNavigationCompensation
-import com.devlog.article.presentation.question.navigateQuestion
-import com.devlog.article.presentation.question.questionNavGraph
 import com.devlog.article.presentation.question_compensation.navigateQuestionCompensation
-import com.devlog.article.presentation.question_compensation.questionCompensationNavGraph
 import com.devlog.article.presentation.question_detail.navigateQuestionDetail
 import com.devlog.article.presentation.question_detail.questionDetailNavGraph
 import com.devlog.article.presentation.sign_in.navigation.navigateSignIn
 import com.devlog.article.presentation.sign_in.navigation.signInNavGraph
 import com.devlog.article.presentation.ui.theme.BottomNavigationBar
 import com.devlog.article.utility.GoogleSignInHelper
-import com.devlog.model.data.entity.response.Data
 import com.devlog.feature_splash.navigation.SplashNCompensation
 import com.devlog.feature_splash.navigation.splashNavGraph
 import com.devlog.feature_splash.navigation.splashNavigationCompensation
+import com.devlog.model.data.entity.response.Data
+import com.devlog.question_list.navgation.questionNavGraph
 import dagger.hilt.android.AndroidEntryPoint
 
 
@@ -189,7 +187,7 @@ class MainActivity() : AppCompatActivity() {
                         questionNavGraph(onQuestionClick = { navController.navigateQuestionDetail() })
                         questionDetailNavGraph(onQuestionComplete = { navController.navigateQuestionCompensation()})
 
-                        questionCompensationNavGraph(onComplete = { navController.navigateQuestion() })
+
                         splashNavGraph(resultReceiver = receiver,
                             loginCheck = {
                             navController.navigateSignIn()

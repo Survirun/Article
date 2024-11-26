@@ -2,7 +2,6 @@ package com.devlog.article.presentation.ui.theme
 
 
 import android.os.Build.VERSION.SDK_INT
-
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -40,7 +39,8 @@ import coil.request.ImageRequest
 import coil.size.Size
 import com.devlog.article.R
 import com.devlog.article.presentation.article.navigation.navigateArticle
-import com.devlog.article.presentation.question.navigateQuestion
+import com.devlog.question_list.navgation.navigateQuestion
+
 
 @Composable
 fun HeaderView() {

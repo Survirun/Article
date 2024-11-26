@@ -37,3 +37,4 @@ include ':core:domain'
 include ':core:designsystem'
 include ':feature:feature_splash'
 
+include ':feature:question_list'

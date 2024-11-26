@@ -1,15 +1,13 @@
-package com.devlog.article.presentation.question
+package com.devlog.question_list
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.devlog.article.domain.usecase.question.GetQuestionTitleListUseCase
-import com.devlog.article.domain.usecase.question.GetQuestionUseCase
+import com.devlog.domain.usecase.question.GetQuestionTitleListUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
