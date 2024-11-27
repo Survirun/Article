@@ -37,6 +37,7 @@
             <option value="$PROJECT_DIR$/feature/feature_article_list" />
             <option value="$PROJECT_DIR$/feature/feature_main" />
             <option value="$PROJECT_DIR$/feature/feature_question_compensation" />
+            <option value="$PROJECT_DIR$/feature/feature_question_detail" />
             <option value="$PROJECT_DIR$/feature/feature_question_list" />
             <option value="$PROJECT_DIR$/feature/feature_splash" />
           </set>

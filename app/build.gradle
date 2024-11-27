@@ -63,6 +63,7 @@ dependencies {
     implementation(projects.feature.featureQuestionList)
     implementation(projects.feature.featureArticleList)
     implementation(projects.feature.featureQuestionCompensation)
+    implementation(projects.feature.featureQuestionDetail)
     implementation(projects.feature.featureArticleDetailWebview)
     implementation(projects.core.preference)
     implementation libs.androidx.core.ktx

@@ -1,4 +1,4 @@
-package com.devlog.article.presentation.question_detail
+package com.devlog.feature_question_detail
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -22,8 +22,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.devlog.article.data.preference.PrefManager
 import com.devlog.model.data.entity.question.Question
+import com.devlog.preference.PrefManager
 import kotlinx.coroutines.delay
 
 

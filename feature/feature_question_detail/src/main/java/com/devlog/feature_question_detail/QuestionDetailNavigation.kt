@@ -1,4 +1,4 @@
-package com.devlog.article.presentation.question_detail
+package com.devlog.feature_question_detail
 
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
