@@ -1,11 +1,11 @@
-package com.devlog.article.presentation.my_keywords_select
+package com.devlog.feature_my_keywords_select
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.devlog.article.domain.usecase.user.PostPathMyKeywordsUseCase
-import com.devlog.article.presentation.my_keywords_select.intent.MyKeywordSelectIntent
-import com.devlog.article.presentation.my_keywords_select.state.MyKeywordSelectApiState
+import com.devlog.domain.usecase.user.PostPathMyKeywordsUseCase
+import com.devlog.feature_my_keywords_select.intent.MyKeywordSelectIntent
+import com.devlog.feature_my_keywords_select.state.MyKeywordSelectApiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow

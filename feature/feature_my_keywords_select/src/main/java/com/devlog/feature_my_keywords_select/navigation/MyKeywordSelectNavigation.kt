@@ -1,9 +1,9 @@
-package com.devlog.article.presentation.my_keywords_select.navigation
+package com.devlog.feature_my_keywords_select.navigation
 
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
-import com.devlog.article.presentation.my_keywords_select.MyKeywordSelectSeen
+import com.devlog.feature_my_keywords_select.MyKeywordSelectSeen
 
 
 fun NavController.myKeywordSelectNavigationCompensation() {

@@ -30,8 +30,6 @@ import com.devlog.article.data.preference.PrefManager
 import com.devlog.article.presentation.main.intent.MainIntent
 import com.devlog.article.presentation.main.navigation.MainRoute
 import com.devlog.article.presentation.main.state.MainApiState
-import com.devlog.article.presentation.my_keywords_select.navigation.myKeywordSelectNavGraph
-import com.devlog.article.presentation.my_keywords_select.navigation.myKeywordSelectNavigationCompensation
 import com.devlog.article.presentation.ui.theme.BottomNavigationBar
 import com.devlog.article.utility.GoogleSignInHelper
 import com.devlog.feature_article_detail_webview.ArticleDetailWebViewActivity
@@ -39,6 +37,8 @@ import com.devlog.feature_article_list.navigation.articleNavGraph
 import com.devlog.feature_article_list.navigation.articleRoute
 import com.devlog.feature_article_list.navigation.navigateArticle
 import com.devlog.feature_article_list.state.ArticleTabState
+import com.devlog.feature_my_keywords_select.navigation.myKeywordSelectNavGraph
+import com.devlog.feature_my_keywords_select.navigation.myKeywordSelectNavigationCompensation
 import com.devlog.feature_question_compensation.navigateQuestionCompensation
 import com.devlog.feature_question_detail.navigateQuestionDetail
 import com.devlog.feature_question_detail.questionDetailNavGraph

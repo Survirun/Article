@@ -1,4 +1,4 @@
-package com.devlog.article.presentation.my_keywords_select
+package com.devlog.feature_my_keywords_select
 
 import android.util.Log
 import android.widget.Toast
@@ -19,6 +19,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -32,23 +33,21 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.devlog.article.data.entity.article.AIDevelopment
-import com.devlog.article.data.entity.article.ITNews
-import com.devlog.article.data.entity.article.KeywordSelectData
-import com.devlog.article.data.entity.article.PM
-import com.devlog.article.data.entity.article.UIUXDesign
-import com.devlog.article.data.entity.article.WebDevelopment
-import com.devlog.article.data.entity.article.androidDevelopment
-import com.devlog.article.data.entity.article.iOSDevelopment
-import com.devlog.article.data.entity.article.serverDevelopment
-import com.devlog.article.data.preference.PrefManager
-import com.devlog.article.presentation.my_keywords_select.intent.MyKeywordSelectIntent
-import com.devlog.article.presentation.my_keywords_select.state.MyKeywordSelectApiState
-import com.devlog.article.presentation.ui.theme.BaseColumn
-import com.devlog.article.presentation.ui.theme.HeaderView
+import com.devlog.date.entity.article.AIDevelopment
+import com.devlog.date.entity.article.ITNews
+import com.devlog.date.entity.article.PM
+import com.devlog.date.entity.article.UIUXDesign
+import com.devlog.date.entity.article.WebDevelopment
+import com.devlog.date.entity.article.androidDevelopment
+import com.devlog.date.entity.article.iOSDevelopment
+import com.devlog.date.entity.article.serverDevelopment
+import com.devlog.designsystem.theme.BaseColumn
+import com.devlog.designsystem.theme.HeaderView
+import com.devlog.feature_my_keywords_select.intent.MyKeywordSelectIntent
+import com.devlog.feature_my_keywords_select.state.MyKeywordSelectApiState
+import com.devlog.preference.PrefManager
 
-
-
+data class KeywordSelectData(var name: String, var selectData: MutableState<Boolean>, var code:Int)
 @Composable
 fun MyKeywordSelectSeen(
     viewModel: MyKeywordSelectViewModel = hiltViewModel(),
