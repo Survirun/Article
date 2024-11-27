@@ -45,7 +45,7 @@ class MainViewModel@Inject constructor(
             }
 
 
-            else -> {}
+
         }
     }
      fun postSignIn(uid:String,email:String,name:String):Job =viewModelScope.launch {

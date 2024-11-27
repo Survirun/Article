@@ -1,9 +1,9 @@
-package com.devlog.article.presentation.sign_in.navigation
+package com.devlog.feature_sign_in.navigation
 
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
-import com.devlog.article.presentation.sign_in.SignInSeen
+import com.devlog.feature_sign_in.SignInSeen
 
 fun NavController.navigateSignIn(){
     navigate(SignInRoute.route)

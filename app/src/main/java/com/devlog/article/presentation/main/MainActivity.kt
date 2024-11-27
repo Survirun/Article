@@ -32,8 +32,6 @@ import com.devlog.article.presentation.main.navigation.MainRoute
 import com.devlog.article.presentation.main.state.MainApiState
 import com.devlog.article.presentation.my_keywords_select.navigation.myKeywordSelectNavGraph
 import com.devlog.article.presentation.my_keywords_select.navigation.myKeywordSelectNavigationCompensation
-import com.devlog.article.presentation.sign_in.navigation.navigateSignIn
-import com.devlog.article.presentation.sign_in.navigation.signInNavGraph
 import com.devlog.article.presentation.ui.theme.BottomNavigationBar
 import com.devlog.article.utility.GoogleSignInHelper
 import com.devlog.feature_article_detail_webview.ArticleDetailWebViewActivity
@@ -44,6 +42,8 @@ import com.devlog.feature_article_list.state.ArticleTabState
 import com.devlog.feature_question_compensation.navigateQuestionCompensation
 import com.devlog.feature_question_detail.navigateQuestionDetail
 import com.devlog.feature_question_detail.questionDetailNavGraph
+import com.devlog.feature_sign_in.navigation.navigateSignIn
+import com.devlog.feature_sign_in.navigation.signInNavGraph
 import com.devlog.feature_splash.navigation.SplashNCompensation
 import com.devlog.feature_splash.navigation.splashNavGraph
 import com.devlog.feature_splash.navigation.splashNavigationCompensation

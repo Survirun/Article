@@ -33,7 +33,6 @@ class MyKeywordSelectViewModel @Inject constructor(
             }
 
 
-            else -> {}
         }
     }
 

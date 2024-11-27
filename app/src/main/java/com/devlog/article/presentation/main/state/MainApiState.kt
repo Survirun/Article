@@ -1,6 +1,6 @@
 package com.devlog.article.presentation.main.state
 
-import com.devlog.article.presentation.sign_in.state.SignInState
+
 
 sealed class MainApiState {
     data object Initialize : MainApiState()

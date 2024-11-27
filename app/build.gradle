@@ -65,6 +65,7 @@ dependencies {
     implementation(projects.feature.featureQuestionCompensation)
     implementation(projects.feature.featureQuestionDetail)
     implementation(projects.feature.featureArticleDetailWebview)
+    implementation(projects.feature.featureSignIn)
     implementation(projects.core.preference)
     implementation libs.androidx.core.ktx
     implementation libs.androidx.appcompat

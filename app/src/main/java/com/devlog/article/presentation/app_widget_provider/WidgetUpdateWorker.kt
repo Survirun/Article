@@ -34,7 +34,6 @@ class WidgetUpdateWorker  @AssistedInject constructor(
         ArticleApplication.instance.apiRepository.getArticle(1, )
         Log.d("polaris","시작")
         if (response != null) {
-            response
             response.suspendMapSuccess {
                 Log.d("polaris","성공")
                 updateWidget(data.articles)

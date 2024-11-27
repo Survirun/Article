@@ -1,10 +1,9 @@
-package com.devlog.article.presentation.sign_in
+package com.devlog.feature_sign_in
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.devlog.article.data.entity.article.LoginEntity
-
-import com.devlog.article.domain.usecase.user.PostLoginUseCase
+import com.devlog.date.entity.article.LoginEntity
+import com.devlog.domain.usecase.user.PostLoginUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
