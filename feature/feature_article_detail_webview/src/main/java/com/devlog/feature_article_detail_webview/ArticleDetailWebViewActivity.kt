@@ -1,4 +1,4 @@
-package com.devlog.article.presentation.article_webview
+package com.devlog.feature_article_detail_webview
 
 import android.net.Uri
 import android.os.Bundle
@@ -10,13 +10,12 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.appcompat.app.AppCompatActivity
 import androidx.browser.customtabs.CustomTabsIntent
-import com.devlog.article.databinding.ActivityArticleWebViewBinding
-import com.devlog.article.utility.isProbablyKorean
-import com.devlog.article.utility.shareLink
+import com.devlog.feature_article_detail_webview.databinding.ActivityArticleDetailWebViewBinding
+import com.devlog.util.isProbablyKorean
+import com.devlog.util.shareLink
 
-
-class ArticleWebViewActivity : AppCompatActivity() {
-    lateinit var binding: ActivityArticleWebViewBinding
+class ArticleDetailWebViewActivity : AppCompatActivity() {
+    lateinit var binding: ActivityArticleDetailWebViewBinding
     lateinit var articleWebViewModel: ArticleWebViewModel
     var body = ""
 
@@ -25,7 +24,7 @@ class ArticleWebViewActivity : AppCompatActivity() {
     lateinit var articleGetbody:ArticleGetbody
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityArticleWebViewBinding.inflate(layoutInflater)
+        binding = ActivityArticleDetailWebViewBinding.inflate(layoutInflater)
         setContentView(binding.root)
         url=intent.getStringExtra("url")!!
         title=intent.getStringExtra("title")!!
@@ -46,10 +45,8 @@ class ArticleWebViewActivity : AppCompatActivity() {
         binding.shareButton.setOnClickListener {
             shareLink(url)
         }
-
-
-
     }
+
     private fun cutString(){
         val maxLength = 2000
 
@@ -82,7 +79,7 @@ class ArticleWebViewActivity : AppCompatActivity() {
             override fun onPageFinished(view: WebView?, url: String?) {
                 super.onPageFinished(view, url)
 
-               // articleGetbody.getBody(binding.webView.url!!)
+                // articleGetbody.getBody(binding.webView.url!!)
 
             }
         }
@@ -104,7 +101,7 @@ class ArticleWebViewActivity : AppCompatActivity() {
 
 
 
-    class MyJavascriptInterface(var activity: ArticleWebViewActivity) {
+    class MyJavascriptInterface(var activity: ArticleDetailWebViewActivity) {
         @JavascriptInterface
         fun getHtml(html: String) {
 

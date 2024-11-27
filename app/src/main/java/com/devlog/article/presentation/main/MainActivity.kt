@@ -27,7 +27,6 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navigation
 import com.devlog.article.data.mixpanel.MixPanelManager
 import com.devlog.article.data.preference.PrefManager
-import com.devlog.article.presentation.article_webview.ArticleWebViewActivity
 import com.devlog.article.presentation.main.intent.MainIntent
 import com.devlog.article.presentation.main.navigation.MainRoute
 import com.devlog.article.presentation.main.state.MainApiState
@@ -39,6 +38,7 @@ import com.devlog.article.presentation.sign_in.navigation.navigateSignIn
 import com.devlog.article.presentation.sign_in.navigation.signInNavGraph
 import com.devlog.article.presentation.ui.theme.BottomNavigationBar
 import com.devlog.article.utility.GoogleSignInHelper
+import com.devlog.feature_article_detail_webview.ArticleDetailWebViewActivity
 import com.devlog.feature_article_list.navigation.articleNavGraph
 import com.devlog.feature_article_list.navigation.articleRoute
 import com.devlog.feature_article_list.navigation.navigateArticle
@@ -180,7 +180,7 @@ class MainActivity() : AppCompatActivity() {
 
                         navigation(startDestination = articleRoute.route, route = MainRoute.route) {
                             articleNavGraph(provideArticleArray = { viewModel.articleArray.value }, onComplete = { title, url ->
-                                    val intent = Intent(context, ArticleWebViewActivity::class.java)
+                                    val intent = Intent(context, ArticleDetailWebViewActivity::class.java)
                                 intent.putExtra("title", title)
                                     intent.putExtra("url", url)
 
@@ -241,7 +241,7 @@ class MainActivity() : AppCompatActivity() {
     fun articleDetails(title: String, url: String) {
         MixPanelManager.articleClick(title)
         //viewModel.userViewArticleId.add(article._id)
-        val intent = Intent(this, ArticleWebViewActivity::class.java)
+        val intent = Intent(this, ArticleDetailWebViewActivity::class.java)
         intent.putExtra("url", url)
         intent.putExtra("title", title)
         ContextCompat.startActivity(this, intent, null)

@@ -15,7 +15,7 @@ import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import com.devlog.article.R
-import com.devlog.article.presentation.article_webview.ArticleWebViewActivity
+import com.devlog.feature_article_detail_webview.ArticleDetailWebViewActivity
 import com.devlog.article.presentation.main.MainActivity
 import java.util.concurrent.TimeUnit
 
@@ -64,7 +64,7 @@ class AppWidgetProviderArticle: AppWidgetProvider() {
         // Perform this loop procedure for each App Widget that belongs to this provider
 
         appWidgetIds.forEach { appWidgetId ->
-            val clickIntentTemplate = Intent(context, ArticleWebViewActivity::class.java)
+            val clickIntentTemplate = Intent(context, ArticleDetailWebViewActivity::class.java)
 
             val pendingIntentTemplate = PendingIntent.getActivity(
                 context,  appWidgetId , clickIntentTemplate, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE

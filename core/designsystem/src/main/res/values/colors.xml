@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFF</color>
+    <color name="GrayButtonClick">#F2F2F2</color>
+    <color name="Gray200">#FAFAFC</color>
+    <color name="Gray300">#EEEEF0 </color>
+    <color name="Gray400">#DCDCEA</color>
+    <color name="Gray600">#A0A0AB</color>
+    <color name="Gray700">#84848F</color>
+    <color name="transparent">#00FFFFFF</color>
+</resources>

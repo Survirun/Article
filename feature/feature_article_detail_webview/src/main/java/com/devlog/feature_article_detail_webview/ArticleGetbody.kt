@@ -1,4 +1,4 @@
-package com.devlog.article.presentation.article_webview
+package com.devlog.feature_article_detail_webview
 
 import android.util.Log
 import android.webkit.WebView

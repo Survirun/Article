@@ -46,9 +46,9 @@ import androidx.fragment.app.viewModels
 import coil.compose.AsyncImage
 import com.devlog.article.R
 import com.devlog.article.data.entity.article.ArticleEntity
-import com.devlog.article.presentation.article_webview.ArticleWebViewActivity
 import com.devlog.article.presentation.ui.theme.ArticleTheme
 import com.devlog.article.presentation.ui.theme.HeaderView
+import com.devlog.feature_article_detail_webview.ArticleDetailWebViewActivity
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -112,7 +112,7 @@ class BookmarkFragment : Fragment() {
 
 
     fun articleDetails(article: ArticleEntity) {
-        val intent = Intent(context, ArticleWebViewActivity::class.java)
+        val intent = Intent(context, ArticleDetailWebViewActivity::class.java)
         intent.putExtra("title", article.title)
         intent.putExtra("url", article.url)
         startActivity(requireContext(), intent, null)
