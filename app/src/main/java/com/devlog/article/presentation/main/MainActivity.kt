@@ -14,30 +14,40 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.BottomNavigation
+import androidx.compose.material.BottomNavigationItem
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ComposeView
 import androidx.core.content.ContextCompat
+import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navigation
 import com.devlog.article.data.mixpanel.MixPanelManager
 import com.devlog.article.data.preference.PrefManager
-import com.devlog.article.presentation.bookmark.navigation.bookmarkNavGraph
 import com.devlog.article.presentation.main.intent.MainIntent
 import com.devlog.article.presentation.main.navigation.MainRoute
 import com.devlog.article.presentation.main.state.MainApiState
-import com.devlog.article.presentation.ui.theme.BottomNavigationBar
 import com.devlog.article.utility.GoogleSignInHelper
 import com.devlog.feature_article_detail_webview.ArticleDetailWebViewActivity
 import com.devlog.feature_article_list.navigation.articleNavGraph
 import com.devlog.feature_article_list.navigation.articleRoute
 import com.devlog.feature_article_list.navigation.navigateArticle
 import com.devlog.feature_article_list.state.ArticleTabState
+import com.devlog.feature_book_mark.navigation.bookmarkNavGraph
 import com.devlog.feature_my_keywords_select.navigation.myKeywordSelectNavGraph
 import com.devlog.feature_my_keywords_select.navigation.myKeywordSelectNavigationCompensation
 import com.devlog.feature_question_compensation.navigateQuestionCompensation
@@ -49,6 +59,7 @@ import com.devlog.feature_splash.navigation.SplashNCompensation
 import com.devlog.feature_splash.navigation.splashNavGraph
 import com.devlog.feature_splash.navigation.splashNavigationCompensation
 import com.devlog.model.data.entity.response.Data
+import com.devlog.question_list.navigateQuestion
 import com.devlog.question_list.questionNavGraph
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -259,6 +270,33 @@ class MainActivity() : AppCompatActivity() {
     private fun startWebViewHandler() {
         if (intent.getStringExtra("title")?.isNotEmpty() == true && intent.getStringExtra("url")?.isNotEmpty() == true) {
             articleDetails(intent.getStringExtra("title")!!, intent.getStringExtra("url")!!)
+        }
+    }
+
+    @Composable
+    fun BottomNavigationBar(
+        navController: NavController,
+        showBottomBar: State<Boolean>
+    ) {
+        if (showBottomBar.value) {
+            BottomNavigation(backgroundColor = Color.White) {
+                BottomNavigationItem(
+                    icon = { Icon(Icons.Default.Home, contentDescription = null) },
+                    label = { Text("Home") },
+                    selected = navController.currentDestination?.route == "home",
+                    onClick = {
+                        navController.navigateArticle()
+                    }
+                )
+                BottomNavigationItem(
+                    icon = { Icon(Icons.Default.Person, contentDescription = null) },
+                    label = { Text("Profile") },
+                    selected = navController.currentDestination?.route == "question",
+                    onClick = {
+                        navController.navigateQuestion()
+                    }
+                )
+            }
         }
     }
 

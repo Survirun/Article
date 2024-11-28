@@ -1,8 +1,8 @@
-package com.devlog.article.presentation.bookmark
+package com.devlog.feature_book_mark
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.devlog.article.domain.usecase.article.PostBookMakerUseCase
+import com.devlog.domain.usecase.article.PostBookMakerUseCase
 import com.devlog.model.data.entity.response.Article
 import com.devlog.preference.PrefManager
 import dagger.hilt.android.lifecycle.HiltViewModel

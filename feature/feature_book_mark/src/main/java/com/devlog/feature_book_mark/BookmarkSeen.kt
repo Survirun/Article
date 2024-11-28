@@ -1,4 +1,4 @@
-package com.devlog.article.presentation.bookmark
+package com.devlog.feature_book_mark
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -24,7 +24,6 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -39,10 +38,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
-import com.devlog.article.R
-import com.devlog.article.data.entity.article.ArticleEntity
 import com.devlog.article.presentation.ui.theme.ArticleTheme
-import com.devlog.article.presentation.ui.theme.HeaderView
+import com.devlog.designsystem.theme.HeaderView
 import com.devlog.model.data.entity.response.Article
 
 
@@ -51,8 +48,8 @@ fun BookmarkSeen(viewModel:BookmarkViewModel = hiltViewModel(),  onComplete: (ti
     val context = LocalContext.current
 
     viewModel.ada().collectAsState(0)
-    lateinit var deleteItem: ArticleEntity
-    var showDialog = rememberSaveable { mutableStateOf(false) }
+
+
     BookmarkView(onComplete = onComplete)
 
 
