@@ -13,7 +13,7 @@ import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import com.devlog.article.data.mixpanel.MixPanelManager
-import com.devlog.data.repository.v3.ArticleRepository2
+import com.devlog.data.repository.v3.ArticleRepository
 import com.devlog.feature_app_widget_provider.AppWidgetProviderArticle
 import com.devlog.preference.PrefManager
 import com.devlog.util.UtilManager.getTodayToInt
@@ -42,7 +42,7 @@ class ArticleApplication : Application(), Configuration.Provider  {
 
     }
     @Inject
-    lateinit var apiRepository: ArticleRepository2
+    lateinit var apiRepository: ArticleRepository
     @Inject
     lateinit var workerFactory: HiltWorkerFactory
 

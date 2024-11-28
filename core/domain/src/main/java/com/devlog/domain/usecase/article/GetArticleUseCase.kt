@@ -1,7 +1,7 @@
 package com.devlog.domain.usecase.article
 
 import android.util.Log
-import com.devlog.data.repository.v3.ArticleRepository2
+import com.devlog.data.repository.v3.ArticleRepository
 import com.devlog.model.data.entity.response.ArticleResponse
 import com.skydoves.sandwich.suspendOnError
 import com.skydoves.sandwich.suspendOnException
@@ -15,7 +15,7 @@ import okhttp3.Response
 import javax.inject.Inject
 
 class GetArticleUseCase @Inject constructor(
-    private val apiRepository: ArticleRepository2
+    private val apiRepository: ArticleRepository
 ) {
     suspend fun execute(
         page:Int,

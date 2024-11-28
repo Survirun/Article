@@ -9,7 +9,7 @@ import android.widget.RemoteViews
 import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
-import com.devlog.data.repository.v3.ArticleRepository2
+import com.devlog.data.repository.v3.ArticleRepository
 import com.devlog.model.data.entity.response.Article
 import com.skydoves.sandwich.suspendMapSuccess
 import com.skydoves.sandwich.suspendOnError
@@ -27,7 +27,7 @@ class WidgetUpdateWorker  @AssistedInject constructor(
 
 )  : CoroutineWorker(context, workerParams){
     @Inject
-    lateinit var apiRepository: ArticleRepository2
+    lateinit var apiRepository: ArticleRepository
 
     override suspend fun doWork(): Result {
         // ViewModel에서 데이터를 가져옴

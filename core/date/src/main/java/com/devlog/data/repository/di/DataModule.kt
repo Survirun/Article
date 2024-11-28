@@ -1,8 +1,8 @@
 package com.devlog.data.repository.di
 
-import com.devlog.article.data.repository.v3.UserRepository2
-import com.devlog.data.repository.v3.ArticleRepository2
+import com.devlog.data.repository.v3.ArticleRepository
 import com.devlog.data.repository.v3.ArticleRepositoryImpl
+import com.devlog.data.repository.v3.UserRepository
 import com.devlog.data.repository.v3.UserRepositoryImpl
 import dagger.Binds
 import dagger.Module
@@ -15,12 +15,13 @@ abstract class DataModule {
     @Binds
     internal abstract fun bindsTopicRepository2(
         topicsRepository: ArticleRepositoryImpl,
-    ): ArticleRepository2
+    ): ArticleRepository
 
     @Binds
     abstract fun bindsUserRepository2(
         userRepositoryImpl: UserRepositoryImpl,
-    ): UserRepository2
+    ): UserRepository
+
 
 
 }

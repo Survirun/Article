@@ -1,7 +1,7 @@
 package com.devlog.domain.usecase.user
 
 import android.util.Log
-import com.devlog.article.data.repository.v3.UserRepository2
+import com.devlog.data.repository.v3.UserRepository
 import com.devlog.date.response.DefaultResponse
 import com.skydoves.sandwich.suspendOnError
 import com.skydoves.sandwich.suspendOnException
@@ -15,7 +15,7 @@ import okhttp3.Response
 import javax.inject.Inject
 
 class PostPathMyKeywordsUseCase  @Inject constructor(
-    private val apiRepository: UserRepository2
+    private val apiRepository: UserRepository
 ) {
     suspend fun execute(
         keywords: Array<Int>,

@@ -1,18 +1,18 @@
 package com.devlog.data.repository.v3
 
-import com.devlog.model.data.entity.response.ArticleResponse
 import com.devlog.date.response.ArticleSeveralKeywordResponse
 import com.devlog.date.response.BookmarkResponse
 import com.devlog.date.response.DefaultResponse
 import com.devlog.model.data.entity.request.ArticleKeywordRequest
 import com.devlog.model.data.entity.response.ArticleLogResponse
+import com.devlog.model.data.entity.response.ArticleResponse
 import com.devlog.network.DataSource
 import com.skydoves.sandwich.ApiResponse
 import javax.inject.Inject
 
 internal class ArticleRepositoryImpl @Inject constructor(
     private val network: DataSource
-) : ArticleRepository2 {
+) : ArticleRepository {
     override suspend fun getArticle(
         page: Int
     ): ApiResponse<ArticleResponse> {

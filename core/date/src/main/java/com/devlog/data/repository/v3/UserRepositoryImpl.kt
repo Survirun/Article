@@ -1,6 +1,5 @@
 package com.devlog.data.repository.v3
 
-import com.devlog.article.data.repository.v3.UserRepository2
 import com.devlog.date.entity.article.LoginEntity
 import com.devlog.date.response.DefaultResponse
 import com.devlog.date.response.UserInfoEntity
@@ -10,7 +9,7 @@ import javax.inject.Inject
 
 class UserRepositoryImpl @Inject constructor(
     private val network: DataSource
-) : UserRepository2 {
+) : UserRepository {
     override suspend fun postLogin(loginEntity: LoginEntity): ApiResponse<DefaultResponse> {
        return network.postLogin(loginEntity)
     }
