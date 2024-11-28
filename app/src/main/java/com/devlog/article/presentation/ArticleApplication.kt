@@ -13,7 +13,6 @@ import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import com.devlog.article.data.mixpanel.MixPanelManager
-import com.devlog.data.repository.v3.ArticleRepository
 import com.devlog.feature_app_widget_provider.AppWidgetProviderArticle
 import com.devlog.preference.PrefManager
 import com.devlog.util.UtilManager.getTodayToInt
@@ -28,7 +27,6 @@ import javax.inject.Inject
 class ArticleApplication : Application(), Configuration.Provider  {
 
     companion object {
-        const val TAG = "Application"
 
         @Volatile
         lateinit var instance: ArticleApplication
@@ -41,8 +39,7 @@ class ArticleApplication : Application(), Configuration.Provider  {
 
 
     }
-    @Inject
-    lateinit var apiRepository: ArticleRepository
+
     @Inject
     lateinit var workerFactory: HiltWorkerFactory
 
@@ -60,8 +57,8 @@ class ArticleApplication : Application(), Configuration.Provider  {
         super.onCreate()
         PrefManager.init(applicationContext)
         PrefManager.appAccessDate = getTodayToInt()
-        com.devlog.preference.PrefManager.init(applicationContext)
-        com.devlog.preference.PrefManager.appAccessDate = getTodayToInt()
+        PrefManager.init(applicationContext)
+        PrefManager.appAccessDate = getTodayToInt()
 
         MixPanelManager.init(applicationContext)
         createWorkRequest()
