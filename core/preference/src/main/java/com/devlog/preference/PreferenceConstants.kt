@@ -9,4 +9,5 @@ object PreferenceConstants {
     var USER_AGE ="user_age"
     var USER_ACCESS_TOKEN ="user_access_token"
     var USER_PERMISSION ="user"
+    var BOOK_MAKER ="book_maker"
 }

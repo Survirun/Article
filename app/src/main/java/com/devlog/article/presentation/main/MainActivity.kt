@@ -27,6 +27,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navigation
 import com.devlog.article.data.mixpanel.MixPanelManager
 import com.devlog.article.data.preference.PrefManager
+import com.devlog.article.presentation.bookmark.navigation.bookmarkNavGraph
 import com.devlog.article.presentation.main.intent.MainIntent
 import com.devlog.article.presentation.main.navigation.MainRoute
 import com.devlog.article.presentation.main.state.MainApiState
@@ -187,6 +188,14 @@ class MainActivity() : AppCompatActivity() {
                                     ContextCompat.startActivity(context, intent, null)
                             })
                             questionNavGraph(onQuestionClick = { navController.navigateQuestionDetail() })
+                            bookmarkNavGraph(onComplete =  {  title, url ->
+                                val intent = Intent(context, ArticleDetailWebViewActivity::class.java)
+                                intent.putExtra("title", title)
+                                intent.putExtra("url", url)
+
+                                ContextCompat.startActivity(context, intent, null)
+
+                            })
                         }
 
                         questionNavGraph(onQuestionClick = { navController.navigateQuestionDetail() })

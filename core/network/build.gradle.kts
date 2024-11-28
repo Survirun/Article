@@ -40,7 +40,7 @@ dependencies {
    // api(projects.core.common)
   //  api(projects.core.date)
     api(projects.core.model)
-    implementation(projects.core.preference)
+    api(projects.core.preference)
     implementation(libs.okhttp)
     implementation ( libs.logging.interceptor)
     implementation(libs.sandwich)

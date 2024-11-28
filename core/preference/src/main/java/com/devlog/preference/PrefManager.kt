@@ -3,6 +3,10 @@ package com.devlog.preference
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
+import com.devlog.model.data.entity.article.ArticleEntity
+import com.devlog.model.data.entity.response.Article
+import com.google.gson.GsonBuilder
+import com.google.gson.reflect.TypeToken
 
 
 @SuppressLint("StaticFieldLeak")
@@ -12,7 +16,7 @@ object PrefManager {
 
 
     private const val KEY_INIT_PREF_MANAGER = "KEY_INIT_PREF_MANAGER"
-
+    val gson = GsonBuilder().create()
     fun init(mContext: Context) {
         context = mContext
         pref = context.getSharedPreferences(KEY_INIT_PREF_MANAGER, Context.MODE_PRIVATE)
@@ -59,5 +63,30 @@ object PrefManager {
         set(v){
             pref.edit().putInt("day", v).apply()
         }
+
+
+
+    fun addArticle(article: Article) {
+        val articles = readFromSharedPreferences()
+
+        articles.add(article)
+
+        saveToSharedPreferences(articles)
+    }
+    fun saveToSharedPreferences(articles: MutableList<Article>){
+        val editor = pref.edit()
+
+        // Article 리스트를 JSON으로 변환하여 저장
+        val json = gson.toJson(articles)
+        editor.putString(PreferenceConstants.BOOK_MAKER, json)
+        editor.apply()
+    }
+
+    fun readFromSharedPreferences(): MutableList<Article> {
+        // 저장된 JSON 문자열을 가져와서 Article 리스트로 변환
+        val bookmark = pref.getString(PreferenceConstants.BOOK_MAKER, "") ?: ""
+        val listType = object : TypeToken<MutableList<ArticleEntity>>() {}.type
+        return gson.fromJson(bookmark, listType) ?: mutableListOf<Article>()
+    }
 
 }
