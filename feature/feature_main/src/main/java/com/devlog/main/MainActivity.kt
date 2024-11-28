@@ -1,4 +1,4 @@
-package com.devlog.article.presentation.main
+package com.devlog.main
 
 import android.Manifest
 import android.app.Activity
@@ -36,12 +36,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navigation
-import com.devlog.article.data.mixpanel.MixPanelManager
-import com.devlog.article.data.preference.PrefManager
-import com.devlog.article.presentation.main.intent.MainIntent
-import com.devlog.article.presentation.main.navigation.MainRoute
 import com.devlog.article.presentation.main.state.MainApiState
-import com.devlog.article.utility.GoogleSignInHelper
 import com.devlog.feature_article_detail_webview.ArticleDetailWebViewActivity
 import com.devlog.feature_article_list.navigation.articleNavGraph
 import com.devlog.feature_article_list.navigation.articleRoute
@@ -58,9 +53,13 @@ import com.devlog.feature_sign_in.navigation.signInNavGraph
 import com.devlog.feature_splash.navigation.SplashNCompensation
 import com.devlog.feature_splash.navigation.splashNavGraph
 import com.devlog.feature_splash.navigation.splashNavigationCompensation
+import com.devlog.main.intent.MainIntent
+import com.devlog.main.navigation.MainRoute
 import com.devlog.model.data.entity.response.Data
+import com.devlog.preference.PrefManager
 import com.devlog.question_list.navigateQuestion
 import com.devlog.question_list.questionNavGraph
+import com.devlog.util.GoogleSignInHelper
 import dagger.hilt.android.AndroidEntryPoint
 
 
@@ -259,7 +258,7 @@ class MainActivity() : AppCompatActivity() {
     }
 
     fun articleDetails(title: String, url: String) {
-        MixPanelManager.articleClick(title)
+       // MixPanelManager.articleClick(title)
         //viewModel.userViewArticleId.add(article._id)
         val intent = Intent(this, ArticleDetailWebViewActivity::class.java)
         intent.putExtra("url", url)

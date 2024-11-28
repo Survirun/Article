@@ -7,15 +7,12 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import androidx.core.app.NotificationCompat
-import androidx.core.content.ContextCompat
 import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.devlog.article.R
-import com.devlog.article.data.mixpanel.MixPanelManager
 import com.devlog.article.data.preference.PrefManager
-import com.devlog.article.presentation.main.MainActivity
-import com.devlog.article.utility.UtilManager.getToday
 import com.devlog.article.utility.UtilManager.getTodayToInt
+import com.devlog.main.MainActivity
 
 
 class NotificationWorker(var context: Context, params: WorkerParameters) : Worker(context, params) {

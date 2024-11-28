@@ -1,4 +1,4 @@
-package com.devlog.article.presentation.main
+package com.devlog.main
 
 import android.util.Log
 import androidx.compose.runtime.MutableState
@@ -6,17 +6,17 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.devlog.article.data.entity.article.LoginEntity
-import com.devlog.article.data.request.ArticleKeywordRequest
-import com.devlog.article.data.response.ArticleLogResponse
-import com.devlog.article.domain.usecase.article.GetArticleKeywordUseCase
-import com.devlog.article.domain.usecase.article.GetArticleUseCase
-import com.devlog.article.domain.usecase.article.postArticleLogUseCase
-import com.devlog.article.domain.usecase.user.PostLoginUseCase
-import com.devlog.article.presentation.main.intent.MainIntent
 import com.devlog.article.presentation.main.state.MainApiState
+import com.devlog.date.entity.article.LoginEntity
+import com.devlog.domain.usecase.article.GetArticleKeywordUseCase
+import com.devlog.domain.usecase.article.GetArticleUseCase
+import com.devlog.domain.usecase.article.postArticleLogUseCase
+import com.devlog.domain.usecase.user.PostLoginUseCase
 import com.devlog.feature_article_list.state.ArticleTabState
+import com.devlog.main.intent.MainIntent
+import com.devlog.model.data.entity.request.ArticleKeywordRequest
 import com.devlog.model.data.entity.response.Article
+import com.devlog.model.data.entity.response.ArticleLogResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -29,7 +29,8 @@ class MainViewModel@Inject constructor(
     private val getArticleUseCase: GetArticleUseCase,
     private val getArticleKeywordUseCase : GetArticleKeywordUseCase,
     private val postLoginUseCase: PostLoginUseCase,
-    private val postArticleLogUseCase: postArticleLogUseCase):ViewModel() {
+    private val postArticleLogUseCase: postArticleLogUseCase
+):ViewModel() {
 
     private val _apiState = MutableStateFlow<MainApiState>(MainApiState.Initialize)
     val apiState : StateFlow<MainApiState> = _apiState
