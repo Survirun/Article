@@ -1,4 +1,4 @@
-package com.devlog.article.presentation.app_widget_provider
+package com.devlog.feature_app_widget_provider
 
 import android.appwidget.AppWidgetManager
 import android.content.Context
@@ -7,7 +7,6 @@ import android.util.Log
 import android.widget.RemoteViews
 import android.widget.RemoteViewsService
 import com.bumptech.glide.Glide
-import com.devlog.article.R
 import com.devlog.model.data.entity.response.Article
 import java.util.UUID
 

@@ -1,4 +1,4 @@
-package com.devlog.article.presentation.app_widget_provider
+package com.devlog.feature_app_widget_provider
 
 import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
@@ -11,15 +11,11 @@ import android.widget.RemoteViews
 import androidx.work.Constraints
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.NetworkType
-import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
-import com.devlog.article.R
-import com.devlog.feature_article_detail_webview.ArticleDetailWebViewActivity
-import com.devlog.article.presentation.main.MainActivity
 import java.util.concurrent.TimeUnit
 
-class AppWidgetProviderArticle: AppWidgetProvider() {
+class AppWidgetProviderArticle(): AppWidgetProvider() {
 
     // 앱 위젯은 여러개가 등록 될 수 있는데, 최초의 앱 위젯이 등록 될 때 호출 됩니다. (각 앱 위젯 인스턴스가 등록 될때마다 호출 되는 것이 아님)
     override fun onEnabled(context: Context) {
@@ -64,7 +60,8 @@ class AppWidgetProviderArticle: AppWidgetProvider() {
         // Perform this loop procedure for each App Widget that belongs to this provider
 
         appWidgetIds.forEach { appWidgetId ->
-            val clickIntentTemplate = Intent(context, ArticleDetailWebViewActivity::class.java)
+            val clickIntentTemplate =
+                Intent(context, "com.devlog.feature_article_detail_webview.ArticleDetailWebViewActivity"::class.java)
 
             val pendingIntentTemplate = PendingIntent.getActivity(
                 context,  appWidgetId , clickIntentTemplate, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE

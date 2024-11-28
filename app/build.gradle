@@ -60,6 +60,7 @@ kapt {
 dependencies {
     //coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.1.3'
     implementation(projects.feature.featureSplash)
+    implementation(projects.feature.featureAppWidgetProvider)
     implementation(projects.feature.featureQuestionList)
     implementation(projects.feature.featureArticleList)
     implementation(projects.feature.featureQuestionCompensation)

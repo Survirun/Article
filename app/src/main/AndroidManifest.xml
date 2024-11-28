@@ -19,9 +19,6 @@
 
 
 
-        <activity
-            android:name=".presentation.article_webview.ArticleWebViewActivity"
-            android:exported="true" />
 
 
         <activity
@@ -35,7 +32,7 @@
         </activity>
 
 
-        <receiver android:name=".presentation.app_widget_provider.AppWidgetProviderArticle"
+        <receiver android:name="com.devlog.feature_app_widget_provider.AppWidgetProviderArticle"
             android:exported="false">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -45,7 +42,7 @@
         </receiver>
 
         <service
-            android:name=".presentation.app_widget_provider.RemoteViewsService"
+            android:name="com.devlog.feature_app_widget_provider.RemoteViewsService"
             android:permission="android.permission.BIND_REMOTEVIEWS" />
 
         <service

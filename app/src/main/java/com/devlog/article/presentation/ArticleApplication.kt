@@ -14,10 +14,10 @@ import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import com.devlog.article.data.mixpanel.MixPanelManager
 import com.devlog.article.data.preference.PrefManager
-import com.devlog.article.data.repository.v3.ArticleRepository
-import com.devlog.article.presentation.app_widget_provider.AppWidgetProviderArticle
 import com.devlog.article.utility.NotificationWorker
 import com.devlog.article.utility.UtilManager.getTodayToInt
+import com.devlog.data.repository.v3.ArticleRepository2
+import com.devlog.feature_app_widget_provider.AppWidgetProviderArticle
 import com.google.firebase.FirebaseApp
 import com.google.firebase.messaging.FirebaseMessaging
 import dagger.hilt.android.HiltAndroidApp
@@ -43,7 +43,7 @@ class ArticleApplication : Application(), Configuration.Provider  {
 
     }
     @Inject
-    lateinit var apiRepository: ArticleRepository
+    lateinit var apiRepository: ArticleRepository2
     @Inject
     lateinit var workerFactory: HiltWorkerFactory
 
@@ -53,6 +53,10 @@ class ArticleApplication : Application(), Configuration.Provider  {
         get() = Configuration.Builder()
             .setWorkerFactory(workerFactory)
             .build()
+
+
+
+
     override fun onCreate() {
         super.onCreate()
         PrefManager.init(applicationContext)
@@ -62,6 +66,7 @@ class ArticleApplication : Application(), Configuration.Provider  {
 
         MixPanelManager.init(applicationContext)
         createWorkRequest()
+
         //updateWidget()
         FirebaseApp.initializeApp(this)
         FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
