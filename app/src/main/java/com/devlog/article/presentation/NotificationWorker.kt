@@ -1,4 +1,4 @@
-package com.devlog.article.utility
+package com.devlog.article.presentation
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -10,9 +10,9 @@ import androidx.core.app.NotificationCompat
 import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.devlog.article.R
-import com.devlog.article.data.preference.PrefManager
-import com.devlog.article.utility.UtilManager.getTodayToInt
 import com.devlog.main.MainActivity
+import com.devlog.preference.PrefManager
+import com.devlog.util.UtilManager.getTodayToInt
 
 
 class NotificationWorker(var context: Context, params: WorkerParameters) : Worker(context, params) {

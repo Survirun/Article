@@ -1,4 +1,4 @@
-package com.devlog.article.utility.firebase
+package com.devlog.article
 
 import android.Manifest
 import android.app.NotificationChannel
@@ -11,13 +11,11 @@ import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import com.devlog.article.R
 import com.devlog.main.MainActivity
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 
-
-class MyFirebaseMessagingService : FirebaseMessagingService() {
+class MyFirebaseMessagingService() : FirebaseMessagingService() {
     var url =""
     var title = ""
     override fun onMessageReceived(remoteMessage: RemoteMessage) {

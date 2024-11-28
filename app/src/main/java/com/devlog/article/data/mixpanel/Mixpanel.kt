@@ -1,7 +1,8 @@
 package com.devlog.article.data.mixpanel
 
 import android.content.Context
-import com.devlog.article.data.preference.PrefManager
+import com.devlog.preference.PrefManager
+
 import com.mixpanel.android.mpmetrics.MixpanelAPI
 import org.json.JSONObject
 
