@@ -43,22 +43,26 @@ interface ApiService {
     @GET("bookmark")
     suspend fun getBookMaker(): ApiResponse<BookmarkResponse>
 
+    //아티클 로그 보내기
     @POST("log/multi")
     suspend fun postArticleLog(@Body logs: ArticleLogEntity): ApiResponse<DefaultResponse>
 
+    //아티클 신고 하기
     @POST("article/report/{articleId}")
     suspend fun postReport(@Path("articleId") articleId: String): ApiResponse<DefaultResponse>
 
+    //유저 계정 삭제 하기
     @DELETE("user/my")
     suspend fun userDelete(): ApiResponse<DefaultResponse>
 
+    //키워드 아티클 가져오기
     @POST("article/{keyword}")
     suspend fun getArticleKeyword(
         @Path("keyword") keyword: Int,
         @Query("page") page: Int
     ) : ApiResponse<ArticleResponse>
 
-    //TODO 양현준
+    //키워드 아티클 가져오기 V2
     @GET("v2/article/keywords")
     suspend fun getArticleSeveralKeyword(@Query("keywords") keywords:ArrayList<Int>, @Query("page") page: Int):ApiResponse<ArticleSeveralKeywordResponse>
 
