@@ -3,7 +3,6 @@ package com.devlog.network
 import androidx.core.os.trace
 import com.devlog.date.entity.article.LoginEntity
 import com.devlog.date.entity.article.MyKeyword
-import com.devlog.model.data.entity.response.ArticleResponse
 import com.devlog.date.response.ArticleSeveralKeywordResponse
 import com.devlog.date.response.BookmarkResponse
 import com.devlog.date.response.DefaultResponse
@@ -11,6 +10,8 @@ import com.devlog.date.response.UserInfoEntity
 import com.devlog.model.data.entity.article.ArticleLogEntity
 import com.devlog.model.data.entity.request.ArticleKeywordRequest
 import com.devlog.model.data.entity.response.ArticleLogResponse
+import com.devlog.model.data.entity.response.ArticleResponse
+import com.devlog.model.data.entity.response.quiz.QuizResponse
 import com.devlog.preference.PrefManager
 import com.skydoves.sandwich.ApiResponse
 import com.skydoves.sandwich.adapters.ApiResponseCallAdapterFactory
@@ -116,6 +117,14 @@ internal class RetrofitNetwork @Inject constructor(
         page: Int
     ): ApiResponse<ArticleSeveralKeywordResponse> {
         return  api.getArticleSeveralKeyword(keywords,page)
+    }
+
+    override suspend fun getQuiz(): ApiResponse<QuizResponse> {
+        return api.getQuiz()
+    }
+
+    fun fsf(){
+
     }
 
 

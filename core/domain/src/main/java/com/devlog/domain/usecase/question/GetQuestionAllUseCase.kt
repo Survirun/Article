@@ -2,7 +2,7 @@ package com.devlog.domain.usecase.question
 
 import android.util.Log
 import com.devlog.data.repository.v2.question.QuestionRepository2
-import com.devlog.model.data.entity.question.Question
+import com.devlog.model.data.entity.response.quiz.QuizResponse
 import com.skydoves.sandwich.suspendOnError
 import com.skydoves.sandwich.suspendOnException
 import com.skydoves.sandwich.suspendOnSuccess
@@ -14,17 +14,16 @@ import kotlinx.coroutines.flow.onCompletion
 import okhttp3.Response
 import javax.inject.Inject
 
-class GetQuestionUseCase  @Inject constructor( private val questionRepository: QuestionRepository2){
+class GetQuestionAllUseCase @Inject constructor(private val questionRepository: QuestionRepository2){
 
     suspend fun execute(
-        day:Int,
         onComplete: () -> Unit,
         onError: (Response) -> Unit,
         onException: (Throwable) -> Unit
-    ): Flow<List<Question>> {
+    ): Flow<QuizResponse> {
 
         return flow {
-            val response = questionRepository.getQuestionsForDay(day )
+            val response = questionRepository.getTitlesLIstAll()
 
             response.suspendOnSuccess {
                 emit(data)

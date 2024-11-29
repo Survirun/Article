@@ -46,6 +46,7 @@ import com.devlog.feature_book_mark.navigation.bookmarkNavGraph
 import com.devlog.feature_my_keywords_select.navigation.myKeywordSelectNavGraph
 import com.devlog.feature_my_keywords_select.navigation.myKeywordSelectNavigationCompensation
 import com.devlog.feature_question_compensation.navigateQuestionCompensation
+import com.devlog.feature_question_compensation.questionCompensationNavGraph
 import com.devlog.feature_question_detail.navigateQuestionDetail
 import com.devlog.feature_question_detail.questionDetailNavGraph
 import com.devlog.feature_sign_in.navigation.navigateSignIn
@@ -57,8 +58,8 @@ import com.devlog.main.intent.MainIntent
 import com.devlog.main.navigation.MainRoute
 import com.devlog.model.data.entity.response.Data
 import com.devlog.preference.PrefManager
-import com.devlog.question_list.navigateQuestion
-import com.devlog.question_list.questionNavGraph
+import com.devlog.question_list.navigation.navigateQuestion
+import com.devlog.question_list.navigation.questionNavGraph
 import com.devlog.util.GoogleSignInHelper
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -197,7 +198,7 @@ class MainActivity() : AppCompatActivity() {
 
                                     ContextCompat.startActivity(context, intent, null)
                             })
-                            questionNavGraph(onQuestionClick = { navController.navigateQuestionDetail() })
+                            questionNavGraph(onQuestionClick = { navController.navigateQuestionDetail(it) })
                             bookmarkNavGraph(onComplete =  {  title, url ->
                                 val intent = Intent(context, ArticleDetailWebViewActivity::class.java)
                                 intent.putExtra("title", title)
@@ -208,9 +209,9 @@ class MainActivity() : AppCompatActivity() {
                             })
                         }
 
-                        questionNavGraph(onQuestionClick = { navController.navigateQuestionDetail() })
+                        questionNavGraph(onQuestionClick = { navController.navigateQuestionDetail(it) })
                         questionDetailNavGraph(onQuestionComplete = { navController.navigateQuestionCompensation()})
-
+                        questionCompensationNavGraph(onComplete = { navController.navigateQuestion() })
 
                         splashNavGraph(resultReceiver = receiver,
                             loginCheck = {

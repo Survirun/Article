@@ -6,4 +6,10 @@ plugins {
     alias(libs.plugins.hilt) apply false
     alias(libs.plugins.jetbrains.kotlin.jvm) apply false
     alias(libs.plugins.google.services) apply false
+
+}
+buildscript {
+    dependencies {
+        classpath("androidx.navigation:navigation-safe-args-gradle-plugin:2.7.3")
+    }
 }

@@ -1,5 +1,7 @@
 package com.devlog.data.repository.di
 
+import com.devlog.data.repository.v2.question.QuestionRepository2
+import com.devlog.data.repository.v2.question.QuestionRepositoryImpl2
 import com.devlog.data.repository.v3.ArticleRepository
 import com.devlog.data.repository.v3.ArticleRepositoryImpl
 import com.devlog.data.repository.v3.UserRepository
@@ -22,6 +24,11 @@ abstract class DataModule {
         userRepositoryImpl: UserRepositoryImpl,
     ): UserRepository
 
+
+    @Binds
+    abstract fun bindsQuestionRepositoryImpl2(
+        userRepositoryImpl: QuestionRepositoryImpl2,
+    ): QuestionRepository2
 
 
 }

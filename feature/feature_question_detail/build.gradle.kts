@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.jetbrains.kotlin.android)
     id ("kotlin-kapt")
+    id("androidx.navigation.safeargs.kotlin")
 }
 
 android {
@@ -45,6 +46,9 @@ dependencies {
     api(projects.core.domain)
     api(projects.core.date)
     api(projects.core.util)
+    implementation( libs.converter.gson)
+    implementation("androidx.navigation:navigation-fragment-ktx:2.7.3")
+    implementation("androidx.navigation:navigation-ui-ktx:2.7.3")
     implementation(libs.androidx.navigation.compose)
     implementation (libs.androidx.hilt.navigation.compose)
     implementation (libs.androidx.ui.tooling.preview)

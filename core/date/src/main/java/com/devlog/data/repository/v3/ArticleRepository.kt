@@ -6,6 +6,7 @@ import com.devlog.date.response.DefaultResponse
 import com.devlog.model.data.entity.request.ArticleKeywordRequest
 import com.devlog.model.data.entity.response.ArticleLogResponse
 import com.devlog.model.data.entity.response.ArticleResponse
+import com.devlog.model.data.entity.response.quiz.QuizResponse
 import com.skydoves.sandwich.ApiResponse
 
 interface ArticleRepository {
@@ -22,5 +23,7 @@ interface ArticleRepository {
     suspend fun getArticleKeyword(articleKeywordRequest : ArticleKeywordRequest) : ApiResponse<ArticleResponse>
     suspend fun getBookMaker() : ApiResponse<BookmarkResponse>
     suspend fun getArticleSeveralKeyword(keywords:ArrayList<Int>,page: Int):ApiResponse<ArticleSeveralKeywordResponse>
+
+    suspend fun getQuestion():ApiResponse<QuizResponse>
 
 }

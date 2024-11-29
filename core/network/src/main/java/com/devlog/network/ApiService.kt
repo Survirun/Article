@@ -8,6 +8,7 @@ import com.devlog.date.response.DefaultResponse
 import com.devlog.date.response.UserInfoEntity
 import com.devlog.model.data.entity.article.ArticleLogEntity
 import com.devlog.model.data.entity.response.ArticleResponse
+import com.devlog.model.data.entity.response.quiz.QuizResponse
 import com.skydoves.sandwich.ApiResponse
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -66,6 +67,8 @@ interface ApiService {
     @GET("v2/article/keywords")
     suspend fun getArticleSeveralKeyword(@Query("keywords") keywords:ArrayList<Int>, @Query("page") page: Int):ApiResponse<ArticleSeveralKeywordResponse>
 
+    @GET("quiz")
+    suspend fun getQuiz() : ApiResponse<QuizResponse>
 
 
 

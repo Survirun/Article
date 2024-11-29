@@ -1,8 +1,10 @@
-package com.devlog.question_list
+package com.devlog.question_list.navigation
 
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
+import com.devlog.model.data.entity.response.quiz.Quiz
+import com.devlog.question_list.QuestionSeen
 
 fun NavController.navigateQuestion() {
     navigate(QuestionRoute.route){
@@ -12,7 +14,7 @@ fun NavController.navigateQuestion() {
 }
 
 fun NavGraphBuilder.questionNavGraph(
-    onQuestionClick: () -> Unit
+    onQuestionClick: (quiz:Quiz) -> Unit
 ) {
     composable(route = QuestionRoute.route) {
         QuestionSeen(onQuestionClick =onQuestionClick)

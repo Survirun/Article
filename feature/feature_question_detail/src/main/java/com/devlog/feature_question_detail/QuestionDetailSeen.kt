@@ -22,17 +22,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.devlog.model.data.entity.question.Question
-import com.devlog.preference.PrefManager
+import com.devlog.model.data.entity.response.quiz.Question
+import com.devlog.model.data.entity.response.quiz.Quiz
 import kotlinx.coroutines.delay
 
 
 @Composable
-fun QuestionDetailSeen(viewModel: QuestionDetailViewModel = hiltViewModel(),onQuestionComplete: () -> Unit) {
+fun QuestionDetailSeen(viewModel: QuestionDetailViewModel = hiltViewModel(),quiz:Quiz,onQuestionComplete: () -> Unit) {
 
-
-    viewModel.getQuestionUseCase(PrefManager.day+1)
     viewModel.onQuestionComplete = { onQuestionComplete() }
+    viewModel.updateQuiz(quiz)
     Box(modifier = Modifier.fillMaxSize()) {
 
             AnswerCheckView(

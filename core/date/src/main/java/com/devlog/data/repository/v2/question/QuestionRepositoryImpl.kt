@@ -1,39 +1,18 @@
 package com.devlog.data.repository.v2.question
 
-import android.util.Log
-import com.devlog.date.entity.question.Week
-import com.devlog.model.data.entity.question.Question
+import com.devlog.model.data.entity.response.quiz.QuizResponse
+import com.devlog.network.DataSource
 import com.skydoves.sandwich.ApiResponse
-import retrofit2.Response
+import javax.inject.Inject
 
-class QuestionRepositoryImpl2  constructor(
-    private val weeks: List<Week>
+class QuestionRepositoryImpl2  @Inject constructor(
+    private val network: DataSource
 ) : QuestionRepository2 {
 
-    override suspend fun getQuestionsForDay(day: Int): ApiResponse<List<Question>> {
-        for (week in weeks) {
-            for (dayData in week.days) {
-                if (dayData.day == day) {
-                    return ApiResponse.Success(Response.success(dayData.questions))
-                }
-            }
-        }
-        // 해당 날짜에 질문이 없으면 ApiResponse.Error로 반환
-        return ApiResponse.error(Throwable("error"))
-    }
 
-    override suspend fun getTitlesLIst(): ApiResponse<List<String>> {
-        val titles = mutableListOf<String>()
-        for (week in weeks) {
-            Log.d("polaris",week.toString())
-            Log.d("polaris",weeks.toString())
-            for (dayData in week.days) {
-                Log.d("polaris",dayData.title)
-                titles.add(dayData.title)
-            }
-        }
-        return ApiResponse.Success(Response.success(titles))
 
+    override suspend fun getTitlesLIstAll(): ApiResponse<QuizResponse> {
+       return network.getQuiz()
     }
 
 }

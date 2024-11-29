@@ -6,6 +6,7 @@ import com.devlog.date.response.DefaultResponse
 import com.devlog.model.data.entity.request.ArticleKeywordRequest
 import com.devlog.model.data.entity.response.ArticleLogResponse
 import com.devlog.model.data.entity.response.ArticleResponse
+import com.devlog.model.data.entity.response.quiz.QuizResponse
 import com.devlog.network.DataSource
 import com.skydoves.sandwich.ApiResponse
 import javax.inject.Inject
@@ -44,6 +45,10 @@ internal class ArticleRepositoryImpl @Inject constructor(
         page: Int
     ): ApiResponse<ArticleSeveralKeywordResponse> {
         return  network.getArticleSeveralKeyword(keywords, page)
+    }
+
+    override suspend fun getQuestion(): ApiResponse<QuizResponse> {
+        return network.getQuiz()
     }
 
 

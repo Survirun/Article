@@ -2,6 +2,7 @@ package com.devlog.question_list
 
 import android.util.Log
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -17,36 +18,50 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.devlog.model.data.entity.response.quiz.Quiz
 import com.devlog.preference.PrefManager
+import com.devlog.question_list.intent.QuestionIntent
+import com.devlog.question_list.state.QuestionApiState
 
 
 @Composable
 fun QuestionSeen(
-    onQuestionClick: () -> Unit = {},
+    onQuestionClick: (quiz:Quiz) -> Unit = {},
     viewModel: QuestionViewModel = hiltViewModel()
 ) {
-    val questionTitleLis by viewModel.questionTitleLis.collectAsState(emptyList()) // StateFlow 관찰
+    val questionApiState by viewModel.questionTitleLis.collectAsState()
+    val quizList= viewModel.quizList.collectAsState()
+    viewModel.processIntent(QuestionIntent.GetQuestion)
+    when(questionApiState){
+        is  QuestionApiState.Initialize->{
 
-    viewModel.getQuestionTitleList()
-    QuestionSeenView(questionTitleLis) {
-        Log.d("polaris", "클릭")
-        onQuestionClick()
+        }
+        is QuestionApiState.QuestionSuccess->{
+             (questionApiState as  QuestionApiState.QuestionSuccess).quizResponse
+
+
+        }
+
     }
+    QuestionSeenView(quizList.value, onClick =onQuestionClick)
+
 }
 
 @Composable
-fun QuestionSeenView(questionTitleLis: List<String>, onClick: () -> Unit) {
-    Column {
+fun QuestionSeenView(questionTitleLis: List<Quiz>, onClick: (Quiz) -> Unit) {
+
+    Column(modifier = Modifier.fillMaxSize(1f)) {
         LazyColumn() {
-            itemsIndexed(questionTitleLis, key = { _, item -> item }) { index, item ->
+            itemsIndexed(questionTitleLis, key = { _, item -> item }) { index, quiz ->
                 Surface(modifier = Modifier.padding(10.dp),
                     onClick = {
                         if (PrefManager.day >= index) {
-                            onClick()
+
+                            onClick(quiz)
                             PrefManager.day = index
                         }
                     }) {
-                    QuestionItem(index, item)
+                    QuestionItem(index, quiz.title)
                 }
 
 
@@ -77,6 +92,6 @@ fun QuestionItem(index: Int, titls: String) {
 @Composable
 @Preview(showBackground = true)
 fun preView() {
-    val dummyList = listOf("테스트1", "테스트2", "테스트3", "테스트4")
-    QuestionSeenView(dummyList) {}
+    //val dummyList = listOf("테스트1", "테스트2", "테스트3", "테스트4")
+   // QuestionSeenView(dummyList) {}
 }

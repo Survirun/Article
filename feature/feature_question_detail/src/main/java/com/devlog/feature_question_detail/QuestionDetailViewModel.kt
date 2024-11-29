@@ -1,20 +1,15 @@
 package com.devlog.feature_question_detail
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import com.devlog.domain.usecase.question.GetQuestionUseCase
-import com.devlog.model.data.entity.question.Question
+import com.devlog.model.data.entity.response.quiz.Question
+import com.devlog.model.data.entity.response.quiz.Quiz
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class QuestionDetailViewModel @Inject constructor(
-    private val getQuestionUseCase: GetQuestionUseCase
-) : ViewModel() {
+class QuestionDetailViewModel @Inject constructor() : ViewModel() {
     private val _questionList = MutableStateFlow<List<Question>>(arrayListOf())
     val questionList: StateFlow<List<Question>> get() = _questionList
 
@@ -39,21 +34,14 @@ class QuestionDetailViewModel @Inject constructor(
     val question :MutableStateFlow<Question> get() = _question
 
     var onQuestionComplete: () -> Unit = {}
-    fun getQuestionUseCase(day: Int): Job = viewModelScope.launch() {
 
-        getQuestionUseCase.execute(
-            day = day,
-            onComplete = {},
-            onError = {},
-            onException = {}
-        ).collect {
-            _questionList.value =  it
-            _question.value= _questionList.value[ currentQuestionIndex.value]
-            _questionAnswer.value = _questionList.value[ currentQuestionIndex.value].answer
-        }
+
+    fun updateQuiz(quiz: Quiz){
+        _questionList.value =  quiz.questions
+
+        _question.value= _questionList.value[ currentQuestionIndex.value]
+        _questionAnswer.value = _questionList.value[ currentQuestionIndex.value].answer
     }
-
-
     fun questionCorrectAnswer( optionText:String){
         setAnswerCorrect(optionText == questionAnswer.value)
 
