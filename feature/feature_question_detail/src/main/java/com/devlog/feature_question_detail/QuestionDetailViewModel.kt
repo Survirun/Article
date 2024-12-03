@@ -43,7 +43,7 @@ class QuestionDetailViewModel @Inject constructor() : ViewModel() {
         _questionAnswer.value = _questionList.value[ currentQuestionIndex.value].answer
     }
     fun questionCorrectAnswer( optionText:String){
-        setAnswerCorrect(optionText == questionAnswer.value)
+        setAnswerCorrect(optionText.trim() == questionAnswer.value.trim())
 
     }
 
