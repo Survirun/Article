@@ -1,4 +1,4 @@
-package com.devlog.article.presentation
+package com.devlog.notification
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -9,9 +9,9 @@ import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.work.Worker
 import androidx.work.WorkerParameters
-import com.devlog.article.R
-import com.devlog.main.MainActivity
+import com.devlog.notification.NotificationDependencyProvider.intentProvider
 import com.devlog.preference.PrefManager
+
 import com.devlog.util.UtilManager.getTodayToInt
 
 
@@ -54,11 +54,12 @@ class NotificationWorker(var context: Context, params: WorkerParameters) : Worke
             notificationManager.createNotificationChannel(channel)  // 채널 생성
         }
 
-        // 알림을 눌렀을 때 열릴 인텐트 생성
-        val intent = Intent(applicationContext, MainActivity::class.java).apply {
+        val intent = intentProvider!!.getNotificationIntent(applicationContext).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             putExtra("EXTRA_NOTIFICATION_CLICKED", true)
         }
+        // 알림을 눌렀을 때 열릴 인텐트 생성
+
         val pendingIntent: PendingIntent =
             PendingIntent.getActivity(applicationContext, 0, intent, PendingIntent.FLAG_IMMUTABLE)
 

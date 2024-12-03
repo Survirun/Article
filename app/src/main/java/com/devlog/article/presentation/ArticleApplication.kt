@@ -14,6 +14,9 @@ import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import com.devlog.article.data.mixpanel.MixPanelManager
 import com.devlog.feature_app_widget_provider.AppWidgetProviderArticle
+import com.devlog.notification.AppNotificationIntentProvider
+import com.devlog.notification.NotificationDependencyProvider
+import com.devlog.notification.NotificationWorker
 import com.devlog.preference.PrefManager
 import com.devlog.util.UtilManager.getTodayToInt
 import com.google.firebase.FirebaseApp
@@ -64,6 +67,7 @@ class ArticleApplication : Application(), Configuration.Provider  {
         createWorkRequest()
 
         //updateWidget()
+        NotificationDependencyProvider.intentProvider = AppNotificationIntentProvider()
         FirebaseApp.initializeApp(this)
         FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
             if (!task.isSuccessful) {

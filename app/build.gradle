@@ -124,6 +124,7 @@ dependencies {
     implementation libs.androidx.hilt.work
     implementation libs.firebase.messaging.ktx
     implementation libs.firebase.messaging
+    implementation project(':core:notification')
     kapt libs.hilt.compiler
 
     kapt(libs.hilt.android.compiler)

@@ -50,6 +50,7 @@ dependencies {
     api(projects.core.domain)
     api(projects.core.date)
     api(projects.core.util)
+    implementation(projects.core.notification)
     implementation(projects.feature.featureSplash)
     implementation(projects.feature.featureAppWidgetProvider)
     implementation(projects.feature.featureQuestionList)
