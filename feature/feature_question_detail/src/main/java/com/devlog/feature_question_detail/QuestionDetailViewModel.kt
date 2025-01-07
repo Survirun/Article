@@ -28,7 +28,8 @@ class QuestionDetailViewModel @Inject constructor() : ViewModel() {
 
     val dummyQuestion = Question("0","","", listOf("","","",""),"","")
 
-
+    private val _userCheckResponse = MutableStateFlow<String>("")
+    val userCheckResponse : MutableStateFlow<String> get() = _userCheckResponse
 
     private val _question = MutableStateFlow<Question>(dummyQuestion)
     val question :MutableStateFlow<Question> get() = _question
@@ -43,7 +44,9 @@ class QuestionDetailViewModel @Inject constructor() : ViewModel() {
         _questionAnswer.value = _questionList.value[ currentQuestionIndex.value].answer
     }
     fun questionCorrectAnswer( optionText:String){
+        _userCheckResponse.value = optionText
         setAnswerCorrect(optionText.trim() == questionAnswer.value.trim())
+
 
     }
 
