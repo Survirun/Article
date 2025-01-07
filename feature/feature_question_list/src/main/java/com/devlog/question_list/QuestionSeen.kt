@@ -1,6 +1,5 @@
 package com.devlog.question_list
 
-import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -12,11 +11,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.devlog.model.data.entity.response.quiz.Quiz
 import com.devlog.preference.PrefManager
@@ -61,7 +60,7 @@ fun QuestionSeenView(questionTitleLis: List<Quiz>, onClick: (Quiz) -> Unit) {
                             PrefManager.day = index
                         }
                     }) {
-                    QuestionItem(index, quiz.title)
+                    QuestionItem(index, quiz.title,PrefManager.day)
                 }
 
 
@@ -71,27 +70,41 @@ fun QuestionSeenView(questionTitleLis: List<Quiz>, onClick: (Quiz) -> Unit) {
     }
 }
 
+
 @Composable
-fun QuestionItem(index: Int, titls: String) {
+@Preview(showBackground = true)
+fun QuestionItem(index: Int =0, titls: String ="문제 입니다",day:Int=0) {
     Column(
         modifier = Modifier
             .fillMaxWidth(1f)
-            .padding(vertical = 10.dp),
-
-        horizontalAlignment = Alignment.CenterHorizontally,
+            .padding(vertical = 10.dp)
 
         ) {
-        Log.d("polaris_day",(PrefManager.day).toString())
-        Log.d("polaris_day",(index).toString())
-        Text(text = titls, color = if (PrefManager.day>= index) Color(0xFF000000) else Color(0xFFB1B1B1))
+//        Log.d("polaris_day",(PrefManager.day).toString())
+//        Log.d("polaris_day",(index).toString())
+        Text(text = titls, color = if (day>= index) Color(0xFF000000) else Color(0xFFB1B1B1), fontSize = 16.sp)
+        Text(text = titls, color = if (day>= index) Color(0xFF000000) else Color(0xFFB1B1B1), fontSize = 14.sp)
     }
 
 
 }
-
 @Composable
 @Preview(showBackground = true)
-fun preView() {
-    //val dummyList = listOf("테스트1", "테스트2", "테스트3", "테스트4")
-   // QuestionSeenView(dummyList) {}
+fun PreViewQuestionSeenView() {
+    val dumyList = listOf(
+        Quiz("HTML 기본 태그", 0, questions = listOf()),
+        Quiz("CSS 기본 속성", 0, questions = listOf()),
+        Quiz("JavaScript 개요", 0, questions = listOf())
+    )
+
+    Column(modifier = Modifier.fillMaxSize()) {
+        LazyColumn {
+            itemsIndexed(dumyList, key = { index, _ -> index }) { index, quiz ->
+                Surface(modifier = Modifier.padding(10.dp), onClick = {}) {
+                    QuestionItem(index = index, titls = quiz.title, day = 1) // 가짜 값 사용
+                }
+            }
+        }
+    }
 }
+

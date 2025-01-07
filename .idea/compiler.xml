@@ -2,32 +2,10 @@
 <project version="4">
   <component name="CompilerConfiguration">
     <bytecodeTargetLevel target="1.8">
-      <module name="Article.app" target="21" />
-      <module name="Article.core.date" target="21" />
-      <module name="Article.core.designsystem" target="21" />
-      <module name="Article.core.domain" target="21" />
       <module name="Article.core.domin" target="17" />
-      <module name="Article.core.network" target="21" />
-      <module name="Article.core.notification" target="21" />
-      <module name="Article.core.preference" target="21" />
-      <module name="Article.core.util" target="21" />
       <module name="Article.domain" target="17" />
       <module name="Article.feature.article" target="17" />
-      <module name="Article.feature.feature_app_widget_provider" target="21" />
-      <module name="Article.feature.feature_article_detail_webview" target="21" />
-      <module name="Article.feature.feature_article_list" target="21" />
-      <module name="Article.feature.feature_book_mark" target="21" />
-      <module name="Article.feature.feature_main" target="21" />
-      <module name="Article.feature.feature_my_keywords_select" target="21" />
-      <module name="Article.feature.feature_question_compensation" target="21" />
-      <module name="Article.feature.feature_question_detail" target="21" />
-      <module name="Article.feature.feature_question_list" target="21" />
-      <module name="Article.feature.feature_sign_in" target="21" />
-      <module name="Article.feature.feature_splash" target="21" />
       <module name="Article.feature.main" target="17" />
-      <module name="build-logic.convention" target="21" />
-      <module name="build-logic.convention.main" target="21" />
-      <module name="build-logic.convention.test" target="21" />
     </bytecodeTargetLevel>
   </component>
 </project>
