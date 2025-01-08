@@ -34,6 +34,9 @@ class QuestionDetailViewModel @Inject constructor() : ViewModel() {
     private val _question = MutableStateFlow<Question>(dummyQuestion)
     val question :MutableStateFlow<Question> get() = _question
 
+    private val _progress = MutableStateFlow<Float>(0.0f)
+    val progress :MutableStateFlow<Float> get() = _progress
+
     var onQuestionComplete: () -> Unit = {}
 
 
@@ -70,6 +73,8 @@ class QuestionDetailViewModel @Inject constructor() : ViewModel() {
             currentQuestionIndex.value++
             _question.value= _questionList.value[ currentQuestionIndex.value]
             _questionAnswer.value = _questionList.value[ currentQuestionIndex.value].answer
+            _progress.value =_currentQuestionIndex.value / _questionList.value.size.toFloat()
+
         } else {
             onQuestionComplete()
         }
