@@ -8,7 +8,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -66,23 +65,17 @@ fun QuestionDetailSeen(
         ), label = ""
     )
 
-    Box(modifier = Modifier.fillMaxSize()) {
+    QuestionDetailView(
+        quiz.title,
+        viewModel.question.collectAsState().value,
+        animatedProgress
+    ) {
 
-
-        QuestionDetailView(
-            quiz.title,
-            viewModel.question.collectAsState().value,
-            animatedProgress
-        ) {
-
-            viewModel.questionCorrectAnswer(it)
-            CoroutineScope(Dispatchers.Default).launch {
-                delay(1500L)
-                viewModel.clearAnswerStatus()
-            }
-
+        viewModel.questionCorrectAnswer(it)
+        CoroutineScope(Dispatchers.Default).launch {
+            delay(1500L)
+            viewModel.clearAnswerStatus()
         }
-
 
     }
 
@@ -190,7 +183,7 @@ fun QuestionDetailView(
     click: (String) -> Unit = {}
 ) {
     Column(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier.fillMaxSize().background(Gray20),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceBetween
     ) {
@@ -219,7 +212,7 @@ fun QuestionDetailView(
                 LinearProgressIndicator(
                     progress = progress,
                     color= Gray100,
-                    backgroundColor = Gray30,
+                    backgroundColor = Gray10,
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(40.dp)

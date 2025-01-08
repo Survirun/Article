@@ -19,7 +19,7 @@ var Gray50 = Color(0xFFBEBEC8)
 var Gray40 = Color(0xFFDCDCEA)
 var Gray30 = Color(0xFFEEEEF0)
 var Gray20 = Color(0xFFFAFAFC)
-var Gray10 = Color(0xFFEEEEF0)
+var Gray10 = Color(0xFFFFFFFF)
 
 
 var  CorrectAnswer= Color(0xFF23D42E)
